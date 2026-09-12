@@ -1,0 +1,8 @@
+node_modules
+.tanstack
+.vercel
+.grok/app-env.json
+artifacts
+screenshots
+attachments
+*.log

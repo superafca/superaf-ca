@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>SUPERAF.CA</title>
+    <style>
+      @font-face {
+        font-family: "Barlow Condensed";
+        font-weight: 900;
+        font-style: normal;
+        src: url("./barlow-condensed-900.woff2") format("woff2");
+      }
+      html,
+      body {
+        margin: 0;
+        width: 1200px;
+        height: 630px;
+        overflow: hidden;
+        background: #f3ede3;
+      }
+      .stage {
+        position: relative;
+        width: 1200px;
+        height: 630px;
+        background: #f3ede3;
+      }
+      .grain {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        opacity: 0.28;
+        mix-blend-mode: multiply;
+      }
+      .lockup {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+      .stamp {
+        width: 78px;
+        height: 78px;
+        margin: 0 0 22px;
+        transform: rotate(-9deg);
+        color: #5eb3e8;
+      }
+      .word {
+        margin: 0;
+        font-family: "Barlow Condensed", "Liberation Sans Narrow", sans-serif;
+        font-weight: 900;
+        font-size: 168px;
+        line-height: 0.82;
+        letter-spacing: -0.015em;
+        color: #161412;
+        text-rendering: geometricPrecision;
+        -webkit-font-smoothing: antialiased;
+      }
+      .rule {
+        width: 268px;
+        height: 5px;
+        margin-top: 30px;
+        background: #c45a28;
+        border-radius: 1px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="stage">
+      <svg class="grain" viewBox="0 0 1200 630" preserveAspectRatio="none" aria-hidden="true">
+        <filter id="paper" x="0" y="0" width="100%" height="100%">
+          <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="4" stitchTiles="stitch" result="n" />
+          <feColorMatrix type="saturate" values="0" />
+        </filter>
+        <rect width="1200" height="630" filter="url(#paper)" />
+      </svg>
+      <div class="lockup">
+        <svg class="stamp" viewBox="0 0 64 64" aria-hidden="true">
+          <circle
+            cx="32"
+            cy="32"
+            r="29.5"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.1"
+            stroke-dasharray="3.2 2.6"
+            stroke-linecap="round"
+          />
+          <path
+            fill="currentColor"
+            d="M20.2 42.6c-4.6 0-8.3-3.5-8.3-7.8 0-3.8 2.7-7 6.5-7.7.5-5.6 5.2-9.9 11-9.9 4.3 0 8.1 2.4 10.1 6.1 1.5-1.2 3.5-1.9 5.6-1.9 5 0 9.1 3.8 9.1 8.6 0 .5 0 1.1-.2 1.6 3.8.7 6.6 3.9 6.6 7.8 0 4.4-3.8 8-8.5 8H20.2z"
+          />
+        </svg>
+        <h1 class="word">SUPERAF.CA</h1>
+        <div class="rule"></div>
+      </div>
+    </div>
+  </body>
+</html>
