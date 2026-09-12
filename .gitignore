@@ -6,3 +6,5 @@ artifacts
 screenshots
 attachments
 *.log
+snapshots/v1-locked/src
+snapshots/v1-locked/public
