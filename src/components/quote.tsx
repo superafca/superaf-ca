@@ -108,7 +108,9 @@ function thanksBody(opts: {
 
 function isInAppBrowser() {
   if (typeof navigator === "undefined") return false;
-  return /Instagram|FBAN|FBAV|FB_IAB|TikTok/i.test(navigator.userAgent);
+  return /Instagram|FBAN|FBAV|FB_IAB|TikTok|Bytedance|Line\/|Snapchat|Twitter|IABMV|WebView|; wv\)/i.test(
+    navigator.userAgent,
+  );
 }
 
 function fireThanks(contact: ContactId, body: string) {
@@ -226,20 +228,21 @@ export function Quote() {
         photoData,
       },
     }).catch(() => {
-      window.open(
-        `${site.emailHref}?subject=${encodeURIComponent(`SUPERAF quote — ${lead.name.trim()}`)}&body=${encodeURIComponent(`${lead.name}\n${lead.phone}\n${lead.email}\n${vehicle}\n${quoteLine}`)}`,
-      );
+      /* Lead email is best-effort. Never window.open mailto — Instagram
+         WebView treats it as a dead link and kills the locked-in screen. */
     });
-    fireThanks(
-      lead.contact,
-      thanksBody({
-        name: lead.name.trim(),
-        vehicle,
-        pack,
-        savings: result.savings,
-        contact: lead.contact,
-      }),
-    );
+    if (!isInAppBrowser()) {
+      fireThanks(
+        lead.contact,
+        thanksBody({
+          name: lead.name.trim(),
+          vehicle,
+          pack,
+          savings: result.savings,
+          contact: lead.contact,
+        }),
+      );
+    }
   }
 
   const mailBody = encodeURIComponent(
