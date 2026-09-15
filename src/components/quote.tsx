@@ -46,37 +46,36 @@ async function postLeadBrowser(payload: {
   quote: string;
   notes: string;
   photoName?: string;
-  photoData?: string;
+  photo?: File | null;
 }) {
+  const fd = new FormData();
+  fd.append("_subject", `SUPERAF quote — ${payload.name} — ${payload.vehicle}`);
+  fd.append("_template", "box");
+  fd.append("_captcha", "false");
+  fd.append("_replyto", payload.email);
+  fd.append("name", payload.name);
+  fd.append("email", payload.email);
+  fd.append("phone", payload.phone);
+  fd.append("contact", payload.contact);
+  fd.append("vehicle", payload.vehicle);
+  fd.append("quote", payload.quote);
+  fd.append("notes", payload.notes || "—");
+  fd.append("photo", payload.photoName || "none");
+  if (payload.photo) {
+    fd.append("attachment", payload.photo, payload.photo.name);
+  }
   const res = await fetch("https://formsubmit.co/ajax/book@superaf.ca", {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Accept: "application/json",
-    },
-    body: JSON.stringify({
-      _subject: `SUPERAF quote — ${payload.name} — ${payload.vehicle}`,
-      _template: "box",
-      _captcha: "false",
-      _replyto: payload.email,
-      name: payload.name,
-      email: payload.email,
-      phone: payload.phone,
-      contact: payload.contact,
-      vehicle: payload.vehicle,
-      quote: payload.quote,
-      notes: payload.notes || "—",
-      photo: payload.photoName || "none",
-      ...(payload.photoData ? { photo_data: payload.photoData } : {}),
-    }),
+    headers: { Accept: "application/json" },
+    body: fd,
   });
-    const json = (await res.json().catch(() => ({}))) as {
-      success?: string | boolean;
-    };
-    if (!res.ok || json.success === "false" || json.success === false) {
-      throw new Error("lead email failed");
-    }
+  const json = (await res.json().catch(() => ({}))) as {
+    success?: string | boolean;
+  };
+  if (!res.ok || json.success === "false" || json.success === false) {
+    throw new Error("lead email failed");
   }
+}
 
 const HEART_RAIN = [
   { left: "4%", delay: "0s", size: 44, dur: "9s" },
@@ -210,15 +209,6 @@ export function Quote() {
     ]
       .filter(Boolean)
       .join(" · ");
-    let photoData = "";
-    if (photo && photo.size <= 1_200_000) {
-      photoData = await new Promise<string>((resolve) => {
-        const r = new FileReader();
-        r.onload = () => resolve(String(r.result ?? ""));
-        r.onerror = () => resolve("");
-        r.readAsDataURL(photo);
-      });
-    }
     const payload = {
       name: lead.name.trim(),
       phone: lead.phone.trim(),
@@ -228,10 +218,21 @@ export function Quote() {
       quote: quoteLine,
       notes: notes.trim(),
       photoName: photo?.name,
-      photoData,
+      photo,
     };
     void postLeadBrowser(payload).catch(() => {
-      void sendLead({ data: payload }).catch(() => {});
+      void sendLead({
+        data: {
+          name: payload.name,
+          phone: payload.phone,
+          email: payload.email,
+          contact: payload.contact,
+          vehicle: payload.vehicle,
+          quote: payload.quote,
+          notes: payload.notes,
+          photoName: payload.photoName,
+        },
+      }).catch(() => {});
     });
   }
 
