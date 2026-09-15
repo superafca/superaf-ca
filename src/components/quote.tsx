@@ -106,13 +106,23 @@ function thanksBody(opts: {
   return `SUPERAF.CA — thanks ${opts.name}. Here's your virtual quote for ${opts.vehicle}: ${opts.pack}. You're locked in to reserve ${money(opts.savings)} on the winter sale. We'll confirm by ${how} ASAP.`;
 }
 
+function isInAppBrowser() {
+  if (typeof navigator === "undefined") return false;
+  return /Instagram|FBAN|FBAV|FB_IAB|TikTok/i.test(navigator.userAgent);
+}
+
 function fireThanks(contact: ContactId, body: string) {
-  const encoded = encodeURIComponent(body);
-  const url =
-    contact === "whatsapp"
-      ? `${site.whatsappHref}?text=${encoded}`
-      : `${site.smsHref}?&body=${encoded}`;
-  window.open(url, "_blank", "noopener,noreferrer");
+  if (isInAppBrowser()) return;
+  try {
+    const encoded = encodeURIComponent(body);
+    const url =
+      contact === "whatsapp"
+        ? `${site.whatsappHref}?text=${encoded}`
+        : `${site.smsHref}?&body=${encoded}`;
+    window.open(url, "_blank", "noopener,noreferrer");
+  } catch {
+    /* in-app browsers die on sms: / WhatsApp popups */
+  }
 }
 
 export function Quote() {
