@@ -1,0 +1,266 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bg: #5ba3f5;
+  --color-surface: rgb(255 255 255 / 0.62);
+  --color-elevated: #ffffff;
+  --color-fg: #1a2744;
+  --color-muted: #3d5270;
+  --color-subtle: #5a7190;
+  --color-accent: #e2b13c;
+  --color-accent-fg: #3a2a04;
+  --color-sky: #5ba3f5;
+  --color-sky-fg: #0a2744;
+  --color-cloud: #ffffff;
+  --color-border: rgb(26 39 68 / 0.12);
+  --color-border-strong: rgb(26 39 68 / 0.22);
+  --color-danger: #dc3b3b;
+  --color-hero: #e52521;
+  --color-hero-fg: #ffffff;
+
+  --color-lvl1: #22a84a;
+  --color-lvl1-fg: #05210c;
+  --color-lvl2: #2b6cff;
+  --color-lvl2-fg: #f4f8ff;
+  --color-lvl3: #e2b13c;
+  --color-lvl3-fg: #3a2a04;
+  --color-lvl4: #ff6a1f;
+  --color-lvl4-fg: #2a1004;
+  --color-lvlmax: #8b5cf6;
+  --color-lvlmax-fg: #f6f0ff;
+
+  --font-sans: "Outfit", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Bebas Neue", "Arial Narrow", Impact, sans-serif;
+
+  --radius-xs: 0.25rem;
+  --radius-sm: 0.5rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1.25rem;
+  --radius-xl: 1.75rem;
+
+  --shadow-border: 0 0 0 1px rgb(26 39 68 / 0.08), 0 8px 24px rgb(26 39 68 / 0.08);
+  --shadow-border-hover: 0 0 0 1px rgb(26 39 68 / 0.16), 0 10px 28px rgb(26 39 68 / 0.12);
+  --shadow-start: 0 0 0 3px var(--color-lvl2);
+
+  --tracking-kicker: 0.14em;
+
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --animate-rise: rise 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes heart-pop {
+  0% { opacity: 0; transform: translate(10px, 10px) scale(0.2); }
+  45% { opacity: 1; transform: translate(0, -4px) scale(1.3); }
+  100% { opacity: 1; transform: translate(0, 0) scale(1); }
+}
+
+@keyframes rainbow-road {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+
+@keyframes gold-glow {
+  0%, 100% {
+    box-shadow: 0 0 0 2px #e2b13c, 0 0 10px 2px rgb(226 177 60 / 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 3px #ffe08a, 0 0 22px 6px rgb(226 177 60 / 0.75);
+  }
+}
+
+@keyframes jackpot-in {
+  0% { opacity: 0; transform: scale(0.5) rotate(-12deg); }
+  55% { opacity: 1; transform: scale(1.12) rotate(3deg); }
+  100% { opacity: 1; transform: scale(1) rotate(0deg); }
+}
+
+@keyframes fw-burst {
+  0% { transform: translate(-50%, -50%) scale(0.15); opacity: 1; }
+  65% { opacity: 1; }
+  100% { transform: translate(-50%, -50%) scale(1.8); opacity: 0; }
+}
+
+@keyframes heart-rain {
+  0% { transform: translateY(20vh) rotate(-12deg) scale(0.7); opacity: 0; }
+  15% { opacity: 1; }
+  100% { transform: translateY(-110vh) rotate(12deg) scale(1); opacity: 0.85; }
+}
+
+@keyframes snow-fall {
+  0% { transform: translateY(-10vh) translateX(0); opacity: 0; }
+  10% { opacity: 0.9; }
+  100% { transform: translateY(110vh) translateX(24px); opacity: 0.35; }
+}
+
+.jackpot {
+  background: rgb(0 0 0 / 0.5);
+}
+
+.jackpot-card {
+  animation: jackpot-in 0.7s cubic-bezier(0.34, 1.4, 0.64, 1) both;
+  box-shadow: 0 0 0 3px #e2b13c, 0 0 40px 8px rgb(226 177 60 / 0.55);
+}
+
+.snowflake {
+  position: absolute;
+  top: -8%;
+  border-radius: 999px;
+  background: #fff;
+  pointer-events: none;
+  animation-name: snow-fall;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+.heart-rain {
+  position: absolute;
+  pointer-events: none;
+  animation-name: heart-rain;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+.firework {
+  position: absolute;
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  animation: fw-burst 1.35s ease-out infinite;
+}
+
+.firework-a {
+  background: radial-gradient(circle, #fff 0 6%, transparent 7%),
+    repeating-conic-gradient(from 0deg, #ff3b3b 0 8deg, transparent 8deg 20deg);
+}
+.firework-b {
+  background: radial-gradient(circle, #fff 0 6%, transparent 7%),
+    repeating-conic-gradient(from 12deg, #ffe600 0 8deg, transparent 8deg 22deg);
+}
+.firework-c {
+  background: radial-gradient(circle, #fff 0 6%, transparent 7%),
+    repeating-conic-gradient(from 24deg, #3dbbff 0 8deg, transparent 8deg 20deg);
+}
+.firework-d {
+  background: radial-gradient(circle, #fff 0 6%, transparent 7%),
+    repeating-conic-gradient(from 8deg, #9b4dff 0 8deg, transparent 8deg 22deg);
+}
+
+@keyframes neon-pulse {
+  0%, 100% { box-shadow: 0 0 6px #12f7ff, 0 0 14px #ff4dff; }
+  50% { box-shadow: 0 0 12px #12f7ff, 0 0 24px #ff4dff; }
+}
+
+.winter-tag {
+  position: absolute;
+  top: 2.6rem;
+  right: 0.35rem;
+  z-index: 6;
+  rotate: 14deg;
+  background: #12f7ff;
+  color: #041018;
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 0.22rem 0.4rem;
+  line-height: 1;
+  animation: neon-pulse 1.4s ease-in-out infinite;
+}
+
+@layer base {
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    scroll-behavior: smooth;
+    scroll-padding-top: 7rem;
+  }
+
+  body {
+    background-color: var(--color-bg);
+    background-image: url("/images/sky-calgary.jpg");
+    background-size: cover;
+    background-attachment: fixed;
+    background-position: center bottom;
+    color: var(--color-fg);
+    font-family: var(--font-sans);
+    line-height: 1.5;
+  }
+
+  .heart-pop {
+    animation: heart-pop 0.45s cubic-bezier(0.34, 1.4, 0.64, 1) both;
+  }
+
+  .promo-rainbow {
+    background-image: linear-gradient(
+      90deg,
+      #ff3b3b,
+      #ff9a00,
+      #ffe600,
+      #3dff6e,
+      #3dbbff,
+      #9b4dff,
+      #ff3b3b
+    );
+    background-size: 300% 100%;
+    animation: rainbow-road 7s linear infinite;
+    color: #111;
+    text-shadow: none;
+  }
+
+  .pick {
+    background: #fff;
+    color: var(--color-fg);
+    transition: background 0.35s var(--ease-out), color 0.35s var(--ease-out);
+  }
+
+  .pick[data-on] {
+    background-image: linear-gradient(180deg, #3a3a3a 0%, #111 48%, #000 100%);
+    color: #fff;
+    animation: gold-glow 1.6s ease-in-out infinite;
+  }
+
+  .pick[data-on] .muted-line {
+    color: rgb(255 255 255 / 0.55);
+  }
+
+  .glow-on[data-on] {
+    animation: gold-glow 1.6s ease-in-out infinite;
+  }
+
+  .level-up-card {
+    animation: jackpot-in 0.7s cubic-bezier(0.34, 1.4, 0.64, 1) both;
+  }
+
+  h1, h2, h3 {
+    font-family: var(--font-display);
+    letter-spacing: 0.02em;
+    line-height: 0.92;
+    text-wrap: balance;
+  }
+
+  ::selection {
+    background: var(--color-accent);
+    color: var(--color-accent-fg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
