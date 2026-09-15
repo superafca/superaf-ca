@@ -70,8 +70,13 @@ async function postLeadBrowser(payload: {
       ...(payload.photoData ? { photo_data: payload.photoData } : {}),
     }),
   });
-  if (!res.ok) throw new Error("lead email failed");
-}
+    const json = (await res.json().catch(() => ({}))) as {
+      success?: string | boolean;
+    };
+    if (!res.ok || json.success === "false" || json.success === false) {
+      throw new Error("lead email failed");
+    }
+  }
 
 const HEART_RAIN = [
   { left: "4%", delay: "0s", size: 44, dur: "9s" },
@@ -123,43 +128,6 @@ function readLead(): Lead {
     };
   } catch {
     return { name: "", phone: "", email: "", contact: "text" };
-  }
-}
-
-function thanksBody(opts: {
-  name: string;
-  vehicle: string;
-  pack: string;
-  savings: number;
-  contact: ContactId;
-}) {
-  const how =
-    opts.contact === "whatsapp"
-      ? "WhatsApp"
-      : opts.contact === "call"
-        ? "call"
-        : "text";
-  return `SUPERAF.CA — thanks ${opts.name}. Here's your virtual quote for ${opts.vehicle}: ${opts.pack}. You're locked in to reserve ${money(opts.savings)} on the winter sale. We'll confirm by ${how} ASAP.`;
-}
-
-function isInAppBrowser() {
-  if (typeof navigator === "undefined") return false;
-  return /Instagram|FBAN|FBAV|FB_IAB|TikTok|Bytedance|Line\/|Snapchat|Twitter|IABMV|WebView|; wv\)/i.test(
-    navigator.userAgent,
-  );
-}
-
-function fireThanks(contact: ContactId, body: string) {
-  if (isInAppBrowser()) return;
-  try {
-    const encoded = encodeURIComponent(body);
-    const url =
-      contact === "whatsapp"
-        ? `${site.whatsappHref}?text=${encoded}`
-        : `${site.smsHref}?&body=${encoded}`;
-    window.open(url, "_blank", "noopener,noreferrer");
-  } catch {
-    /* in-app browsers die on sms: / WhatsApp popups */
   }
 }
 
@@ -265,18 +233,6 @@ export function Quote() {
     void postLeadBrowser(payload).catch(() => {
       void sendLead({ data: payload }).catch(() => {});
     });
-    if (!isInAppBrowser()) {
-      fireThanks(
-        lead.contact,
-        thanksBody({
-          name: lead.name.trim(),
-          vehicle,
-          pack,
-          savings: result.savings,
-          contact: lead.contact,
-        }),
-      );
-    }
   }
 
   const mailBody = encodeURIComponent(
