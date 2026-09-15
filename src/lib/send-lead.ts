@@ -20,11 +20,14 @@ export const sendLead = createServerFn({ method: "POST" })
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
+        Origin: "https://superaf.ca",
+        Referer: "https://superaf.ca/",
       },
       body: JSON.stringify({
         _subject: `SUPERAF quote — ${data.name} — ${data.vehicle}`,
         _template: "box",
         _captcha: "false",
+        _replyto: data.email,
         name: data.name,
         email: data.email,
         phone: data.phone,
@@ -36,6 +39,11 @@ export const sendLead = createServerFn({ method: "POST" })
         ...(data.photoData ? { photo_data: data.photoData } : {}),
       }),
     });
-    if (!res.ok) throw new Error("lead email failed");
+    const json = (await res.json().catch(() => ({}))) as {
+      success?: string | boolean;
+    };
+    if (!res.ok || json.success === "false" || json.success === false) {
+      throw new Error("lead email failed");
+    }
     return { ok: true as const };
   });
