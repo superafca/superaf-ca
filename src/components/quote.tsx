@@ -37,6 +37,42 @@ import { cn, money } from "@/lib/utils";
 
 const LEAD_KEY = "superaf-lead";
 
+async function postLeadBrowser(payload: {
+  name: string;
+  phone: string;
+  email: string;
+  contact: string;
+  vehicle: string;
+  quote: string;
+  notes: string;
+  photoName?: string;
+  photoData?: string;
+}) {
+  const res = await fetch("https://formsubmit.co/ajax/book@superaf.ca", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    },
+    body: JSON.stringify({
+      _subject: `SUPERAF quote — ${payload.name} — ${payload.vehicle}`,
+      _template: "box",
+      _captcha: "false",
+      _replyto: payload.email,
+      name: payload.name,
+      email: payload.email,
+      phone: payload.phone,
+      contact: payload.contact,
+      vehicle: payload.vehicle,
+      quote: payload.quote,
+      notes: payload.notes || "—",
+      photo: payload.photoName || "none",
+      ...(payload.photoData ? { photo_data: payload.photoData } : {}),
+    }),
+  });
+  if (!res.ok) throw new Error("lead email failed");
+}
+
 const HEART_RAIN = [
   { left: "4%", delay: "0s", size: 44, dur: "9s" },
   { left: "12%", delay: "1.2s", size: 58, dur: "11s" },
@@ -215,21 +251,19 @@ export function Quote() {
         r.readAsDataURL(photo);
       });
     }
-    void sendLead({
-      data: {
-        name: lead.name.trim(),
-        phone: lead.phone.trim(),
-        email: lead.email.trim(),
-        contact: lead.contact,
-        vehicle,
-        quote: quoteLine,
-        notes: notes.trim(),
-        photoName: photo?.name,
-        photoData,
-      },
-    }).catch(() => {
-      /* Lead email is best-effort. Never window.open mailto — Instagram
-         WebView treats it as a dead link and kills the locked-in screen. */
+    const payload = {
+      name: lead.name.trim(),
+      phone: lead.phone.trim(),
+      email: lead.email.trim(),
+      contact: lead.contact,
+      vehicle,
+      quote: quoteLine,
+      notes: notes.trim(),
+      photoName: photo?.name,
+      photoData,
+    };
+    void postLeadBrowser(payload).catch(() => {
+      void sendLead({ data: payload }).catch(() => {});
     });
     if (!isInAppBrowser()) {
       fireThanks(
