@@ -158,9 +158,9 @@ export function Landing() {
         hero
         title={
           <>
-            Paint protection.
+            HARD
             <br />
-            In a box.
+            Paint Protection.
           </>
         }
         lede="Hydrophobic. Anti-Yellowing. Repairing. Durable."

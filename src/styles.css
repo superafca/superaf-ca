@@ -973,15 +973,15 @@
 }
 .store-mod {
   text-align: center;
-  padding: 2.25rem 0 0;
-  background: #f3f3f3;
-  border-radius: 28px;
-  overflow: hidden;
+  padding: 0;
+  background: transparent;
+  display: grid;
+  gap: 10px;
 }
 .store-copy {
-  max-width: 780px;
-  margin: 0 auto;
-  padding: 0 1.25rem 0.85rem;
+  border-radius: 28px;
+  padding: 2.4rem 1.5rem 1.7rem;
+  background: #fff;
 }
 .store-kicker {
   font-size: 1.15rem;
@@ -1000,15 +1000,29 @@
   font-size: clamp(2.9rem, 8.5vw, 5.4rem);
 }
 .store-hero {
-  padding-top: 2.75rem;
-  background: #f3f3f3;
+  background: transparent;
+}
+.store-hero .store-copy {
+  background: #050505;
 }
 .store-hero h1 {
-  font-size: clamp(3.6rem, 12vw, 7.25rem);
+  font-size: clamp(3.2rem, 8vw, 6.2rem);
   letter-spacing: -0.06em;
+  background-image: linear-gradient(180deg, #ffe3ad 0%, #ff9a3c 48%, #e25a12 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
 }
 .store-hero .store-lede {
   font-size: 1.45rem;
+  color: rgb(255 244 232 / 0.78);
+}
+.store-hero .store-link {
+  color: #ffb26a;
+}
+.store-hero .store-link-dot::before {
+  color: rgb(255 178 106 / 0.65);
 }
 .store-lede {
   margin-top: 0.65rem;
@@ -1039,9 +1053,9 @@
 .store-media {
   position: relative;
   overflow: hidden;
-  margin: 0.35rem 1rem 1rem;
-  border-radius: 22px;
-  background: transparent;
+  margin: 0;
+  border-radius: 28px;
+  background: #111;
   box-shadow: 0 0 0 1px rgb(0 0 0 / 0.08);
 }
 .store-media img, .store-media video {
@@ -1069,10 +1083,30 @@
   object-fit: cover;
   object-position: center;
 }
-.store-mod-heart {
+.store-hero .store-media,
+.store-hero .store-media img,
+.store-hero .store-media video {
+  background: #000;
+}
+.store-hero .store-media img,
+.store-hero .store-media video {
+  object-fit: contain;
+}
+.store-mod-heal .store-copy { background: #1a1c1e; color: #fff; }
+.store-mod-heal .store-lede { color: rgb(255 255 255 / 0.72); }
+.store-mod-heal .store-link { color: #ffb26a; }
+.store-mod-heal .store-media { background: #000; }
+.store-mod-pp .store-copy { background: #f4f1ea; }
+.store-mod-pp .store-media { background: #cfd3cc; }
+.store-mod-view .store-copy { background: #e7eef0; }
+.store-mod-view .store-media { background: #101614; }
+.store-mod-tint .store-copy { background: #f6f3f4; }
+.store-mod-tint .store-media { background: #121214; }
+.store-mod-heart .store-copy {
   background: #093b8d;
   color: #fff;
 }
+.store-mod-heart .store-media { background: #031433; }
 .store-mod-heart .store-kicker,
 .store-mod-heart h2 {
   color: #fff;
@@ -1087,18 +1121,14 @@
   color: rgb(255 255 255 / 0.45);
 }
 .store-mod-tint {
-  background: #f1eff0;
+  background: transparent;
 }
 .store-mod-view {
-  background: #f7f7f7;
+  background: transparent;
 }
 .store-mod-pp {
-  background: #f3f3f4;
+  background: transparent;
 }
-.store-mod-pp .store-media { background: #f3f3f4; }
-.store-mod-tint .store-media { background: #f1eff0; }
-.store-mod-view .store-media { background: #f7f7f7; }
-.store-mod-heart .store-media { background: #093b8d; }
 .store-caption {
   margin: 0;
   padding: 0.45rem 1.25rem 0.95rem;
@@ -1150,11 +1180,34 @@
   text-align: left;
   color: var(--color-fg);
 }
+.store-mod-view .store-install {
+  background: #101614;
+  border-radius: 28px;
+  padding: 12px;
+}
+.store-mod-view .store-install figcaption {
+  color: #fff;
+}
 .store-mod-kits,
 .store-mod-boxed,
 .store-visit {
-  background: #fff;
+  background: transparent;
 }
+.store-mod-kits .store-copy { background: #f7f4ef; }
+.store-mod-kits .store-kits {
+  background: #0c0c0e;
+  border-radius: 28px;
+  padding: 12px;
+}
+.store-mod-boxed .store-copy { background: #2c211c; color: #fff; }
+.store-mod-boxed .store-lede { color: rgb(255 255 255 / 0.74); }
+.store-mod-boxed .store-link { color: #ffb26a; }
+.store-mod-boxed .store-work {
+  background: #141210;
+  border-radius: 28px;
+  padding: 12px;
+}
+.store-visit .store-copy { background: #efeae3; }
 .store-split {
   display: grid;
   gap: 12px;
@@ -1170,8 +1223,8 @@
 }
 .store-kit {
   display: block;
-  background: #ececee;
-  color: var(--color-fg);
+  background: #161616;
+  color: #fff;
   border-radius: 18px;
   overflow: hidden;
   padding-bottom: 1.1rem;
@@ -1193,7 +1246,7 @@
 }
 .store-kit p {
   padding: 0 1.1rem;
-  color: var(--color-muted);
+  color: rgb(255 255 255 / 0.68);
   font-size: 1rem;
 }
 .store-work figure {
@@ -1296,8 +1349,8 @@
     overflow: visible;
   }
   .store-media {
-    margin: 0.4rem 1.35rem 1.15rem;
-    border-radius: 24px;
+    margin: 0;
+    border-radius: 28px;
   }
   .store-media img, .store-media video,
   .store-hero .store-media img, .store-hero .store-media video,
