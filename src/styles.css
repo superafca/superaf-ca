@@ -1042,6 +1042,7 @@
   margin: 0.35rem 1rem 1rem;
   border-radius: 22px;
   background: transparent;
+  box-shadow: 0 0 0 1px rgb(0 0 0 / 0.08);
 }
 .store-media img, .store-media video {
   display: block;
@@ -1050,7 +1051,7 @@
   object-fit: cover;
   object-position: center;
   background: transparent;
-  border-radius: 22px;
+  border-radius: inherit;
 }
 .store-media video {
   position: absolute;
@@ -1058,16 +1059,6 @@
   height: 100%;
   width: 100%;
   object-fit: cover;
-}
-.store-hero .store-media {
-  background: #f3f3f3;
-}
-.store-hero .store-media img, .store-hero .store-media video {
-  height: 210px;
-  max-height: none;
-  aspect-ratio: auto;
-  object-fit: contain;
-  background: #f3f3f3;
 }
 .store-media-portrait img, .store-media-portrait video,
 .store-mod-heart .store-media img, .store-mod-heart .store-media video,

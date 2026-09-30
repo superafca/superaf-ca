@@ -156,7 +156,6 @@ export function Landing() {
 
       <Module
         hero
-        kicker="HARD PP"
         title={
           <>
             Paint protection.
@@ -174,7 +173,6 @@ export function Landing() {
       <Module
         auto
         tone="store-mod-heal"
-        kicker="HARD PP"
         title="It heals."
         lede="A little heat. The scratches disappear."
         learn="/ppf"
@@ -187,7 +185,6 @@ export function Landing() {
       <Module
         auto
         tone="store-mod-pp"
-        kicker="Paint Protection"
         title="PPF longer."
         lede="Self-healing. Hydrophobic. Rock chip protection. HARD PP 5YR and 10YR."
         learn="/ppf"
@@ -198,7 +195,6 @@ export function Landing() {
 
       <Module
         tone="store-mod-view"
-        kicker="Glass Protection"
         title="Windshield film."
         lede="Sacrificial layer for Deerfoot gravel. Clear or tinted. $269."
         learn="/windshield"
@@ -241,7 +237,6 @@ export function Landing() {
           auto
           portrait
           tone="store-mod-tint"
-          kicker="Tint"
           title="Pitch black."
           lede="Windows go dark. Carbon. Ceramic if you want the heat gone."
           learn="/tint"
@@ -251,7 +246,6 @@ export function Landing() {
         />
         <Module
           tone="store-mod-heart"
-          kicker="Process and Values"
           title={
             <>
               Quality.
@@ -269,7 +263,6 @@ export function Landing() {
 
       <section className="store-mod store-mod-kits">
         <div className="store-copy">
-          <p className="store-kicker">The kits</p>
           <h2>FRONT. FRONT+. MAX.</h2>
           <p className="store-lede">Pick a coverage. Tick extras. The number rolls.</p>
           <Links learn="/ppf" />
@@ -291,7 +284,6 @@ export function Landing() {
 
       <section className="store-mod store-mod-boxed">
         <div className="store-copy">
-          <p className="store-kicker">HARD PP</p>
           <h2>Boxed in Calgary.</h2>
           <p className="store-lede">The film. The bay. The city.</p>
           <Links learn="/ppf" />
@@ -311,7 +303,6 @@ export function Landing() {
 
       <section className="store-mod store-visit">
         <div className="store-copy">
-          <p className="store-kicker">Visit</p>
           <h2>426 Memorial Drive NE.</h2>
           <p className="store-lede">
             {site.hours}. Text or call {site.phone}. 500+ vehicles protected in 2026 — through our dealer network and our Calgary bay.
