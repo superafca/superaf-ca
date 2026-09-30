@@ -10,33 +10,167 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as DealersRouteImport } from './routes/dealers'
+import { Route as DiyRouteImport } from './routes/diy'
+import { Route as EstimateRouteImport } from './routes/estimate'
+import { Route as KitsRouteImport } from './routes/kits'
+import { Route as PpfRouteImport } from './routes/ppf'
+import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as TermsRouteImport } from './routes/terms'
+import { Route as TintRouteImport } from './routes/tint'
+import { Route as VisionRouteImport } from './routes/vision'
+import { Route as WindshieldRouteImport } from './routes/windshield'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DealersRoute = DealersRouteImport.update({
+  id: '/dealers',
+  path: '/dealers',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DiyRoute = DiyRouteImport.update({
+  id: '/diy',
+  path: '/diy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EstimateRoute = EstimateRouteImport.update({
+  id: '/estimate',
+  path: '/estimate',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const KitsRoute = KitsRouteImport.update({
+  id: '/kits',
+  path: '/kits',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PpfRoute = PpfRouteImport.update({
+  id: '/ppf',
+  path: '/ppf',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TintRoute = TintRouteImport.update({
+  id: '/tint',
+  path: '/tint',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VisionRoute = VisionRouteImport.update({
+  id: '/vision',
+  path: '/vision',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WindshieldRoute = WindshieldRouteImport.update({
+  id: '/windshield',
+  path: '/windshield',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/dealers': typeof DealersRoute
+  '/diy': typeof DiyRoute
+  '/estimate': typeof EstimateRoute
+  '/kits': typeof KitsRoute
+  '/ppf': typeof PpfRoute
+  '/privacy': typeof PrivacyRoute
+  '/terms': typeof TermsRoute
+  '/tint': typeof TintRoute
+  '/vision': typeof VisionRoute
+  '/windshield': typeof WindshieldRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/dealers': typeof DealersRoute
+  '/diy': typeof DiyRoute
+  '/estimate': typeof EstimateRoute
+  '/kits': typeof KitsRoute
+  '/ppf': typeof PpfRoute
+  '/privacy': typeof PrivacyRoute
+  '/terms': typeof TermsRoute
+  '/tint': typeof TintRoute
+  '/vision': typeof VisionRoute
+  '/windshield': typeof WindshieldRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/dealers': typeof DealersRoute
+  '/diy': typeof DiyRoute
+  '/estimate': typeof EstimateRoute
+  '/kits': typeof KitsRoute
+  '/ppf': typeof PpfRoute
+  '/privacy': typeof PrivacyRoute
+  '/terms': typeof TermsRoute
+  '/tint': typeof TintRoute
+  '/vision': typeof VisionRoute
+  '/windshield': typeof WindshieldRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/dealers'
+    | '/diy'
+    | '/estimate'
+    | '/kits'
+    | '/ppf'
+    | '/privacy'
+    | '/terms'
+    | '/tint'
+    | '/vision'
+    | '/windshield'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/dealers'
+    | '/diy'
+    | '/estimate'
+    | '/kits'
+    | '/ppf'
+    | '/privacy'
+    | '/terms'
+    | '/tint'
+    | '/vision'
+    | '/windshield'
+  id:
+    | '__root__'
+    | '/'
+    | '/dealers'
+    | '/diy'
+    | '/estimate'
+    | '/kits'
+    | '/ppf'
+    | '/privacy'
+    | '/terms'
+    | '/tint'
+    | '/vision'
+    | '/windshield'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  DealersRoute: typeof DealersRoute
+  DiyRoute: typeof DiyRoute
+  EstimateRoute: typeof EstimateRoute
+  KitsRoute: typeof KitsRoute
+  PpfRoute: typeof PpfRoute
+  PrivacyRoute: typeof PrivacyRoute
+  TermsRoute: typeof TermsRoute
+  TintRoute: typeof TintRoute
+  VisionRoute: typeof VisionRoute
+  WindshieldRoute: typeof WindshieldRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +182,91 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dealers': {
+      id: '/dealers'
+      path: '/dealers'
+      fullPath: '/dealers'
+      preLoaderRoute: typeof DealersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/diy': {
+      id: '/diy'
+      path: '/diy'
+      fullPath: '/diy'
+      preLoaderRoute: typeof DiyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/estimate': {
+      id: '/estimate'
+      path: '/estimate'
+      fullPath: '/estimate'
+      preLoaderRoute: typeof EstimateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/kits': {
+      id: '/kits'
+      path: '/kits'
+      fullPath: '/kits'
+      preLoaderRoute: typeof KitsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ppf': {
+      id: '/ppf'
+      path: '/ppf'
+      fullPath: '/ppf'
+      preLoaderRoute: typeof PpfRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tint': {
+      id: '/tint'
+      path: '/tint'
+      fullPath: '/tint'
+      preLoaderRoute: typeof TintRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/vision': {
+      id: '/vision'
+      path: '/vision'
+      fullPath: '/vision'
+      preLoaderRoute: typeof VisionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/windshield': {
+      id: '/windshield'
+      path: '/windshield'
+      fullPath: '/windshield'
+      preLoaderRoute: typeof WindshieldRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  DealersRoute: DealersRoute,
+  DiyRoute: DiyRoute,
+  EstimateRoute: EstimateRoute,
+  KitsRoute: KitsRoute,
+  PpfRoute: PpfRoute,
+  PrivacyRoute: PrivacyRoute,
+  TermsRoute: TermsRoute,
+  TintRoute: TintRoute,
+  VisionRoute: VisionRoute,
+  WindshieldRoute: WindshieldRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

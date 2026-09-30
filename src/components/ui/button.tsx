@@ -4,11 +4,11 @@ import type { ButtonHTMLAttributes } from "react";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 font-medium transition-[transform,background-color,color,box-shadow,opacity] duration-150 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky/70 disabled:pointer-events-none disabled:opacity-50 active:not-disabled:scale-[0.96]",
+  "inline-flex items-center justify-center gap-2 font-medium transition-[transform,background-color,color,box-shadow,opacity] duration-150 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/70 disabled:pointer-events-none disabled:opacity-50 active:not-disabled:scale-[0.96]",
   {
     variants: {
       variant: {
-        primary: "bg-accent text-accent-fg hover:bg-sky hover:text-sky-fg",
+        primary: "bg-accent text-accent-fg hover:bg-fg hover:text-cloud",
         secondary: "bg-elevated text-fg shadow-border hover:shadow-border-hover",
         ghost: "bg-transparent text-fg hover:bg-surface",
         outline: "bg-transparent text-fg shadow-border hover:bg-elevated",

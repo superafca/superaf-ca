@@ -1,18 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Quote } from "@/components/quote";
-import {
-  Faq,
-  Film,
-  Packages,
-  Shop,
-  SiteFooter,
-  Tint,
-  Warranty,
-} from "@/components/sections";
+import { Landing } from "@/components/landing";
+import { SiteFooter } from "@/components/sections";
 import { SiteHeader } from "@/components/site-header";
 import { site } from "@/lib/site";
 
-export const Route = createFileRoute("/")({ component: Home });
+export const Route = createFileRoute("/")({
+  component: Home,
+});
 
 function Home() {
   const jsonLd = {
@@ -22,7 +16,8 @@ function Home() {
     url: "https://superaf.ca",
     email: site.email,
     telephone: site.phone,
-    image: "/images/pkg-front.jpg",
+    hasMap: site.maps,
+    image: "/images/box-hero.jpg",
     address: {
       "@type": "PostalAddress",
       streetAddress: "426 Memorial Drive NE",
@@ -30,10 +25,11 @@ function Home() {
       addressRegion: "AB",
       addressCountry: "CA",
     },
-    openingHours: "Mo-Fr 10:00-17:00",
-    areaServed: "Calgary",
+    openingHours: "Mo-Fr 09:00-18:00",
+    areaServed: ["Calgary", "Airdrie", "Cochrane", "Okotoks", "Chestermere"],
+    sameAs: [site.igHref, site.googleSearch],
     description:
-      "Paint protection film in Calgary. HARD PP hydrophobic PPF, window tint, windshield film. CHIP FRONT TRIM ALL. Starting prices.",
+      "Paint protection. Glass protection. Tint. Best PPF in Calgary. 426 Memorial Drive NE.",
   };
 
   return (
@@ -44,13 +40,7 @@ function Home() {
       />
       <SiteHeader />
       <main>
-        <Quote />
-        <Packages />
-        <Film />
-        <Warranty />
-        <Tint />
-        <Shop />
-        <Faq />
+        <Landing />
       </main>
       <SiteFooter />
     </>
