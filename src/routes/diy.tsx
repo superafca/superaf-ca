@@ -40,7 +40,7 @@ const STEPS = [
   ["We confirm", "We email you the full panel list and confirm every piece and edge before anything gets cut. Adjustments are free here — extended coverage, wrapped edges, deleted pieces. We'll also flag any coverage limits for your specific vehicle."],
   ["You pay in full", "The blade doesn't drop until payment clears."],
   ["We cut", "Plotter-cut from genuine HARD PP, labeled per panel, rolled into a custom HARD PP tube."],
-  ["We ship", "Free shipping over $600, $39 flat under."],
+  ["We ship", "Free shipping over $600, $40 flat under."],
   ["You install", "Install guides and technique videos included. The install is on you."],
 ] as const;
 

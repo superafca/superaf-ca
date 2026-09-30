@@ -18,11 +18,11 @@ const KIT = {
   max: { pp5: 1299, pp10: 1799 },
 } as const;
 
-export const DIY_CUT = 59;
+export const DIY_CUT = 150;
 export const DIY_ROLL = 25;
 export const DIY_BULK = { pp5: 14, pp10: 22 } as const;
 export const DIY_TOOLS = 39;
-export const DIY_SHIP = 39;
+export const DIY_SHIP = 40;
 export const DIY_FREE_SHIP = 600;
 
 export function diyPrice(opts: {
