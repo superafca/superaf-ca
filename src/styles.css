@@ -973,15 +973,17 @@
 }
 .store-mod {
   text-align: center;
-  padding: 0;
-  background: transparent;
+  padding: 0 0 1rem;
+  background: #fff;
+  border-radius: 28px;
+  overflow: hidden;
   display: grid;
-  gap: 10px;
+  gap: 0;
 }
 .store-copy {
-  border-radius: 28px;
-  padding: 2.4rem 1.5rem 1.7rem;
-  background: #fff;
+  border-radius: 0;
+  padding: 2.4rem 1.5rem 1.15rem;
+  background: transparent;
 }
 .store-kicker {
   font-size: 1.15rem;
@@ -1000,10 +1002,10 @@
   font-size: clamp(2.9rem, 8.5vw, 5.4rem);
 }
 .store-hero {
-  background: transparent;
+  background: #050505;
 }
 .store-hero .store-copy {
-  background: #050505;
+  background: transparent;
 }
 .store-hero h1 {
   font-size: clamp(3.2rem, 8vw, 6.2rem);
@@ -1053,10 +1055,9 @@
 .store-media {
   position: relative;
   overflow: hidden;
-  margin: 0;
-  border-radius: 28px;
-  background: #111;
-  box-shadow: 0 0 0 1px rgb(0 0 0 / 0.08);
+  margin: 0 1rem;
+  border-radius: 22px;
+  background: transparent;
 }
 .store-media img, .store-media video {
   display: block;
@@ -1086,27 +1087,23 @@
 .store-hero .store-media,
 .store-hero .store-media img,
 .store-hero .store-media video {
-  background: #000;
+  background: transparent;
 }
 .store-hero .store-media img,
 .store-hero .store-media video {
   object-fit: contain;
 }
-.store-mod-heal .store-copy { background: #1a1c1e; color: #fff; }
+.store-mod-heal { background: #1a1c1e; color: #fff; }
 .store-mod-heal .store-lede { color: rgb(255 255 255 / 0.72); }
 .store-mod-heal .store-link { color: #ffb26a; }
-.store-mod-heal .store-media { background: #000; }
-.store-mod-pp .store-copy { background: #f4f1ea; }
-.store-mod-pp .store-media { background: #cfd3cc; }
-.store-mod-view .store-copy { background: #e7eef0; }
-.store-mod-view .store-media { background: #101614; }
-.store-mod-tint .store-copy { background: #f6f3f4; }
-.store-mod-tint .store-media { background: #121214; }
-.store-mod-heart .store-copy {
+.store-mod-heal .store-caption { color: rgb(255 255 255 / 0.55); }
+.store-mod-pp { background: #f4f1ea; }
+.store-mod-view { background: #e7eef0; }
+.store-mod-tint { background: #f6f3f4; }
+.store-mod-heart {
   background: #093b8d;
   color: #fff;
 }
-.store-mod-heart .store-media { background: #031433; }
 .store-mod-heart .store-kicker,
 .store-mod-heart h2 {
   color: #fff;
@@ -1119,15 +1116,6 @@
 }
 .store-mod-heart .store-link-dot::before {
   color: rgb(255 255 255 / 0.45);
-}
-.store-mod-tint {
-  background: transparent;
-}
-.store-mod-view {
-  background: transparent;
-}
-.store-mod-pp {
-  background: transparent;
 }
 .store-caption {
   margin: 0;
@@ -1181,33 +1169,17 @@
   color: var(--color-fg);
 }
 .store-mod-view .store-install {
-  background: #101614;
-  border-radius: 28px;
-  padding: 12px;
+  background: transparent;
+  padding: 12px 12px 2px;
 }
 .store-mod-view .store-install figcaption {
-  color: #fff;
+  color: var(--color-fg);
 }
-.store-mod-kits,
-.store-mod-boxed,
-.store-visit {
-  background: transparent;
-}
-.store-mod-kits .store-copy { background: #f7f4ef; }
-.store-mod-kits .store-kits {
-  background: #0c0c0e;
-  border-radius: 28px;
-  padding: 12px;
-}
-.store-mod-boxed .store-copy { background: #2c211c; color: #fff; }
+.store-mod-kits { background: #f7f4ef; }
+.store-mod-boxed { background: #2c211c; color: #fff; }
 .store-mod-boxed .store-lede { color: rgb(255 255 255 / 0.74); }
 .store-mod-boxed .store-link { color: #ffb26a; }
-.store-mod-boxed .store-work {
-  background: #141210;
-  border-radius: 28px;
-  padding: 12px;
-}
-.store-visit .store-copy { background: #efeae3; }
+.store-visit { background: #efeae3; }
 .store-split {
   display: grid;
   gap: 12px;
@@ -1223,8 +1195,8 @@
 }
 .store-kit {
   display: block;
-  background: #161616;
-  color: #fff;
+  background: transparent;
+  color: var(--color-fg);
   border-radius: 18px;
   overflow: hidden;
   padding-bottom: 1.1rem;
@@ -1246,7 +1218,7 @@
 }
 .store-kit p {
   padding: 0 1.1rem;
-  color: rgb(255 255 255 / 0.68);
+  color: var(--color-muted);
   font-size: 1rem;
 }
 .store-work figure {
@@ -1349,8 +1321,8 @@
     overflow: visible;
   }
   .store-media {
-    margin: 0;
-    border-radius: 28px;
+    margin: 0 1.25rem;
+    border-radius: 24px;
   }
   .store-media img, .store-media video,
   .store-hero .store-media img, .store-hero .store-media video,
