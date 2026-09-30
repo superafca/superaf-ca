@@ -954,6 +954,8 @@
 }
 .store-page {
   background: #f5f5f7;
+  max-width: 1040px;
+  margin: 0 auto;
   padding: 12px;
   display: grid;
   gap: 12px;
@@ -1037,16 +1039,18 @@
 .store-media {
   position: relative;
   overflow: hidden;
-  min-height: 180px;
+  margin: 0.35rem 1rem 1rem;
+  border-radius: 22px;
+  background: transparent;
 }
 .store-media img, .store-media video {
   display: block;
   width: 100%;
-  height: min(48vh, 480px);
+  height: 210px;
   object-fit: cover;
-  object-position: 50% 50%;
+  object-position: center;
   background: transparent;
-  padding: 0;
+  border-radius: 22px;
 }
 .store-media video {
   position: absolute;
@@ -1054,21 +1058,25 @@
   height: 100%;
   width: 100%;
   object-fit: cover;
-  padding: 0;
+}
+.store-hero .store-media {
+  background: #f3f3f3;
 }
 .store-hero .store-media img, .store-hero .store-media video {
-  height: auto;
-  max-height: min(70vh, 720px);
-  aspect-ratio: 1280 / 520;
+  height: 210px;
+  max-height: none;
+  aspect-ratio: auto;
   object-fit: contain;
-  padding: 0;
+  background: #f3f3f3;
 }
 .store-media-portrait img, .store-media-portrait video,
-.store-mod-heart .store-media img, .store-mod-heart .store-media video {
-  height: min(52vh, 520px);
+.store-mod-heart .store-media img, .store-mod-heart .store-media video,
+.store-mod-view .store-media img {
+  height: 210px;
+  max-height: none;
+  aspect-ratio: auto;
   object-fit: cover;
-  object-position: 50% 40%;
-  padding: 0;
+  object-position: center;
 }
 .store-mod-heart {
   background: #093b8d;
@@ -1096,9 +1104,10 @@
 .store-mod-pp {
   background: #f3f3f4;
 }
-.store-hero .store-media {
-  background: #050505;
-}
+.store-mod-pp .store-media { background: #f3f3f4; }
+.store-mod-tint .store-media { background: #f1eff0; }
+.store-mod-view .store-media { background: #f7f7f7; }
+.store-mod-heart .store-media { background: #093b8d; }
 .store-caption {
   margin: 0;
   padding: 0.45rem 1.25rem 0.95rem;
@@ -1108,9 +1117,9 @@
 }
 .store-mod-view .store-media img {
   width: 100%;
-  height: auto;
+  height: 210px;
   max-height: none;
-  aspect-ratio: 4 / 3;
+  aspect-ratio: auto;
   object-fit: cover;
   object-position: center;
 }
@@ -1137,9 +1146,10 @@
 .store-install img {
   display: block;
   width: 100%;
-  height: 240px;
+  height: 150px;
   object-fit: cover;
   object-position: center 42%;
+  border-radius: 0;
 }
 .store-install figcaption {
   padding: 0.45rem 0.75rem 0.7rem;
@@ -1176,11 +1186,13 @@
   padding-bottom: 1.1rem;
 }
 .store-kit img {
-  width: 100%;
-  height: 220px;
+  width: calc(100% - 1rem);
+  margin: 0.5rem auto 0;
+  height: 150px;
   object-fit: contain;
-  background: #ececee;
-  padding: 0.4rem 0.6rem 0;
+  background: transparent;
+  border-radius: 16px;
+  display: block;
 }
 .store-kit-name {
   margin-top: 0.35rem;
@@ -1292,21 +1304,29 @@
     grid-template-columns: repeat(4, minmax(0, 1fr));
     overflow: visible;
   }
-  .store-install img {
-    height: 220px;
+  .store-media {
+    margin: 0.4rem 1.35rem 1.15rem;
+    border-radius: 24px;
   }
-  .store-media img, .store-media video {
-    height: min(52vh, 540px);
-  }
+  .store-media img, .store-media video,
+  .store-hero .store-media img, .store-hero .store-media video,
+  .store-mod-view .store-media img,
   .store-media-portrait img, .store-media-portrait video,
   .store-mod-heart .store-media img, .store-mod-heart .store-media video {
-    height: min(58vh, 560px);
+    height: 320px;
+    max-height: 320px;
+    aspect-ratio: auto;
+    border-radius: 24px;
+  }
+  .store-install img {
+    height: 148px;
   }
   .store-kit img {
-    height: 260px;
+    height: 168px;
   }
   .store-work img {
-    height: 340px;
+    height: 200px;
+    border-radius: 18px;
   }
   .arcade-cabinet {
     padding: 1rem 1.5rem 1.5rem;
