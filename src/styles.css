@@ -1173,7 +1173,28 @@
 .store-mod-heal .store-caption { color: rgb(255 255 255 / 0.55); }
 .store-mod-pp { background: #f4f1ea; }
 .store-mod-view { background: #e7eef0; }
-.store-mod-tint { background: #f6f3f4; }
+.store-mod-tint {
+  background: #000;
+  color: #fff;
+}
+.store-mod-tint h2 {
+  color: #fff;
+}
+.store-mod-tint .store-lede {
+  color: rgb(255 255 255 / 0.82);
+}
+.store-mod-tint .store-link {
+  color: #e8e8e8;
+}
+.store-mod-tint .store-link-dot::before {
+  color: rgb(255 255 255 / 0.45);
+}
+.store-mod-tint .store-media,
+.store-mod-tint .store-media img {
+  background: #000;
+  object-fit: contain;
+  object-position: center;
+}
 .store-mod-heart {
   background: #093b8d;
   color: #fff;
