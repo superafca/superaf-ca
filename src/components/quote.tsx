@@ -204,6 +204,18 @@ export function Quote() {
   const [error, setError] = useState("");
   const [flipped, setFlipped] = useState<string | null>(null);
   const firstPrice = useRef(true);
+  const scanRef = useRef<HTMLDivElement>(null);
+  const [scanHeight, setScanHeight] = useState(0);
+
+  useEffect(() => {
+    const el = scanRef.current;
+    if (!el) return;
+    const measure = () => setScanHeight(el.offsetHeight);
+    measure();
+    const watcher = new ResizeObserver(measure);
+    watcher.observe(el);
+    return () => watcher.disconnect();
+  }, []);
 
   useEffect(() => {
     setLead(readLead());
@@ -916,7 +928,7 @@ export function Quote() {
               />
             </div>
             <div className="est-pair">
-            <div className="hud-panel vehicle-scan p-5 text-left">
+            <div className="hud-panel vehicle-scan p-5 text-left" ref={scanRef}>
               <VehicleScan
                 year={year}
                 make={make}
@@ -987,7 +999,7 @@ export function Quote() {
               </Field>
             </div>
 
-            <div className="vehicle-frame">
+            <div className="vehicle-frame" style={scanHeight ? { height: scanHeight } : undefined}>
               <div className="scan-brand">
                 <span>HARD PP // COVERAGE</span>
                 <span className={cn("scan-lock", packageId && "is-on")}>
