@@ -316,7 +316,7 @@ export function Quote() {
   const display = money(result.amount);
   const pack = packages.find((p) => p.id === packageId);
   const lockedIndex = !install.known ? 0 : install.art === "truck" ? 1 : install.art === "suv" ? 2 : 0;
-  const roaming = !install.known && Boolean(packageId);
+  const roaming = !install.known;
   const showIndex = roaming ? cycle : lockedIndex;
   const kitStage = !packageId ? "black" : packageId === "front" ? "front" : packageId === "custom" ? "frontplus" : "max";
   const player = firstName(lead.name);
@@ -335,7 +335,7 @@ export function Quote() {
       });
     void (async () => {
       while (!dead) {
-        await wait(2800);
+        await wait(5000);
         if (dead) return;
         setCycleLit(false);
         await wait(2000);
@@ -1040,6 +1040,7 @@ export function Quote() {
                   {kitStage === "front" ? "FRONT" : kitStage === "frontplus" ? "FRONT+" : kitStage === "max" ? "MAX" : "BASE"}
                 </span>
               </div>
+              {!install.known && <p className="coverage-alert">Please enter vehicle information</p>}
               <div className="vehicle-frame-stage">
                 {COVERAGE.map((stills, i) =>
                   COVERAGE_STAGES.map((id) => (

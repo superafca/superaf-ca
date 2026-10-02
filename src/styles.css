@@ -427,6 +427,21 @@
   position: relative;
   z-index: 3;
 }
+.coverage-alert {
+  position: relative;
+  z-index: 3;
+  margin: 0;
+  padding: 0.5rem 0.7rem;
+  font-family: "Orbitron", sans-serif;
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #ff3b30;
+  background: rgb(255 59 48 / 0.1);
+  border: 1px solid rgb(255 59 48 / 0.75);
+  box-shadow: 0 0 18px rgb(255 59 48 / 0.28), inset 0 0 14px rgb(255 59 48 / 0.08);
+  clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
+}
 .vehicle-frame-stage {
   position: relative;
   z-index: 1;
