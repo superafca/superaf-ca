@@ -36,6 +36,8 @@ export function trackLeadConversion() {
     currency: "CAD",
   });
 }
+
+export function readUtm() {
   if (typeof window === "undefined") return "";
   const keys = ["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term"];
   const params = new URLSearchParams(window.location.search);
