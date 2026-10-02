@@ -210,6 +210,7 @@ export function Quote() {
   const scanRef = useRef<HTMLDivElement>(null);
   const [scanHeight, setScanHeight] = useState(0);
   const [cycle, setCycle] = useState(0);
+  const [cycleLit, setCycleLit] = useState(true);
 
   useEffect(() => {
     const el = scanRef.current;
@@ -322,9 +323,31 @@ export function Quote() {
   const rateFilm: TintFilmId = tintFilmId ?? "carbon";
 
   useEffect(() => {
-    if (!roaming) return;
-    const id = window.setInterval(() => setCycle((n) => (n + 1) % COVERAGE.length), 3200);
-    return () => window.clearInterval(id);
+    if (!roaming) {
+      setCycleLit(true);
+      return;
+    }
+    let dead = false;
+    let timer = 0;
+    const wait = (ms: number) =>
+      new Promise<void>((resolve) => {
+        timer = window.setTimeout(resolve, ms);
+      });
+    void (async () => {
+      while (!dead) {
+        await wait(2800);
+        if (dead) return;
+        setCycleLit(false);
+        await wait(2000);
+        if (dead) return;
+        setCycle((n) => (n + 1) % COVERAGE.length);
+        setCycleLit(true);
+      }
+    })();
+    return () => {
+      dead = true;
+      window.clearTimeout(timer);
+    };
   }, [roaming]);
 
   useEffect(() => {
@@ -1024,7 +1047,7 @@ export function Quote() {
                       key={`${i}-${id}`}
                       src={stills[id]}
                       alt=""
-                      className={i === showIndex && id === kitStage ? "is-on" : undefined}
+                      className={!roaming || cycleLit ? (i === showIndex && id === kitStage ? "is-on" : undefined) : undefined}
                     />
                   )),
                 )}

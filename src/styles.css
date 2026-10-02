@@ -436,7 +436,7 @@
   clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
   border: 1px solid rgb(0 240 255 / 0.4);
   box-shadow: inset 0 0 24px rgb(0 240 255 / 0.08);
-  background: #05070c;
+  background: #000;
 }
 .vehicle-frame-stage img {
   position: absolute;
@@ -446,7 +446,7 @@
   object-fit: cover;
   object-position: center;
   opacity: 0;
-  transition: opacity 700ms ease-out;
+  transition: opacity 1600ms ease-in-out;
 }
 .vehicle-frame-stage img.is-on {
   opacity: 1;
