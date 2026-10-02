@@ -39,7 +39,7 @@ import {
   type RearWindows,
   type TintFilmId,
 } from "@/lib/site";
-import { sendLead } from "@/lib/send-lead";
+import { confirmLead, sendLead } from "@/lib/send-lead";
 import { trackLeadConversion } from "@/lib/track";
 import { HardBadges } from "@/components/cyber";
 import { VehicleScan } from "@/components/vehicle-scan";
@@ -424,12 +424,22 @@ export function Quote() {
 
   async function showQuote(e: FormEvent) {
     e.preventDefault();
-    if (!leadReady || !lead.email.includes("@") || !lead.email.includes(".")) {
-      setError("Name, number, and email.");
-      return;
-    }
-    if (!carReady) {
-      setError("Year, make, and model.");
+    const missing = [
+      !lead.name.trim() ? "Name" : "",
+      !lead.phone.trim() ? "Number" : "",
+      !lead.email.trim() || !lead.email.includes("@") || !lead.email.includes(".") ? "Email" : "",
+      !year.trim() ? "Year" : "",
+      !make.trim() ? "Make" : "",
+      !model.trim() ? "Model" : "",
+    ].filter(Boolean);
+    if (missing.length) {
+      const list =
+        missing.length === 1
+          ? missing[0]
+          : missing.length === 2
+            ? `${missing[0]} and ${missing[1]}`
+            : `${missing.slice(0, -1).join(", ")}, and ${missing[missing.length - 1]}`;
+      setError(`${list} is required to progress`);
       return;
     }
     localStorage.setItem(LEAD_KEY, JSON.stringify(lead));
@@ -506,6 +516,7 @@ export function Quote() {
         },
       }).catch(() => {});
     });
+    void confirmLead({ data: payload }).catch(() => {});
   }
 
   const savePct = maxFilmSavingsPercent();
@@ -1145,7 +1156,15 @@ export function Quote() {
         </form>
 
       {error ? (
-        <p className="fixed bottom-24 left-0 right-0 z-40 text-center text-sm text-danger">{error}</p>
+        <div className="progress-pop" role="dialog" aria-label="Required to progress">
+          <button type="button" className="progress-pop-bg" aria-label="Dismiss" onClick={() => setError("")} />
+          <div className="progress-block">
+            <p>{error}</p>
+            <button type="button" className="progress-back" onClick={() => setError("")}>
+              Back
+            </button>
+          </div>
+        </div>
       ) : null}
 
       {leveled ? (

@@ -49,3 +49,42 @@ export const sendLead = createServerFn({ method: "POST" })
     }
     return { ok: true as const };
   });
+
+export const confirmLead = createServerFn({ method: "POST" })
+  .inputValidator((d: LeadMail) => d)
+  .handler(async ({ data }) => {
+    const key = process.env.RESEND_API_KEY?.trim();
+    if (!key) return { ok: false as const, skipped: true as const };
+    const lines = [
+      `Hey ${data.name},`,
+      "",
+      "We received your estimate. Here’s what we locked in:",
+      "",
+      `Vehicle: ${data.vehicle || "—"}`,
+      `Phone: ${data.phone || "—"}`,
+      `Estimate: ${data.quote || "—"}`,
+      data.notes ? `Notes: ${data.notes}` : "",
+      "",
+      "If those details are right, this is the quote we’ll schedule from. Reply to this email if something needs to change.",
+      "",
+      "SUPERAF.CA",
+      "426 Memorial Drive NE, Calgary",
+      "(587) 900-9494",
+    ].filter((line) => line !== "");
+    const res = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${key}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        from: "SUPERAF.CA <book@superaf.ca>",
+        to: [data.email],
+        reply_to: "book@superaf.ca",
+        subject: "We received your SUPERAF estimate",
+        text: lines.join("\n"),
+      }),
+    });
+    if (!res.ok) return { ok: false as const, skipped: false as const };
+    return { ok: true as const };
+  });
