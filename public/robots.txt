@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /dealers
+
+Sitemap: https://www.superaf.ca/sitemap.xml
