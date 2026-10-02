@@ -1,4 +1,4 @@
-import { useEffect, useRef, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Link } from "@tanstack/react-router";
 import { site } from "@/lib/site";
 import { cn } from "@/lib/utils";
@@ -68,6 +68,69 @@ function Media({
           preload="metadata"
         />
       ) : null}
+    </div>
+  );
+}
+
+const KIT_ROLL = [
+  {
+    name: "FRONT",
+    line: "The package you love.",
+    frames: ["/images/kits/model3-front.jpg", "/images/kits/f150-front.jpg", "/images/kits/cx5-front.jpg"],
+  },
+  {
+    name: "FRONT+",
+    line: "The package with sides.",
+    frames: ["/images/kits/model3-frontplus.jpg", "/images/kits/f150-frontplus.jpg", "/images/kits/cx5-frontplus.jpg"],
+  },
+  {
+    name: "MAX",
+    line: "The all you can eat buffet, calorie free.",
+    frames: ["/images/kits/model3-max.jpg", "/images/kits/f150-max.jpg", "/images/kits/cx5-max.jpg"],
+  },
+] as const;
+
+function KitRoll() {
+  const [index, setIndex] = useState(0);
+  const [lit, setLit] = useState(true);
+
+  useEffect(() => {
+    let dead = false;
+    let timer = 0;
+    const wait = (ms: number) =>
+      new Promise<void>((resolve) => {
+        timer = window.setTimeout(resolve, ms);
+      });
+    void (async () => {
+      while (!dead) {
+        await wait(5000);
+        if (dead) return;
+        setLit(false);
+        await wait(2000);
+        if (dead) return;
+        setIndex((n) => (n + 1) % 3);
+        setLit(true);
+      }
+    })();
+    return () => {
+      dead = true;
+      window.clearTimeout(timer);
+    };
+  }, []);
+
+  return (
+    <div className="store-kits">
+      {KIT_ROLL.map((kit) => (
+        <Link key={kit.name} to="/estimate" className="store-kit">
+          <span className="store-kit-frame">
+            {kit.frames.map((src, i) => (
+              <img key={src} src={src} alt="" className={lit && i === index ? "is-on" : undefined} />
+            ))}
+          </span>
+          <p className="store-kit-name">{kit.name}</p>
+          <p>{kit.line}</p>
+        </Link>
+      ))}
     </div>
   );
 }
@@ -242,6 +305,7 @@ export function Landing() {
           alt="Matte black F-150 in Calgary, windows blacked out, windshield clear"
         />
         <Module
+          auto
           tone="store-mod-heart"
           title={
             <>
@@ -260,23 +324,11 @@ export function Landing() {
 
       <section className="store-mod store-mod-kits">
         <div className="store-copy">
-          <h2>FRONT. FRONT+. MAX.</h2>
-          <p className="store-lede">Pick a coverage. Tick extras. The number rolls.</p>
+          <h2>FRONT — FRONT+ — MAX</h2>
+          <p className="store-lede">Level up your protection, and your life.</p>
           <Links learn="/ppf" />
         </div>
-        <div className="store-kits">
-          {[
-            { name: "FRONT", line: "Full front PPF. The kit people love.", img: "/images/kits/cx5-front.jpg" },
-            { name: "FRONT+", line: "FRONT plus the pieces you pick.", img: "/images/kits/cx5-frontplus.jpg" },
-            { name: "MAX", line: "Full body. Every painted exterior panel.", img: "/images/kits/cx5-max.jpg" },
-          ].map((k) => (
-            <Link key={k.name} to="/estimate" className="store-kit">
-              <img src={`${k.img}?v=7`} alt="" />
-              <p className="store-kit-name">{k.name}</p>
-              <p>{k.line}</p>
-            </Link>
-          ))}
-        </div>
+        <KitRoll />
       </section>
 
       <section className="store-mod store-mod-boxed">
