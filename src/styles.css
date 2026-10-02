@@ -1211,9 +1211,10 @@
 .store-kit img {
   width: calc(100% - 1rem);
   margin: 0.5rem auto 0;
-  height: 150px;
-  object-fit: contain;
-  background: transparent;
+  height: 168px;
+  object-fit: cover;
+  object-position: center 58%;
+  background: #050505;
   border-radius: 16px;
   display: block;
 }
@@ -1345,7 +1346,7 @@
     height: 148px;
   }
   .store-kit img {
-    height: 168px;
+    height: 200px;
   }
   .store-work img {
     height: 200px;

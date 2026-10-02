@@ -269,9 +269,9 @@ export function Landing() {
         </div>
         <div className="store-kits">
           {[
-            { name: "FRONT", line: "Full front PPF. The kit people love.", img: "/images/rig-suv-white.png" },
-            { name: "FRONT+", line: "FRONT plus the pieces you pick.", img: "/images/rig-sedan-white.png" },
-            { name: "MAX", line: "Full body. Every painted exterior panel.", img: "/images/rig-truck-white.png" },
+            { name: "FRONT", line: "Full front PPF. The kit people love.", img: "/images/kits/cx5-front.jpg" },
+            { name: "FRONT+", line: "FRONT plus the pieces you pick.", img: "/images/kits/cx5-frontplus.jpg" },
+            { name: "MAX", line: "Full body. Every painted exterior panel.", img: "/images/kits/cx5-max.jpg" },
           ].map((k) => (
             <Link key={k.name} to="/estimate" className="store-kit">
               <img src={`${k.img}?v=7`} alt="" />
