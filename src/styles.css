@@ -466,6 +466,21 @@
 .vehicle-frame-stage img.is-on {
   opacity: 1;
 }
+@media (max-width: 959px) {
+  .arcade-page .vehicle-frame {
+    height: auto !important;
+    min-height: 0;
+  }
+  .vehicle-frame-stage {
+    flex: none;
+    min-height: 0;
+    aspect-ratio: 16 / 9;
+  }
+  .vehicle-frame-stage img {
+    object-fit: contain;
+    object-position: center;
+  }
+}
 .kit-row {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
