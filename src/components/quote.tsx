@@ -915,6 +915,7 @@ export function Quote() {
                 }}
               />
             </div>
+            <div className="est-pair">
             <div className="hud-panel vehicle-scan p-5 text-left">
               <VehicleScan
                 year={year}
@@ -986,19 +987,24 @@ export function Quote() {
               </Field>
             </div>
 
-            <div className="kit-hero relative mx-auto mt-5">
-              {(["black", "front", "frontplus", "max"] as const).map((id) => (
-                <img
-                  key={id}
-                  src={kitStill[id]}
-                  alt=""
-                  className={cn(
-                    "mx-auto h-44 w-full object-contain transition-opacity duration-700 ease-out md:h-72",
-                    id === "black" ? "relative" : "absolute inset-0",
-                    kitStage === id ? "opacity-100" : "opacity-0",
-                  )}
-                />
-              ))}
+            <div className="vehicle-frame">
+              <div className="scan-brand">
+                <span>HARD PP // COVERAGE</span>
+                <span className={cn("scan-lock", packageId && "is-on")}>
+                  {kitStage === "front" ? "FRONT" : kitStage === "frontplus" ? "FRONT+" : kitStage === "max" ? "MAX" : "BASE"}
+                </span>
+              </div>
+              <div className="vehicle-frame-stage">
+                {(["black", "front", "frontplus", "max"] as const).map((id) => (
+                  <img
+                    key={id}
+                    src={kitStill[id]}
+                    alt=""
+                    className={kitStage === id ? "is-on" : undefined}
+                  />
+                ))}
+              </div>
+            </div>
             </div>
 
             <ServiceBlock
