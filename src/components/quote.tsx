@@ -174,6 +174,9 @@ const MODEL3_STILLS = {
   max: "/images/kits/model3-max.jpg",
 };
 
+const COVERAGE = [MODEL3_STILLS, F150_STILLS, CX5_STILLS] as const;
+const COVERAGE_STAGES = ["black", "front", "frontplus", "max"] as const;
+
 export function Quote() {
   const [lead, setLead] = useState<Lead>({
     name: "",
@@ -206,6 +209,7 @@ export function Quote() {
   const firstPrice = useRef(true);
   const scanRef = useRef<HTMLDivElement>(null);
   const [scanHeight, setScanHeight] = useState(0);
+  const [cycle, setCycle] = useState(0);
 
   useEffect(() => {
     const el = scanRef.current;
@@ -310,11 +314,18 @@ export function Quote() {
   const finish = finishes.find((f) => f.id === finishId)?.name;
   const display = money(result.amount);
   const pack = packages.find((p) => p.id === packageId);
-  const kitStill =
-    install.known && install.art === "truck" ? F150_STILLS : install.known && install.art === "suv" ? CX5_STILLS : MODEL3_STILLS;
+  const lockedIndex = !install.known ? 0 : install.art === "truck" ? 1 : install.art === "suv" ? 2 : 0;
+  const roaming = !install.known && Boolean(packageId);
+  const showIndex = roaming ? cycle : lockedIndex;
   const kitStage = !packageId ? "black" : packageId === "front" ? "front" : packageId === "custom" ? "frontplus" : "max";
   const player = firstName(lead.name);
   const rateFilm: TintFilmId = tintFilmId ?? "carbon";
+
+  useEffect(() => {
+    if (!roaming) return;
+    const id = window.setInterval(() => setCycle((n) => (n + 1) % COVERAGE.length), 3200);
+    return () => window.clearInterval(id);
+  }, [roaming]);
 
   useEffect(() => {
     if (!filmId) return;
@@ -1007,14 +1018,16 @@ export function Quote() {
                 </span>
               </div>
               <div className="vehicle-frame-stage">
-                {(["black", "front", "frontplus", "max"] as const).map((id) => (
-                  <img
-                    key={id}
-                    src={kitStill[id]}
-                    alt=""
-                    className={kitStage === id ? "is-on" : undefined}
-                  />
-                ))}
+                {COVERAGE.map((stills, i) =>
+                  COVERAGE_STAGES.map((id) => (
+                    <img
+                      key={`${i}-${id}`}
+                      src={stills[id]}
+                      alt=""
+                      className={i === showIndex && id === kitStage ? "is-on" : undefined}
+                    />
+                  )),
+                )}
               </div>
             </div>
             </div>
