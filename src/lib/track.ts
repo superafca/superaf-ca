@@ -18,7 +18,24 @@ export function trackDiy(event: "kit_configured" | "begin_checkout" | "purchase"
   else w.fbq?.("trackCustom", "KitConfigured", { value: payload.value, currency: "CAD" });
 }
 
-export function readUtm() {
+export function trackLeadConversion() {
+  if (typeof window === "undefined") return;
+  const w = window as Window & {
+    dataLayer?: unknown[];
+    gtag?: (...args: unknown[]) => void;
+  };
+  w.dataLayer = w.dataLayer || [];
+  if (!w.gtag) {
+    w.gtag = function gtag() {
+      w.dataLayer?.push(arguments);
+    };
+  }
+  w.gtag("event", "conversion", {
+    send_to: "AW-18489064646/E3SCCKLm2Y0dEMb5ovBE",
+    value: 1.0,
+    currency: "CAD",
+  });
+}
   if (typeof window === "undefined") return "";
   const keys = ["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term"];
   const params = new URLSearchParams(window.location.search);

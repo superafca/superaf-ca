@@ -46,6 +46,12 @@ export const Route = createRootRoute({
       },
       { rel: "manifest", href: "/__grok/manifest.webmanifest" },
     ],
+    scripts: [
+      { async: true, src: "https://www.googletagmanager.com/gtag/js?id=AW-18489064646" },
+      {
+        children: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','AW-18489064646');`,
+      },
+    ],
   }),
   component: () => (
     <html lang="en" className="antialiased" suppressHydrationWarning>

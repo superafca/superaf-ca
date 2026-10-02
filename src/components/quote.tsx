@@ -40,6 +40,7 @@ import {
   type TintFilmId,
 } from "@/lib/site";
 import { sendLead } from "@/lib/send-lead";
+import { trackLeadConversion } from "@/lib/track";
 import { HardBadges } from "@/components/cyber";
 import { VehicleScan } from "@/components/vehicle-scan";
 import { BigCheck } from "@/components/faces";
@@ -221,6 +222,11 @@ export function Quote() {
     watcher.observe(el);
     return () => watcher.disconnect();
   }, []);
+
+  useEffect(() => {
+    if (!leveled) return;
+    trackLeadConversion();
+  }, [leveled]);
 
   useEffect(() => {
     setLead(readLead());
