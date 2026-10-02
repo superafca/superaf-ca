@@ -1178,6 +1178,13 @@
   background: #093b8d;
   color: #fff;
 }
+.store-mod-heart .store-media img,
+.store-mod-heart .store-media video {
+  object-fit: contain;
+  object-position: center;
+  transform: none;
+  background: #093b8d;
+}
 .store-mod-heart .store-kicker,
 .store-mod-heart h2 {
   color: #fff;

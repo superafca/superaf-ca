@@ -234,15 +234,12 @@ export function Landing() {
 
       <div className="store-split">
         <Module
-          auto
-          portrait
           tone="store-mod-tint"
           title="Pitch black."
           lede="Windows go dark. Carbon. Ceramic if you want the heat gone."
           learn="/tint"
-          poster="/images/store-tint.jpg"
-          video="/videos/store-tint.mp4?v=2"
-          alt="Car windows darkening to pitch black tint"
+          poster="/images/tint-f150-calgary.jpg"
+          alt="Matte black F-150 in Calgary, windows blacked out, windshield clear"
         />
         <Module
           tone="store-mod-heart"
