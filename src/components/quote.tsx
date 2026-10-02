@@ -156,6 +156,27 @@ function readLead(): Lead {
   }
 }
 
+const KIT_STILLS: Record<string, { black: string; front: string; frontplus: string; max: string }> = {
+  "Ford|F-150": {
+    black: "/images/kits/f150-black.png",
+    front: "/images/kits/f150-front.jpg",
+    frontplus: "/images/kits/f150-frontplus.jpg",
+    max: "/images/kits/f150-max.jpg",
+  },
+  "Mazda|CX-5": {
+    black: "/images/kits/cx5-black.png",
+    front: "/images/kits/cx5-front.jpg",
+    frontplus: "/images/kits/cx5-frontplus.jpg",
+    max: "/images/kits/cx5-max.jpg",
+  },
+  "Tesla|Model 3": {
+    black: "/images/kits/model3-black.png",
+    front: "/images/kits/model3-front.jpg",
+    frontplus: "/images/kits/model3-frontplus.jpg",
+    max: "/images/kits/model3-max.jpg",
+  },
+};
+
 export function Quote() {
   const [lead, setLead] = useState<Lead>({
     name: "",
@@ -281,6 +302,8 @@ export function Quote() {
   const display = money(result.amount);
   const pack = packages.find((p) => p.id === packageId);
   const tinted = Boolean(frontWindows || rearWindows);
+  const kitStill = KIT_STILLS[`${make}|${model}`];
+  const kitStage = !packageId ? "black" : packageId === "front" ? "front" : packageId === "custom" ? "frontplus" : "max";
   const rigWhite = packageArt(packageId ?? "front", install.art, false);
   const rigBlack = packageArt(packageId ?? "front", install.art, true);
   const player = firstName(lead.name);
@@ -969,15 +992,32 @@ export function Quote() {
             </div>
 
             <div className="kit-hero relative mx-auto mt-5">
-              <img src={rigWhite} alt="" className="mx-auto h-44 w-full object-contain md:h-72" />
-              <img
-                src={rigBlack}
-                alt=""
-                className={cn(
-                  "absolute inset-0 mx-auto h-44 w-full object-contain transition-opacity duration-500 md:h-72",
-                  tinted ? "opacity-100" : "opacity-0",
-                )}
-              />
+              {kitStill ? (
+                (["black", "front", "frontplus", "max"] as const).map((id) => (
+                  <img
+                    key={id}
+                    src={kitStill[id]}
+                    alt=""
+                    className={cn(
+                      "mx-auto h-44 w-full object-contain transition-opacity duration-700 ease-out md:h-72",
+                      id === "black" ? "relative" : "absolute inset-0",
+                      kitStage === id ? "opacity-100" : "opacity-0",
+                    )}
+                  />
+                ))
+              ) : (
+                <>
+                  <img src={rigWhite} alt="" className="mx-auto h-44 w-full object-contain md:h-72" />
+                  <img
+                    src={rigBlack}
+                    alt=""
+                    className={cn(
+                      "absolute inset-0 mx-auto h-44 w-full object-contain transition-opacity duration-500 md:h-72",
+                      tinted ? "opacity-100" : "opacity-0",
+                    )}
+                  />
+                </>
+              )}
             </div>
 
             <ServiceBlock
