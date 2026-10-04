@@ -1,7 +1,8 @@
 import { type ReactNode } from "react";
 import { Block, PageShell } from "@/components/page-shell";
 import { FilmName, HardMark } from "@/components/site-header";
-import { site, glasses as siteGlasses, filmCompare, tintCompare } from "@/lib/site";
+import { site, glasses as siteGlasses, filmCompare, tintCompare, proofStats } from "@/lib/site";
+import { LiveStats } from "@/components/live-stat";
 
 export const panelIds = ["vision", "ppf", "windshield", "tint"] as const;
 export type PanelId = (typeof panelIds)[number];
@@ -61,6 +62,7 @@ function VisionBody() {
         <p>
           {site.established}. {site.installerYears}.
         </p>
+        <LiveStats items={proofStats} />
         <p>
           Know the car before it rolls in. Funky paint. An old coating. Rock chips
           already in the clear. Tell us. We price the car in front of us, not the
@@ -223,7 +225,7 @@ function PpfBody() {
       <section className="ppf-confidence">
         <h2>We don't buy film. We make it.</h2>
         <p>
-          HARD PP® is ours — we manufacture it, we install it, we warranty it. No middleman, no markup telephone game, no finger-pointing if something goes wrong. 500+ vehicles protected this year, through our dealer network and our Calgary bay.
+          HARD PP® is ours — we manufacture it, we install it, we warranty it. No middleman, no markup telephone game, no finger-pointing if something goes wrong. {site.carsFilmed} vehicles protected in the last 12 months, through our dealer network and our Calgary bay.
         </p>
         <p>
           <a href={site.googleReview} target="_blank" rel="noopener noreferrer">

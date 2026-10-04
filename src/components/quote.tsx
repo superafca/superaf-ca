@@ -1148,7 +1148,7 @@ export function Quote() {
                 .filter(Boolean)
                 .join(" · ")}
             </p>
-            <p className="dock-meta text-[11px] text-muted">{site.installerYears}.</p>
+            <p className="dock-meta dock-installer text-[11px] text-muted">{site.installerYears}.</p>
           </div>
           <div className="shrink-0 text-right">
             <button type="submit" className="hud-gold level-up px-6 text-[11px] tracking-[0.18em] md:px-8 md:text-sm">

@@ -20,10 +20,11 @@ export const site = {
   mapsEmbed: "https://maps.google.com/maps?q=3W2W%2BHV%2C+Calgary%2C+Alberta&z=17&output=embed",
   hours: "Mon–Fri 09:00–18:00",
   hoursNote: "Mobile May–October, indoor and temp-controlled only. Extra fee.",
-  carsFilmed: "500+",
-  upgrades2026: "500+",
+  carsFilmed: "403",
+  upgrades2026: "403",
+  allTime: "5,439",
   established: "EST. 2016",
-  installerYears: "14+ years of installer experience",
+  installerYears: "14 years of installer experience",
   googleSearch: "https://www.google.com/search?q=SUPERAF.CA+Calgary+paint+protection+film",
   googleMapsSearch:
     "https://www.google.com/maps/search/?api=1&query=SUPERAF.CA+3W2W%2BHV+Calgary%2C+Alberta",
@@ -31,6 +32,24 @@ export const site = {
   sitePremiere: "20 September 2026",
   googlePremiere: "20 September 2026",
 } as const;
+
+export const proofStats = [
+  {
+    value: site.allTime,
+    label: "VEHICLES PROTECTED · ALL-TIME",
+    text: `${site.allTime} vehicles protected`,
+  },
+  {
+    value: site.carsFilmed,
+    label: "VEHICLES PROTECTED · LAST 12 MONTHS",
+    text: `${site.carsFilmed} vehicles protected in the last 12 months`,
+  },
+  {
+    value: site.installerYears.slice(0, site.installerYears.indexOf(" ")),
+    label: "YEARS OF INSTALLER EXPERIENCE",
+    text: site.installerYears,
+  },
+] as const;
 
 export function packageArt(
   _packageId: string,

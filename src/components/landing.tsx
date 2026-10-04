@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Link } from "@tanstack/react-router";
-import { site } from "@/lib/site";
+import { site, proofStats } from "@/lib/site";
+import { LiveStats } from "@/components/live-stat";
 import { cn } from "@/lib/utils";
 
 function Media({
@@ -170,6 +171,7 @@ function Module({
   portrait,
   tone,
   caption,
+  extra,
   children,
 }: {
   kicker?: string;
@@ -184,6 +186,7 @@ function Module({
   portrait?: boolean;
   tone?: string;
   caption?: string;
+  extra?: ReactNode;
   children?: ReactNode;
 }) {
   const Title = hero ? "h1" : "h2";
@@ -194,6 +197,7 @@ function Module({
         <Title>{title}</Title>
         <p className="store-lede">{lede}</p>
         <Links learn={learn} />
+        {extra}
       </div>
       {poster ? (
         <Media
@@ -231,18 +235,7 @@ export function Landing() {
         poster="/images/hero-box-poster.jpg?v=2"
         video="/videos/hero-box-loop.mp4?v=2"
         alt="HARD PP box"
-      />
-
-      <Module
-        auto
-        tone="store-mod-heal"
-        title="It heals."
-        lede="A little heat. The scratches disappear."
-        learn="/ppf"
-        poster="/images/heal-poster.jpg?v=2"
-        video="/videos/heal-loop.mp4?v=2"
-        alt="Heat repairing scratches in paint protection film"
-        caption="Dramatized for effect."
+        extra={<LiveStats items={proofStats} />}
       />
 
       <Module
@@ -354,7 +347,7 @@ export function Landing() {
         <div className="store-copy">
           <h2>426 Memorial Drive NE.</h2>
           <p className="store-lede">
-            {site.hours}. Text or call {site.phone}. 500+ vehicles protected this year — through our dealer network and our Calgary bay.
+            {site.hours}. Text or call {site.phone}. {site.carsFilmed} vehicles protected in the last 12 months — through our dealer network and our Calgary bay.
           </p>
           <p className="store-links">
             <a className="store-link" href={site.maps} target="_blank" rel="noreferrer">
