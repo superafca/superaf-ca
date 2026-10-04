@@ -59,6 +59,9 @@ function VisionBody() {
     <>
       <Block title="The process">
         <p>
+          {site.established}. {site.installerYears}.
+        </p>
+        <p>
           Know the car before it rolls in. Funky paint. An old coating. Rock chips
           already in the clear. Tell us. We price the car in front of us, not the
           brochure.
@@ -220,7 +223,7 @@ function PpfBody() {
       <section className="ppf-confidence">
         <h2>We don't buy film. We make it.</h2>
         <p>
-          HARD PP® is ours — we manufacture it, we install it, we warranty it. No middleman, no markup telephone game, no finger-pointing if something goes wrong. 500+ vehicles protected in 2026, through our dealer network and our Calgary bay.
+          HARD PP® is ours — we manufacture it, we install it, we warranty it. No middleman, no markup telephone game, no finger-pointing if something goes wrong. 500+ vehicles protected this year, through our dealer network and our Calgary bay.
         </p>
         <p>
           <a href={site.googleReview} target="_blank" rel="noopener noreferrer">
@@ -397,7 +400,7 @@ function GlassBody() {
         </ul>
         <p className="mt-4 font-bold text-fg">What to expect</p>
         <ul className="mt-2 list-disc space-y-2 pl-5">
-          <li>Stops a lot of chips. A new windshield is expensive.</li>
+          <li>Takes the hit from a lot of rocks. A new windshield is expensive.</li>
           <li>Can add a bit of distortion to your line of sight.</li>
           <li>Bubbly and warped right after install. Water dries. It settles.</li>
           <li>Shows wear like wiper scratches. Lasts about 1–3 years.</li>
@@ -451,7 +454,7 @@ function TintBody() {
       <Block title="What to expect">
         <p>Tint: manufacturer limited lifetime on both. Colour shift, peeling, bubbling, cracking, adhesive failure, delamination from the film. Not scratches. Not a smashed window.</p>
         <p>Front windows take about 2 hours. Rear windows take about 4. Tiny water bubbles are normal. They leave as it cures — a few days in the heat, longer in a Calgary winter. Don’t roll the windows down for 3–5 days. Don’t pressure-wash the edges. Don’t slam the doors like you’re mad at them.</p>
-        <p>Alberta: no aftermarket film on the windshield or the front side windows. Rear sides and the back glass — any shade, if you’ve got outside mirrors. An eyebrow can sit above the AS-1 line. Medical exemption is a government thing, not a shop thing. Check your local guidelines.</p>
+        <p className="text-xs leading-snug text-muted">Front window tint is sold for display purposes only. Drivers are responsible for making sure their vehicle complies with local road laws.</p>
       </Block>
     </>
   );

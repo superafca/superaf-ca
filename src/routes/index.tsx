@@ -11,7 +11,7 @@ export const Route = createFileRoute("/")({
 function Home() {
   const jsonLd = {
     "@context": "https://schema.org",
-    "@type": "AutoRepair",
+    "@type": "AutomotiveBusiness",
     name: site.name,
     url: "https://superaf.ca",
     email: site.email,

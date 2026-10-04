@@ -190,7 +190,7 @@ export function WarrantyForm({ dealershipName = "" }: { dealershipName?: string 
             </label>
             <label>
               Phone
-              <input name="phone" type="tel" placeholder="+1 (403) 000-0000" />
+              <input name="phone" type="tel" placeholder="(587) 900-9494" />
             </label>
             <label>
               City *
@@ -218,7 +218,7 @@ export function WarrantyForm({ dealershipName = "" }: { dealershipName?: string 
             </label>
             <label>
               Dealership phone
-              <input name="dealershipPhone" type="tel" placeholder="+1 (403) 000-0000" />
+              <input name="dealershipPhone" type="tel" placeholder="(587) 900-9494" />
             </label>
             <label>
               Dealership city

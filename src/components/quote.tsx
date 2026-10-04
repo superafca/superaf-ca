@@ -806,6 +806,7 @@ export function Quote() {
         })}
       </div>
       {shadeMenu("front")}
+      <p className="tint-law">Front window tint is sold for display purposes only. Drivers are responsible for making sure their vehicle complies with local road laws.</p>
       <div className="count-label">
         <span>How many rear windows?</span>
         <span className="hour-label">{TINT_REAR_HOURS} hours</span>
@@ -1147,6 +1148,7 @@ export function Quote() {
                 .filter(Boolean)
                 .join(" · ")}
             </p>
+            <p className="dock-meta text-[11px] text-muted">{site.installerYears}.</p>
           </div>
           <div className="shrink-0 text-right">
             <button type="submit" className="hud-gold level-up px-6 text-[11px] tracking-[0.18em] md:px-8 md:text-sm">

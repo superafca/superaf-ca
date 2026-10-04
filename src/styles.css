@@ -2291,8 +2291,14 @@
 }
 .arcade-page .text-muted,
 .arcade-page .service-time,
-.arcade-page .count-label > span:last-child {
+.arcade-page .count-label > span:last-child,
+.arcade-page .tint-law {
   color: #94a3b8 !important;
+}
+.tint-law {
+  margin: 0.35rem 0 0.15rem;
+  font-size: 0.72rem;
+  line-height: 1.35;
 }
 .arcade-page .kit-path {
   font-family: "Orbitron", sans-serif;

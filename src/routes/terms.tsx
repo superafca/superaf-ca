@@ -97,8 +97,9 @@ function TermsPage() {
         </p>
         <p>
           Windshield film may show distortion, moisture during cure, and
-          wiper wear over time. Window tint must comply with applicable law.
-          Customers are responsible for checking current Alberta guidelines.
+          wiper wear over time. Front window tint is sold for display purposes
+          only. Drivers are responsible for making sure their vehicle complies
+          with local road laws.
         </p>
       </Block>
 

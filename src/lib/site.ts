@@ -22,8 +22,8 @@ export const site = {
   hoursNote: "Mobile May–October, indoor and temp-controlled only. Extra fee.",
   carsFilmed: "500+",
   upgrades2026: "500+",
-  yearsOpen: "10+",
-  yearsCombined: "15+",
+  established: "EST. 2016",
+  installerYears: "14+ years of installer experience",
   googleSearch: "https://www.google.com/search?q=SUPERAF.CA+Calgary+paint+protection+film",
   googleMapsSearch:
     "https://www.google.com/maps/search/?api=1&query=SUPERAF.CA+3W2W%2BHV+Calgary%2C+Alberta",

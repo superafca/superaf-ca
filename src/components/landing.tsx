@@ -354,7 +354,7 @@ export function Landing() {
         <div className="store-copy">
           <h2>426 Memorial Drive NE.</h2>
           <p className="store-lede">
-            {site.hours}. Text or call {site.phone}. 500+ vehicles protected in 2026 — through our dealer network and our Calgary bay.
+            {site.hours}. Text or call {site.phone}. 500+ vehicles protected this year — through our dealer network and our Calgary bay.
           </p>
           <p className="store-links">
             <a className="store-link" href={site.maps} target="_blank" rel="noreferrer">
