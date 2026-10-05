@@ -130,3 +130,52 @@ test("a second LEVEL UP while sending does not start another send", async () => 
   await Promise.all([first, second]);
   assert.equal(sends, 1);
 });
+
+test("enhanced conversions set user_data before the conversion", () => {
+  const { gtagCalls } = installBrowser();
+  trackLeadConversion({
+    transactionId: "enhance-1",
+    email: " Jesus@Superaf.ca ",
+    phone: "(587) 900-9494",
+  });
+  assert.equal(gtagCalls[0]?.[0], "set");
+  assert.equal(gtagCalls[0]?.[1], "user_data");
+  assert.deepEqual(gtagCalls[0]?.[2], {
+    email: "jesus@superaf.ca",
+    phone_number: "+15879009494",
+  });
+  assert.equal(gtagCalls[1]?.[1], "conversion");
+});
+
+test("garbage contact details are not sent as user_data", () => {
+  const { gtagCalls } = installBrowser();
+  trackLeadConversion({
+    transactionId: "enhance-bad",
+    email: "not-an-email",
+    phone: "call me",
+  });
+  assert.equal(gtagCalls.length, 1);
+  assert.equal(gtagCalls[0]?.[1], "conversion");
+});
+
+test("a sessionStorage failure still fires the conversion only once", () => {
+  const gtagCalls: unknown[][] = [];
+  (globalThis as { window?: unknown }).window = {
+    sessionStorage: {
+      getItem() {
+        throw new Error("blocked");
+      },
+      setItem() {
+        throw new Error("blocked");
+      },
+    },
+    dataLayer: [] as unknown[],
+    gtag: (...args: unknown[]) => {
+      gtagCalls.push(args);
+    },
+  };
+  trackLeadConversion({ transactionId: "storage-blocked", value: 1 });
+  trackLeadConversion({ transactionId: "storage-blocked", value: 1 });
+  const conversions = gtagCalls.filter((call) => call[1] === "conversion");
+  assert.equal(conversions.length, 1);
+});
