@@ -37,16 +37,19 @@ export const proofStats = [
   {
     value: site.allTime,
     label: "VEHICLES PROTECTED · ALL-TIME",
+    short: "ALL-TIME",
     text: `${site.allTime} vehicles protected`,
   },
   {
     value: site.carsFilmed,
     label: "VEHICLES PROTECTED · LAST 12 MONTHS",
+    short: "LAST 12 MONTHS",
     text: `${site.carsFilmed} vehicles protected in the last 12 months`,
   },
   {
     value: site.installerYears.slice(0, site.installerYears.indexOf(" ")),
     label: "YEARS OF INSTALLER EXPERIENCE",
+    short: "INSTALLER YEARS",
     text: site.installerYears,
   },
 ] as const;

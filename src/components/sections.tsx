@@ -40,7 +40,7 @@ export function SiteFooter() {
       </nav>
       <div className="store-foot-grid">
         <div>
-          <p className="font-semibold text-fg">SUPERAF.CA</p>
+          <p className="store-foot-brand">SUPERAF.CA</p>
           <p className="mt-2">
             <a href={site.igHref}>Instagram @{site.ig}</a>
           </p>

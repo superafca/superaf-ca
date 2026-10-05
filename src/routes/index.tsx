@@ -13,11 +13,11 @@ function Home() {
     "@context": "https://schema.org",
     "@type": "AutomotiveBusiness",
     name: site.name,
-    url: "https://superaf.ca",
+    url: "https://www.superaf.ca",
     email: site.email,
-    telephone: site.phone,
+    telephone: "+1-587-900-9494",
     hasMap: site.maps,
-    image: "/images/box-hero.jpg",
+    image: "https://www.superaf.ca/images/box-hero.jpg",
     address: {
       "@type": "PostalAddress",
       streetAddress: "426 Memorial Drive NE",
@@ -27,7 +27,7 @@ function Home() {
     },
     openingHours: "Mo-Fr 09:00-18:00",
     areaServed: ["Calgary", "Airdrie", "Cochrane", "Okotoks", "Chestermere"],
-    sameAs: [site.igHref, site.googleSearch],
+    sameAs: [site.igHref, site.googleReview],
     description:
       "Paint protection. Glass protection. Tint. Best PPF in Calgary. 426 Memorial Drive NE.",
   };

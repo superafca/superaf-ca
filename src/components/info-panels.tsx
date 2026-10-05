@@ -163,10 +163,6 @@ function VisionBody() {
       </Block>
       <Block title="Leave a review. Haters welcome.">
         <p>
-          This website premiered {site.sitePremiere}. Google Business went live{" "}
-          {site.googlePremiere}.
-        </p>
-        <p>
           If you liked how we do business, leave a review. If you hated it, even
           better — write it like you mean it. Make it something people screenshot.
         </p>

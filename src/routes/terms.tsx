@@ -99,7 +99,11 @@ function TermsPage() {
           Windshield film may show distortion, moisture during cure, and
           wiper wear over time. Front window tint is sold for display purposes
           only. Drivers are responsible for making sure their vehicle complies
-          with local road laws.
+          with local road laws. Window tint is installed at the customer's
+          request. The customer is solely responsible for compliance with
+          local road laws and releases Super Automotive Film Corporation from
+          any liability, fines or claims arising from tint installed on their
+          vehicle.
         </p>
       </Block>
 
