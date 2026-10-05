@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Quote } from "@/components/quote";
+import { SoundHud } from "@/components/sound-hud";
 
 export const Route = createFileRoute("/estimate")({
   component: Estimate,
@@ -19,7 +20,10 @@ function Estimate() {
   return (
     <div className="arcade-page">
       <div className="arcade-cabinet">
-        <p className="arcade-marquee">SUPERAF · STAGE SELECT</p>
+        <div className="arcade-top">
+          <p className="arcade-marquee">SUPERAF · STAGE SELECT</p>
+          <SoundHud />
+        </div>
         <div className="arcade-bezel">
           <Quote />
         </div>

@@ -3,6 +3,7 @@ import { Block, PageShell } from "@/components/page-shell";
 import { FilmName, HardMark } from "@/components/site-header";
 import { site, glasses as siteGlasses, filmCompare, tintCompare, proofStats } from "@/lib/site";
 import { LiveStats } from "@/components/live-stat";
+import { BeforeAfter, CoverageRow, TraitRow, VltStrip, WorkGallery, WorkHero } from "@/components/work-media";
 
 export const panelIds = ["vision", "ppf", "windshield", "tint"] as const;
 export type PanelId = (typeof panelIds)[number];
@@ -218,6 +219,14 @@ function FeatureCompare({
 function PpfBody() {
   return (
     <>
+      <section className="work-section">
+        <h2>Real installs.</h2>
+        <WorkHero page="ppf" />
+        <TraitRow />
+        <CoverageRow />
+        <WorkGallery page="ppf" />
+        <BeforeAfter page="ppf" />
+      </section>
       <section className="ppf-confidence">
         <h2>We don't buy film. We make it.</h2>
         <p>
@@ -412,6 +421,12 @@ function GlassBody() {
 function TintBody() {
   return (
     <>
+      <section className="work-section">
+        <h2>Real installs.</h2>
+        <WorkHero page="tint" />
+        <VltStrip />
+        <WorkGallery page="tint" />
+      </section>
       <FeatureCompare
         left="Carbon"
         right="Ceramic"
