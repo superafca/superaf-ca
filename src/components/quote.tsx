@@ -495,8 +495,7 @@ export function Quote() {
       if (windshieldTint) {
         const shade = windshieldShade ? shadeLabel(windshieldShade) : "shade not selected";
         tintBits.push(`windshield ${money(tintWindshieldPrice(rateFilm))}${shade ? ` · ${shade}` : ""}`);
-      }
-      if (visorTint) {
+      } else if (visorTint) {
         const shade = visorShade ? shadeLabel(visorShade) : "shade not selected";
         tintBits.push(`visor ${money(tintVisorPrice(rateFilm))}${shade ? ` · ${shade}` : ""}`);
       }
@@ -724,7 +723,8 @@ export function Quote() {
     <div className="space-y-4">
       <SideTintPreview
         film={tintFilmId}
-        vlt={frontShade ? Number(frontShade) : rearShade ? Number(rearShade) : null}
+        frontVlt={frontShade ? Number(frontShade) : null}
+        rearVlt={rearShade ? Number(rearShade) : null}
         onPick={(vlt) => {
           sfxClick();
           setFrontShade(String(vlt));
@@ -860,7 +860,7 @@ export function Quote() {
       <WindshieldTintPreview
         film={tintFilmId}
         windshield={windshieldTint && windshieldShade ? Number(windshieldShade) : null}
-        visor={visorTint && visorShade ? Number(visorShade) : null}
+        visor={!windshieldTint && visorTint && visorShade ? Number(visorShade) : null}
       />
       <div className="zone-quotes">
         <button
@@ -869,7 +869,15 @@ export function Quote() {
           className={windshieldTint ? "is-on" : undefined}
           onClick={() => {
             sfxClick();
-            setWindshieldTint((on) => !on);
+            setWindshieldTint((on) => {
+              if (on) {
+                setWindshieldShade("");
+                return false;
+              }
+              setVisorTint(false);
+              setVisorShade("");
+              return true;
+            });
           }}
         >
           <span>Windshield</span>
@@ -881,7 +889,15 @@ export function Quote() {
           className={visorTint ? "is-on" : undefined}
           onClick={() => {
             sfxClick();
-            setVisorTint((on) => !on);
+            setVisorTint((on) => {
+              if (on) {
+                setVisorShade("");
+                return false;
+              }
+              setWindshieldTint(false);
+              setWindshieldShade("");
+              return true;
+            });
           }}
         >
           <span>Visor</span>

@@ -3,6 +3,7 @@ import { Link } from "@tanstack/react-router";
 import { site, proofStats } from "@/lib/site";
 import { LiveStats } from "@/components/live-stat";
 import { founderShots, PhotoCarousel } from "@/components/work-media";
+import { AddressLink } from "@/components/sections";
 import { cn } from "@/lib/utils";
 
 function Media({
@@ -310,12 +311,14 @@ export function Landing() {
 
       <section className="store-mod store-visit">
         <div className="store-copy">
-          <h2>426 Memorial Drive NE.</h2>
+          <h2>
+            <AddressLink>426 Memorial Drive NE.</AddressLink>
+          </h2>
           <p className="store-lede">
             {site.hours}. Text or call {site.phone}. {site.carsFilmed} vehicles protected in the last 12 months — through our dealer network and our Calgary bay.
           </p>
           <p className="store-links">
-            <a className="store-link" href={site.maps} target="_blank" rel="noreferrer">
+            <a className="store-link" href={site.maps} target="_blank" rel="noopener noreferrer">
               Directions
             </a>
             <span className="store-link-dot" aria-hidden />
@@ -323,6 +326,14 @@ export function Landing() {
               Call
             </a>
           </p>
+        </div>
+        <div className="store-map">
+          <iframe
+            src={site.mapsEmbed}
+            loading="lazy"
+            title="SUPERAF.CA on Google Maps"
+            referrerPolicy="no-referrer-when-downgrade"
+          />
         </div>
       </section>
     </div>

@@ -1,3 +1,6 @@
+const MAPS_URL =
+  "https://www.google.com/maps/search/?api=1&query=SUPERAF.CA+3W2W%2BHV+Calgary%2C+Alberta";
+
 export const site = {
   name: "SUPERAF.CA",
   short: "SUPERAF",
@@ -16,7 +19,7 @@ export const site = {
   address: "426 Memorial Drive NE, Calgary, AB",
   addressNote: "Text or call for an appointment.",
   plusCode: "3W2W+HV Calgary, Alberta",
-  maps: "https://www.google.com/maps/search/?api=1&query=3W2W%2BHV+Calgary%2C+Alberta",
+  maps: MAPS_URL,
   mapsEmbed: "https://maps.google.com/maps?q=3W2W%2BHV%2C+Calgary%2C+Alberta&z=17&output=embed",
   hours: "Mon–Fri 09:00–18:00",
   hoursNote: "Mobile May–October, indoor and temp-controlled only. Extra fee.",
@@ -26,8 +29,7 @@ export const site = {
   established: "EST. 2016",
   installerYears: "14 years of installer experience",
   googleSearch: "https://www.google.com/search?q=SUPERAF.CA+Calgary+paint+protection+film",
-  googleMapsSearch:
-    "https://www.google.com/maps/search/?api=1&query=SUPERAF.CA+3W2W%2BHV+Calgary%2C+Alberta",
+  googleMapsSearch: MAPS_URL,
   googleReview: "https://g.page/r/CQNKQDNeuW2REAI/review",
   sitePremiere: "20 September 2026",
   googlePremiere: "20 September 2026",
@@ -516,8 +518,11 @@ export function quotePrice(opts: {
   const windowTint = opts.tintOn
     ? (frontSel ? tintFrontPrice(frontSel, kind) : 0) + (rearSel ? tintRearPrice(rearSel, kind) : 0)
     : 0;
-  const zoneTint =
-    (opts.windshieldTint ? tintWindshieldPrice(kind) : 0) + (opts.visorTint ? tintVisorPrice(kind) : 0);
+  const zoneTint = opts.windshieldTint
+    ? tintWindshieldPrice(kind)
+    : opts.visorTint
+      ? tintVisorPrice(kind)
+      : 0;
   const tintAmount = windowTint + zoneTint;
   const tintHours = opts.tintOn ? (frontSel ? TINT_FRONT_HOURS : 0) + (rearSel ? TINT_REAR_HOURS : 0) : 0;
   const glass = glasses.find((g) => g.id === opts.glassId);

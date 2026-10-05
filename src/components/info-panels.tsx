@@ -1,5 +1,6 @@
 import { type ReactNode } from "react";
 import { Block, PageShell } from "@/components/page-shell";
+import { AddressLink } from "@/components/sections";
 import { FilmName, HardMark } from "@/components/site-header";
 import { site, glasses as siteGlasses, filmCompare, tintCompare, proofStats } from "@/lib/site";
 import { LiveStats } from "@/components/live-stat";
@@ -151,11 +152,7 @@ function VisionBody() {
           </li>
           <li>
             <span className="font-semibold text-fg">Talk like a shop.</span> Text,
-            call, WhatsApp. 426 Memorial Drive NE. {site.plusCode}.
-          </li>
-          <li>
-            <span className="font-semibold text-fg">Haters welcome.</span> Write
-            the review. Funny ones get read out loud in the bay.
+            call, WhatsApp. <AddressLink>426 Memorial Drive NE</AddressLink>. <AddressLink>{site.plusCode}</AddressLink>.
           </li>
           <li>
             <span className="font-semibold text-fg">The box is the product.</span>{" "}
@@ -163,11 +160,8 @@ function VisionBody() {
           </li>
         </ol>
       </Block>
-      <Block title="Leave a review. Haters welcome.">
-        <p>
-          If you liked how we do business, leave a review. If you hated it, even
-          better — write it like you mean it. Make it something people screenshot.
-        </p>
+      <Block title="Leave a review.">
+        <p>If you liked how we do business, leave a review.</p>
         <p className="pt-2 text-center">
           <a
             className="inline-flex h-12 items-center justify-center rounded-full bg-fg px-6 text-sm font-bold uppercase tracking-kicker text-cloud"
@@ -178,7 +172,9 @@ function VisionBody() {
             Review us on Google
           </a>
         </p>
-        <p className="text-center text-xs text-subtle">{site.plusCode}</p>
+        <p className="text-center text-xs text-subtle">
+          <AddressLink>{site.plusCode}</AddressLink>
+        </p>
       </Block>
     </>
   );
