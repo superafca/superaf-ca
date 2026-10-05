@@ -1,74 +1,117 @@
-type Zone = number | null;
+import { shadeChoices, tintShades, type TintFilmId } from "@/lib/site";
 
-const WINDOWS = {
-  windshield: "158,176 214,112 262,108 236,176",
-  visor: "186,136 222,112 258,109 230,136",
-  front: "276,110 408,112 408,176 276,176",
-  rear: "420,112 508,128 524,176 420,176",
+const SIDE = {
+  front: "580,354 568,330 596,306 655,280 726,270 730,318 720,348",
+  rear: "766,342 766,258 855,254 906,268 908,336 886,342",
+  quarter: "958,332 976,304 1008,298 1026,320 998,338 960,336",
 } as const;
 
-export function TintVisualizer({
-  film,
-  front,
-  rear,
-  windshield,
-  visor,
-}: {
-  film: "Carbon" | "Ceramic" | null;
-  front: Zone;
-  rear: Zone;
-  windshield: Zone;
-  visor: Zone;
-}) {
-  const ceramic = film === "Ceramic";
-  const bits: string[] = [];
-  if (front != null) bits.push(`front ${front}%`);
-  if (rear != null) bits.push(`rear ${rear}%`);
-  if (windshield != null) bits.push(`windshield ${windshield}%`);
-  if (visor != null) bits.push(`visor ${visor}%`);
-  const label = !film || bits.length === 0 ? "Clear" : `${film} · ${bits.join(" · ")}`;
-  const panes = [
-    ["windshield", windshield],
-    ["visor", visor],
-    ["front", front],
-    ["rear", rear],
-  ] as const;
+const WIND = {
+  glass: "472,176 928,176 974,286 426,286",
+  visor: "472,176 928,176 935,193 465,193",
+  lower: "465,193 935,193 974,286 426,286",
+};
 
+export function SideTintPreview({
+  film,
+  vlt,
+  onPick,
+}: {
+  film: TintFilmId | null;
+  vlt: number | null;
+  onPick: (vlt: number) => void;
+}) {
+  const name = film === "ceramic" ? "Ceramic" : film === "carbon" ? "Carbon" : null;
+  const label = name && vlt != null ? `${name} · ${vlt}%` : "Clear";
+  const shades = film ? tintShades[film] : [];
   return (
     <figure className="tint-viz" data-viz={label}>
-      <svg viewBox="0 0 640 280" role="img" aria-label={`Toyota RAV4 window tint preview, ${label}`}>
-        <rect width="640" height="280" fill="#0a0a0f" />
-        <ellipse cx="320" cy="236" rx="230" ry="26" fill="#12343a" opacity="0.5" />
-        <path d="M48 188 H130 L190 150 L236 112 H500 L552 154 L598 180 V208 H48 Z" fill="#1a1d24" stroke="#c5ced9" strokeWidth="2" />
-        {panes.map(([name, vlt]) => (
-          <Glass key={name} id={name} points={WINDOWS[name]} vlt={vlt} ceramic={ceramic} />
-        ))}
-        <circle cx="178" cy="208" r="30" fill="#0a0a0f" stroke="#c5ced9" strokeWidth="3" />
-        <circle cx="478" cy="208" r="30" fill="#0a0a0f" stroke="#c5ced9" strokeWidth="3" />
-        <circle cx="178" cy="208" r="12" fill="#2a2e36" />
-        <circle cx="478" cy="208" r="12" fill="#2a2e36" />
-      </svg>
+      <div className="tint-viz-frame">
+        <img src="/images/viz/tucson-side.jpg" alt="" />
+        <Glass film={film} vlt={vlt} points={[SIDE.front, SIDE.rear, SIDE.quarter]} />
+      </div>
+      {shades.length ? (
+        <div className="viz-swatches" role="listbox" aria-label={`${name} shades`}>
+          {shadeChoices(film!).map((shade) => (
+            <button
+              key={shade.vlt}
+              type="button"
+              role="option"
+              aria-selected={vlt === shade.vlt}
+              data-viz-shade={shade.vlt}
+              className={vlt === shade.vlt ? "is-on" : undefined}
+              onClick={() => onPick(shade.vlt)}
+            >
+              <span style={{ background: swatch(shade.vlt) }} />
+              {shade.vlt}%
+            </button>
+          ))}
+        </div>
+      ) : null}
       <figcaption>{label}</figcaption>
     </figure>
   );
 }
 
-function Glass({ id, points, vlt, ceramic }: { id: string; points: string; vlt: Zone; ceramic: boolean }) {
-  const opacity = vlt == null ? 0 : 1 - vlt / 100;
+export function WindshieldTintPreview({
+  film,
+  windshield,
+  visor,
+}: {
+  film: TintFilmId | null;
+  windshield: number | null;
+  visor: number | null;
+}) {
+  const name = film === "ceramic" ? "Ceramic" : film === "carbon" ? "Carbon" : null;
+  const bits: string[] = [];
+  if (name && windshield != null) bits.push(`windshield ${windshield}%`);
+  if (name && visor != null) bits.push(`visor ${visor}%`);
+  const label = bits.length ? `${name} · ${bits.join(" · ")}` : "Clear";
   return (
-    <g>
-      <clipPath id={`viz-${id}`}>
-        <polygon points={points} />
-      </clipPath>
-      <g clipPath={`url(#viz-${id})`}>
-        <rect x="0" y="0" width="640" height="280" fill="#ffffff" />
-        <text x="320" y="158" textAnchor="middle" fontFamily="Arial, sans-serif" fontSize="28" fontWeight="700" fill="#111111">
-          WWW.SUPERAF.CA
-        </text>
-        <polygon points={points} className={ceramic ? "viz-ceramic" : "viz-carbon"} style={{ opacity }} />
-        {ceramic ? <polygon points={points} className="viz-sheen" style={{ opacity: opacity * 0.55 }} /> : null}
-      </g>
-      <polygon points={points} fill="none" stroke="#9aa6b2" strokeWidth="2" />
-    </g>
+    <figure className="tint-viz" data-viz={label}>
+      <div className="tint-viz-frame">
+        <img src="/images/viz/rav4-front.jpg" alt="" />
+        <svg viewBox="0 0 1400 788" preserveAspectRatio="none" className="tint-viz-glass" aria-hidden="true">
+          {windshield != null && visor != null ? (
+            <Pane film={film} vlt={windshield} points={WIND.lower} />
+          ) : (
+            <Pane film={film} vlt={windshield} points={WIND.glass} />
+          )}
+          <Pane film={film} vlt={visor} points={WIND.visor} />
+          {film === "ceramic" ? (
+            <>
+              {windshield != null ? (
+                <polygon points={visor != null ? WIND.lower : WIND.glass} className="viz-reflect" />
+              ) : null}
+              {visor != null ? <polygon points={WIND.visor} className="viz-reflect" /> : null}
+            </>
+          ) : null}
+        </svg>
+      </div>
+      <figcaption>{label}</figcaption>
+    </figure>
   );
+}
+
+function Glass({ film, vlt, points }: { film: TintFilmId | null; vlt: number | null; points: string[] }) {
+  return (
+    <svg viewBox="0 0 1400 788" preserveAspectRatio="none" className="tint-viz-glass" aria-hidden="true">
+      {points.map((shape) => (
+        <Pane key={shape} film={film} vlt={vlt} points={shape} />
+      ))}
+      {film === "ceramic"
+        ? points.map((shape) => <polygon key={`r-${shape}`} points={shape} className="viz-reflect" />)
+        : null}
+    </svg>
+  );
+}
+
+function Pane({ film, vlt, points }: { film: TintFilmId | null; vlt: number | null; points: string }) {
+  const opacity = vlt == null ? 0 : 1 - vlt / 100;
+  return <polygon points={points} className={film === "ceramic" ? "viz-ceramic" : "viz-carbon"} style={{ opacity }} />;
+}
+
+function swatch(vlt: number) {
+  const ink = Math.round(255 * (vlt / 100));
+  return `rgb(${ink} ${ink} ${ink})`;
 }

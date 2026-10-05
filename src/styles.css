@@ -1420,9 +1420,6 @@
   color: var(--color-fg);
 }
 .store-mod-kits { background: #f7f4ef; }
-.store-mod-boxed { background: #2c211c; color: #fff; }
-.store-mod-boxed .store-lede { color: rgb(255 255 255 / 0.74); }
-.store-mod-boxed .store-link { color: #ffb26a; }
 .store-visit { background: #efeae3; }
 .store-split {
   display: grid;
@@ -3084,8 +3081,12 @@
   font-variant-numeric: tabular-nums;
   letter-spacing: 0.04em;
   line-height: 1;
-  color: #dffbff;
-  text-shadow: 0 0 16px rgb(18 247 255 / 0.45);
+  color: #e7fdff;
+  background-image: linear-gradient(100deg, #ffffff 0%, #c8f8ff 46%, #7af0ff 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 12px rgb(18 247 255 / 0.45));
 }
 .live-stat-label {
   display: block;
@@ -3669,23 +3670,115 @@
   background: #0b0f17;
   border-radius: 16px;
 }
-.tint-viz svg {
+.tint-viz-frame {
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+}
+.tint-viz-frame img {
   display: block;
   width: 100%;
   height: auto;
-  border-radius: 16px;
+}
+.tint-viz-glass {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
 }
 .viz-carbon {
-  fill: #141416;
+  fill: #111;
   transition: opacity 300ms ease;
 }
 .viz-ceramic {
-  fill: #16343a;
+  fill: #0f1c1e;
   transition: opacity 300ms ease;
 }
-.viz-sheen {
-  fill: #b7fff2;
-  transition: opacity 300ms ease;
+.viz-reflect {
+  fill: #ffffff;
+  opacity: 0.1;
+  pointer-events: none;
+}
+.viz-swatches {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 0.65rem;
+}
+.viz-swatches button {
+  display: grid;
+  justify-items: center;
+  gap: 0.2rem;
+  min-width: 46px;
+  padding: 0.35rem 0.3rem;
+  border: 1px solid rgb(226 232 240 / 0.28);
+  border-radius: 10px;
+  background: #10141c;
+  color: #e2e8f0;
+  font-family: "Orbitron", sans-serif;
+  font-size: 0.62rem;
+}
+.viz-swatches button span {
+  width: 22px;
+  height: 14px;
+  border-radius: 3px;
+  border: 1px solid rgb(226 232 240 / 0.4);
+}
+.viz-swatches button.is-on {
+  border-color: #12f7ff;
+  color: #041016;
+  background: #12f7ff;
+}
+.tint-back {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  background: #121824;
+  color: #e2e8f0;
+}
+.tint-back h3,
+.tint-back p,
+.tint-back .tint-kicker {
+  margin: 0;
+  color: #e2e8f0;
+}
+.tint-back h3 {
+  font-family: "Orbitron", sans-serif;
+  font-size: 1.15rem;
+}
+.tint-back p {
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+.tint-kicker {
+  font-family: "Orbitron", sans-serif;
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.zone-note {
+  margin: 0.35rem 0 0;
+  color: #94a3b8;
+  font-size: 0.75rem;
+}
+.diy-soon {
+  margin: 1.25rem 0 0.6rem;
+  color: #c5ced9;
+  font-family: "Orbitron", sans-serif;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.diy-contact {
+  display: inline-flex;
+  align-items: center;
+  min-height: 48px;
+  padding: 0 1rem;
+  border-radius: 12px;
+  background: #12f7ff;
+  color: #041016;
+  font-family: "Orbitron", sans-serif;
+  font-size: 0.78rem;
 }
 .tint-viz figcaption {
   margin-top: 0.45rem;

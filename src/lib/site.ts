@@ -257,6 +257,18 @@ const TINT_REAR_PRICE = {
 
 export const TINT_FRONT_HOURS = 2;
 export const TINT_REAR_HOURS = 4;
+export const TINT_ZONE_HOURS = "2–3 hours";
+
+export const TINT_WINDSHIELD_PRICE = { carbon: 279, ceramic: 379 } as const;
+export const TINT_VISOR_PRICE = { carbon: 89, ceramic: 109 } as const;
+
+export function tintWindshieldPrice(kind: TintFilmId) {
+  return TINT_WINDSHIELD_PRICE[kind];
+}
+
+export function tintVisorPrice(kind: TintFilmId) {
+  return TINT_VISOR_PRICE[kind];
+}
 
 export function tintFrontPrice(front: FrontWindows, kind: TintFilmId) {
   return TINT_FRONT_PRICE[front][kind];
@@ -485,6 +497,8 @@ export function quotePrice(opts: {
   parts?: readonly CustomPartId[];
   frontWindows?: number;
   rearWindows?: number;
+  windshieldTint?: boolean;
+  visorTint?: boolean;
   now?: number;
 }) {
   const now = opts.now ?? Date.now();
@@ -499,15 +513,19 @@ export function quotePrice(opts: {
   const kind: TintFilmId = opts.tintFilmId ?? "carbon";
   const frontSel = opts.frontWindows ? snapFrontWindows(opts.frontWindows) : null;
   const rearSel = opts.rearWindows ? snapRearWindows(opts.rearWindows) : null;
-  const tintAmount = opts.tintOn
+  const windowTint = opts.tintOn
     ? (frontSel ? tintFrontPrice(frontSel, kind) : 0) + (rearSel ? tintRearPrice(rearSel, kind) : 0)
     : 0;
+  const zoneTint =
+    (opts.windshieldTint ? tintWindshieldPrice(kind) : 0) + (opts.visorTint ? tintVisorPrice(kind) : 0);
+  const tintAmount = windowTint + zoneTint;
   const tintHours = opts.tintOn ? (frontSel ? TINT_FRONT_HOURS : 0) + (rearSel ? TINT_REAR_HOURS : 0) : 0;
   const glass = glasses.find((g) => g.id === opts.glassId);
   const glassAmount = glass ? glassPrice(glass.id, now) : 0;
   const timeBits = [
     ppfOn ? kitTimeLabel(opts.packageId, opts.parts) : "",
     opts.tintOn && tintHours ? `${tintHours} ${tintHours === 1 ? "hour" : "hours"}` : "",
+    opts.windshieldTint || opts.visorTint ? TINT_ZONE_HOURS : "",
     glass ? "windshield 1 day" : "",
   ].filter(Boolean);
 

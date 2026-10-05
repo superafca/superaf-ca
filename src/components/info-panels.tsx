@@ -230,10 +230,10 @@ function PpfBody() {
         <p>
           HARD PP® is ours — we manufacture it, we install it, we warranty it. No middleman, no markup telephone game, no finger-pointing if something goes wrong. {site.carsFilmed} vehicles protected in the last 12 months, through our dealer network and our Calgary bay.
         </p>
-        <p>Water and dirt bead up and roll off, so the car stays cleaner and is easier to wash.</p>
-        <p>The film stays clear and won't go yellow over time.</p>
-        <p>It self-repairs minor scratches quickly with heat.</p>
-        <p>Thick, tough film that takes rock chips and road debris so your paint doesn't.</p>
+        <p><strong>Hydrophobic.</strong> Water and dirt bead up and roll off, so the car stays cleaner and is easier to wash.</p>
+        <p><strong>Anti-Yellowing.</strong> The film stays clear and won't go yellow over time.</p>
+        <p><strong>Repairing.</strong> It self-repairs minor scratches quickly with heat.</p>
+        <p><strong>Durable.</strong> Thick, tough film that takes rock chips and road debris so your paint doesn't.</p>
         <p>
           <a href={site.googleReview} target="_blank" rel="noopener noreferrer">
             Read our Google reviews
