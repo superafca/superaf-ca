@@ -17,7 +17,7 @@ export function ContactStrip() {
         <p className="store-kicker">Contact</p>
         <h2>{site.phone}</h2>
         <p className="store-lede">
-          <AddressLink>{site.address}</AddressLink>. <AddressLink>{site.plusCode}</AddressLink>. {site.hours}.
+          <AddressLink>{site.address}</AddressLink>. {site.hours}. {site.hoursNote}
         </p>
         <p className="store-links">
           <a className="store-link" href={site.phoneHref}>

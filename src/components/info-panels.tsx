@@ -152,7 +152,7 @@ function VisionBody() {
           </li>
           <li>
             <span className="font-semibold text-fg">Talk like a shop.</span> Text,
-            call, WhatsApp. <AddressLink>426 Memorial Drive NE</AddressLink>. <AddressLink>{site.plusCode}</AddressLink>.
+            call, WhatsApp. <AddressLink>426 Memorial Drive NE</AddressLink>.
           </li>
           <li>
             <span className="font-semibold text-fg">The box is the product.</span>{" "}
@@ -173,7 +173,7 @@ function VisionBody() {
           </a>
         </p>
         <p className="text-center text-xs text-subtle">
-          <AddressLink>{site.plusCode}</AddressLink>
+          <AddressLink>{site.address}</AddressLink>
         </p>
       </Block>
     </>

@@ -301,9 +301,12 @@ export function Landing() {
 
       <section className="store-mod store-mod-founder">
         <div className="store-copy">
-          <h2>Jesus installs it.</h2>
-          <p className="store-lede">Jesus owns SUPERAF and installs the film. {site.installerYears}. {site.established}.</p>
-          <p className="store-lede">You talk to the person who cuts it, and the person who puts it on.</p>
+          <h2>
+            Quality.
+            <br />
+            Speed. Price.
+          </h2>
+          <p className="store-lede">Refuse to choose two.</p>
           <Links learn="/vision" />
         </div>
         <PhotoCarousel shots={founderShots} label="The shop" />
@@ -315,7 +318,7 @@ export function Landing() {
             <AddressLink>426 Memorial Drive NE.</AddressLink>
           </h2>
           <p className="store-lede">
-            {site.hours}. Text or call {site.phone}. {site.carsFilmed} vehicles protected in the last 12 months — through our dealer network and our Calgary bay.
+            {site.hours}. Text or call {site.phone}. {site.hoursNote}
           </p>
           <p className="store-links">
             <a className="store-link" href={site.maps} target="_blank" rel="noopener noreferrer">

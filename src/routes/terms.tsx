@@ -32,9 +32,7 @@ function TermsPage() {
         </p>
         <p>
           We operate from a subleased indoor bay. Please call or text before
-          arriving. Mobile service is seasonal (May–October), indoor and
-          temperature-controlled only, billed as an extra, and may be declined
-          for weather or an unsuitable site.
+          arriving.
         </p>
       </Block>
 
