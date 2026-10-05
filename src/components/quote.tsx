@@ -42,7 +42,8 @@ import {
   type TintFilmId,
 } from "@/lib/site";
 import { confirmLead, sendLead } from "@/lib/send-lead";
-import { trackLeadConversion } from "@/lib/track";
+import { deliverLead, claimSend, releaseSend } from "@/lib/deliver-lead";
+import { leadTransactionId, trackLeadConversion } from "@/lib/track";
 import { HardBadges } from "@/components/cyber";
 import { SideTintPreview, WindshieldTintPreview } from "@/components/tint-visualizer";
 import { VehicleScan } from "@/components/vehicle-scan";
@@ -94,6 +95,35 @@ function firstName(name: string) {
   const token = name.trim().split(/\s+/)[0] ?? "";
   if (!token) return "";
   return token.charAt(0).toUpperCase() + token.slice(1);
+}
+
+function PhoneLink({ contact }: { contact: string }) {
+  return (
+    <a
+      href={contact === "whatsapp" ? site.whatsappHref : site.phoneHref}
+      className="mt-5 inline-flex h-12 min-w-48 items-center justify-center rounded-full bg-cloud px-6 text-sm font-bold uppercase tracking-kicker text-fg"
+    >
+      {contact === "whatsapp" ? "WhatsApp" : "Call / text"} {site.phone}
+    </a>
+  );
+}
+
+function SendingLine() {
+  const text = "SENDING…";
+  const [n, setN] = useState(0);
+  useEffect(() => {
+    if (n >= text.length) return;
+    const t = window.setTimeout(() => setN((v) => v + 1), 26);
+    return () => window.clearTimeout(t);
+  }, [n]);
+  return (
+    <p className="lead-sending" aria-live="polite">
+      {text.slice(0, n)}
+      <span className="scan-caret" aria-hidden>
+        ▌
+      </span>
+    </p>
+  );
 }
 
 async function postLeadBrowser(payload: {
@@ -211,7 +241,8 @@ export function Quote() {
   const [glassOpen, setGlassOpen] = useState(true);
   const [tintOpen, setTintOpen] = useState(true);
   const [notes, setNotes] = useState("");
-  const [leveled, setLeveled] = useState(false);
+  const [leadPhase, setLeadPhase] = useState<null | "sending" | "success" | "failed">(null);
+  const sendingRef = useRef(false);
   const [error, setError] = useState("");
   const [flipped, setFlipped] = useState<string | null>(null);
   const firstPrice = useRef(true);
@@ -229,11 +260,6 @@ export function Quote() {
     watcher.observe(el);
     return () => watcher.disconnect();
   }, []);
-
-  useEffect(() => {
-    if (!leveled) return;
-    trackLeadConversion();
-  }, [leveled]);
 
   useEffect(() => {
     setLead(readLead());
@@ -435,108 +461,109 @@ export function Quote() {
     setFlipped((cur) => (cur === id ? null : id));
   }
 
-  async function showQuote(e: FormEvent) {
-    e.preventDefault();
-    const missing = [
-      !lead.name.trim() ? "Name" : "",
-      !lead.phone.trim() ? "Number" : "",
-      !lead.email.trim() || !lead.email.includes("@") || !lead.email.includes(".") ? "Email" : "",
-      !year.trim() ? "Year" : "",
-      !make.trim() ? "Make" : "",
-      !model.trim() ? "Model" : "",
-    ].filter(Boolean);
-    if (missing.length) {
-      const list =
-        missing.length === 1
-          ? missing[0]
-          : missing.length === 2
-            ? `${missing[0]} and ${missing[1]}`
-            : `${missing.slice(0, -1).join(", ")}, and ${missing[missing.length - 1]}`;
-      setError(`${list} is required to progress`);
-      return;
-    }
-    localStorage.setItem(LEAD_KEY, JSON.stringify(lead));
+  async function showQuote(e?: FormEvent) {
+    e?.preventDefault();
+    if (!claimSend(sendingRef)) return;
     try {
-      sessionStorage.setItem("superaf-vehicle", JSON.stringify({ year, make, model, trim, notes }));
-    } catch {
-      /* ignore */
+      const missing = [
+        !lead.name.trim() ? "Name" : "",
+        !lead.phone.trim() ? "Number" : "",
+        !lead.email.trim() || !lead.email.includes("@") || !lead.email.includes(".") ? "Email" : "",
+        !year.trim() ? "Year" : "",
+        !make.trim() ? "Make" : "",
+        !model.trim() ? "Model" : "",
+      ].filter(Boolean);
+      if (missing.length) {
+        const list =
+          missing.length === 1
+            ? missing[0]
+            : missing.length === 2
+              ? `${missing[0]} and ${missing[1]}`
+              : `${missing.slice(0, -1).join(", ")}, and ${missing[missing.length - 1]}`;
+        setError(`${list} is required to progress`);
+        return;
+      }
+      localStorage.setItem(LEAD_KEY, JSON.stringify(lead));
+      try {
+        sessionStorage.setItem("superaf-vehicle", JSON.stringify({ year, make, model, trim, notes }));
+      } catch {
+        /* ignore */
+      }
+      setError("");
+      setLeadPhase("sending");
+      sfxLevel();
+      const vehicle = [year, make, model, trim].map((s) => s.trim()).filter(Boolean).join(" ");
+      const packLine = pack
+        ? `${pack.name} · ${films.find((f) => f.id === (filmId ?? "pp5"))?.name ?? ""}${packageId === "max" && finish ? ` · ${finish}` : ""}`
+        : "";
+      const extraLines = parts
+        .map((id) => {
+          const row = customParts.find((p) => p.id === id);
+          return row ? `${row.name} ${money(row.price)}` : "";
+        })
+        .filter(Boolean);
+      const installLine = `${install.label} · ${install.bumper} · ${result.size} · ${schedule}`;
+      const windLabel =
+        glassId === "clear" ? "Clear" : glassId === "tinted" ? glassShade.replace("%", "") : "";
+      const shadeLabel = (vlt: string) =>
+        tintFilmId ? shadeChoices(tintFilmId).find((s) => String(s.vlt) === vlt)?.label : "";
+      const tintBits: string[] = [];
+      if (tintFilmId || frontWindows || rearWindows || windshieldTint || visorTint) {
+        tintBits.push(tintFilms.find((f) => f.id === tintFilmId)?.name ?? "Film not selected");
+        if (frontWindows) {
+          const price = ` ${money(tintFrontPrice(frontWindows, rateFilm))}`;
+          const shade = frontShade ? shadeLabel(frontShade) : "shade not selected";
+          tintBits.push(`${frontWindows} front${price}${shade ? ` · ${shade}` : ""}`);
+        }
+        if (rearWindows) {
+          const price = ` ${money(tintRearPrice(rearWindows, rateFilm))}`;
+          const shade = rearShade ? shadeLabel(rearShade) : "shade not selected";
+          tintBits.push(`${rearWindows} rear${price}${shade ? ` · ${shade}` : ""}`);
+        }
+        if (windshieldTint) {
+          const shade = windshieldShade ? shadeLabel(windshieldShade) : "shade not selected";
+          tintBits.push(`windshield ${money(tintWindshieldPrice(rateFilm))}${shade ? ` · ${shade}` : ""}`);
+        } else if (visorTint) {
+          const shade = visorShade ? shadeLabel(visorShade) : "shade not selected";
+          tintBits.push(`visor ${money(tintVisorPrice(rateFilm))}${shade ? ` · ${shade}` : ""}`);
+        }
+        if (tintHours > 0) tintBits.push(`${tintHours} ${tintHours === 1 ? "hour" : "hours"}`);
+      }
+      const quoteLine = [
+        packageId ? `${packLine} · ${result.size}` : "",
+        packageId === "custom" && extraLines.length ? `Custom: ${extraLines.join(", ")}` : "",
+        packageId === "custom" && extrasTotal(parts) ? `Extras ${money(extrasTotal(parts))}` : "",
+        tintBits.length ? `Tint: ${tintBits.join(" · ")}` : "",
+        windLabel ? `Windshield protection film: ${windLabel}` : "",
+        `Estimate ${display} · ${schedule}`,
+        notes ? `Notes: ${notes}` : "",
+      ]
+        .filter(Boolean)
+        .join(" · ");
+      const payload = {
+        name: lead.name.trim(),
+        phone: lead.phone.trim(),
+        email: lead.email.trim(),
+        contact: lead.contact,
+        vehicle,
+        quote: quoteLine,
+        notes: notes.trim(),
+        install: installLine,
+      };
+      const outcome = await deliverLead({
+        transactionId: leadTransactionId(payload.email, payload.phone),
+        postBrowser: () => postLeadBrowser(payload),
+        postServer: () =>
+          sendLead({
+            data: payload,
+          }),
+        confirm: () => confirmLead({ data: payload }),
+        track: (event) => trackLeadConversion(event),
+      });
+      setLeadPhase(outcome === "success" ? "success" : "failed");
+    } finally {
+      releaseSend(sendingRef);
     }
-    setError("");
-    setLeveled(true);
-    sfxLevel();
-    const vehicle = [year, make, model, trim].map((s) => s.trim()).filter(Boolean).join(" ");
-    const packLine = pack
-      ? `${pack.name} · ${films.find((f) => f.id === (filmId ?? "pp5"))?.name ?? ""}${packageId === "max" && finish ? ` · ${finish}` : ""}`
-      : "";
-    const extraLines = parts
-      .map((id) => {
-        const row = customParts.find((p) => p.id === id);
-        return row ? `${row.name} ${money(row.price)}` : "";
-      })
-      .filter(Boolean);
-    const installLine = `${install.label} · ${install.bumper} · ${result.size} · ${schedule}`;
-    const windLabel =
-      glassId === "clear" ? "Clear" : glassId === "tinted" ? glassShade.replace("%", "") : "";
-    const shadeLabel = (vlt: string) =>
-      tintFilmId ? shadeChoices(tintFilmId).find((s) => String(s.vlt) === vlt)?.label : "";
-    const tintBits: string[] = [];
-    if (tintFilmId || frontWindows || rearWindows || windshieldTint || visorTint) {
-      tintBits.push(tintFilms.find((f) => f.id === tintFilmId)?.name ?? "Film not selected");
-      if (frontWindows) {
-        const price = ` ${money(tintFrontPrice(frontWindows, rateFilm))}`;
-        const shade = frontShade ? shadeLabel(frontShade) : "shade not selected";
-        tintBits.push(`${frontWindows} front${price}${shade ? ` · ${shade}` : ""}`);
-      }
-      if (rearWindows) {
-        const price = ` ${money(tintRearPrice(rearWindows, rateFilm))}`;
-        const shade = rearShade ? shadeLabel(rearShade) : "shade not selected";
-        tintBits.push(`${rearWindows} rear${price}${shade ? ` · ${shade}` : ""}`);
-      }
-      if (windshieldTint) {
-        const shade = windshieldShade ? shadeLabel(windshieldShade) : "shade not selected";
-        tintBits.push(`windshield ${money(tintWindshieldPrice(rateFilm))}${shade ? ` · ${shade}` : ""}`);
-      } else if (visorTint) {
-        const shade = visorShade ? shadeLabel(visorShade) : "shade not selected";
-        tintBits.push(`visor ${money(tintVisorPrice(rateFilm))}${shade ? ` · ${shade}` : ""}`);
-      }
-      if (tintHours > 0) tintBits.push(`${tintHours} ${tintHours === 1 ? "hour" : "hours"}`);
-    }
-    const quoteLine = [
-      packageId ? `${packLine} · ${result.size}` : "",
-      packageId === "custom" && extraLines.length ? `Custom: ${extraLines.join(", ")}` : "",
-      packageId === "custom" && extrasTotal(parts) ? `Extras ${money(extrasTotal(parts))}` : "",
-      tintBits.length ? `Tint: ${tintBits.join(" · ")}` : "",
-      windLabel ? `Windshield protection film: ${windLabel}` : "",
-      `Estimate ${display} · ${schedule}`,
-      notes ? `Notes: ${notes}` : "",
-    ]
-      .filter(Boolean)
-      .join(" · ");
-    const payload = {
-      name: lead.name.trim(),
-      phone: lead.phone.trim(),
-      email: lead.email.trim(),
-      contact: lead.contact,
-      vehicle,
-      quote: quoteLine,
-      notes: notes.trim(),
-      install: installLine,
-    };
-    void postLeadBrowser(payload).catch(() => {
-      void sendLead({
-        data: {
-          name: payload.name,
-          phone: payload.phone,
-          email: payload.email,
-          contact: payload.contact,
-          vehicle: payload.vehicle,
-          quote: payload.quote,
-          notes: payload.notes,
-          install: installLine,
-        },
-      }).catch(() => {});
-    });
-    void confirmLead({ data: payload }).catch(() => {});
   }
 
   const savePct = maxFilmSavingsPercent();
@@ -1250,28 +1277,47 @@ export function Quote() {
         </div>
       ) : null}
 
-      {leveled ? (
-        <div className="jackpot fixed inset-0 z-50 flex items-center justify-center overflow-hidden px-4" role="dialog" aria-label="Details locked in">
-          <div className="jackpot-card relative z-10 w-full max-w-lg rounded-3xl bg-white p-8 text-center text-fg shadow-border">
-            <BigCheck on className="mx-auto size-16" />
-            <p className="mt-5 text-base font-semibold leading-relaxed tracking-tight text-fg">
-              Your estimate is {display}. If all details are appropriate your quote will be accurate. We're reviewing your submission and will contact you for scheduling and any further questions soon!
-            </p>
-            <p className="mt-4 font-display text-4xl">Can’t wait?</p>
-            <p className="font-display text-3xl">Here’s the number</p>
-            <a
-              href={lead.contact === "whatsapp" ? site.whatsappHref : site.phoneHref}
-              className="mt-5 inline-flex h-12 min-w-48 items-center justify-center rounded-full bg-cloud px-6 text-sm font-bold uppercase tracking-kicker text-fg"
-            >
-              {lead.contact === "whatsapp" ? "WhatsApp" : "Call / text"} {site.phone}
-            </a>
-            <button
-              type="button"
-              className="mt-4 block w-full text-xs font-semibold tracking-tight text-muted"
-              onClick={() => setLeveled(false)}
-            >
-              Keep browsing
-            </button>
+      {leadPhase ? (
+        <div
+          className="jackpot fixed inset-0 z-50 flex items-center justify-center overflow-hidden px-4"
+          role="dialog"
+          aria-label={leadPhase === "failed" ? "Estimate did not send" : leadPhase === "sending" ? "Sending your estimate" : "Details locked in"}
+          data-lead-phase={leadPhase}
+        >
+          <div className={cn("jackpot-card relative z-10 w-full max-w-lg rounded-3xl bg-white p-8 text-center text-fg shadow-border", leadPhase === "failed" && "is-failed")}>
+            {leadPhase === "sending" ? (
+              <>
+                <SendingLine />
+                <PhoneLink contact={lead.contact} />
+              </>
+            ) : leadPhase === "failed" ? (
+              <>
+                <p className="lead-fail" role="alert">
+                  That didn't send. Call or text us and we'll get you booked.
+                </p>
+                <PhoneLink contact={lead.contact} />
+                <button type="button" className="lead-retry" onClick={() => void showQuote()}>
+                  Try again
+                </button>
+              </>
+            ) : (
+              <>
+                <BigCheck on className="mx-auto size-16" />
+                <p className="mt-5 text-base font-semibold leading-relaxed tracking-tight text-fg">
+                  Your estimate is {display}. If all details are appropriate your quote will be accurate. We're reviewing your submission and will contact you for scheduling and any further questions soon!
+                </p>
+                <p className="mt-4 font-display text-4xl">Can’t wait?</p>
+                <p className="font-display text-3xl">Here’s the number</p>
+                <PhoneLink contact={lead.contact} />
+                <button
+                  type="button"
+                  className="mt-4 block w-full text-xs font-semibold tracking-tight text-muted"
+                  onClick={() => setLeadPhase(null)}
+                >
+                  Keep browsing
+                </button>
+              </>
+            )}
           </div>
         </div>
       ) : null}

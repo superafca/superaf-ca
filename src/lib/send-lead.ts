@@ -41,10 +41,15 @@ export const sendLead = createServerFn({ method: "POST" })
         ...(data.photoData ? { photo_data: data.photoData } : {}),
       }),
     });
-    const json = (await res.json().catch(() => ({}))) as {
-      success?: string | boolean;
-    };
+    const text = await res.text().catch(() => "");
+    let json: { success?: string | boolean } = {};
+    try {
+      json = text ? (JSON.parse(text) as { success?: string | boolean }) : {};
+    } catch {
+      json = {};
+    }
     if (!res.ok || json.success === "false" || json.success === false) {
+      console.error("[sendLead] lead failed", res.status, text.slice(0, 300));
       throw new Error("lead email failed");
     }
     return { ok: true as const };
@@ -54,7 +59,10 @@ export const confirmLead = createServerFn({ method: "POST" })
   .inputValidator((d: LeadMail) => d)
   .handler(async ({ data }) => {
     const key = process.env.RESEND_API_KEY?.trim();
-    if (!key) return { ok: false as const, skipped: true as const };
+    if (!key) {
+      console.error("[confirmLead] RESEND_API_KEY missing");
+      return { ok: false as const, skipped: true as const };
+    }
     const lines = [
       `Hey ${data.name},`,
       "",
@@ -85,6 +93,10 @@ export const confirmLead = createServerFn({ method: "POST" })
         text: lines.join("\n"),
       }),
     });
-    if (!res.ok) return { ok: false as const, skipped: false as const };
+    if (!res.ok) {
+      const body = await res.text().catch(() => "");
+      console.error("[confirmLead] resend failed", res.status, body.slice(0, 300));
+      return { ok: false as const, skipped: false as const };
+    }
     return { ok: true as const };
   });
