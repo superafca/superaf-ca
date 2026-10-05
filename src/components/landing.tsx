@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Link } from "@tanstack/react-router";
 import { site, proofStats } from "@/lib/site";
 import { LiveStats } from "@/components/live-stat";
+import { founderShots, PhotoCarousel } from "@/components/work-media";
 import { cn } from "@/lib/utils";
 
 function Media({
@@ -241,13 +242,22 @@ export function Landing() {
       <Module
         auto
         tone="store-mod-pp"
-        title="PPF longer."
-        lede="Self-healing. Hydrophobic. Rock chip protection. HARD PP 5YR and 10YR."
+        title="Water hates it."
+        lede="Water and dirt bead up and roll off, so the car stays cleaner and is easier to wash."
         learn="/ppf"
         poster="/images/hydrophobic-poster.jpg"
         video="/videos/hydrophobic-loop.mp4"
         alt="Water beading on hydrophobic paint protection film"
       />
+
+      <section className="store-mod store-mod-kits">
+        <div className="store-copy">
+          <h2>FRONT — FRONT+ — MAX</h2>
+          <p className="store-lede">Level up your protection, and your life.</p>
+          <Links learn="/ppf" />
+        </div>
+        <KitRoll />
+      </section>
 
       <Module
         tone="store-mod-view"
@@ -288,59 +298,14 @@ export function Landing() {
         </div>
       </Module>
 
-      <div className="store-split">
-        <Module
-          tone="store-mod-tint"
-          title="Pitch black."
-          lede="Windows go dark. Carbon. Ceramic if you want the heat gone."
-          learn="/tint"
-          poster="/images/tint-f150-calgary.jpg"
-          alt="Matte black F-150 in Calgary, windows blacked out, windshield clear"
-        />
-        <Module
-          auto
-          tone="store-mod-heart"
-          title={
-            <>
-              Quality.
-              <br />
-              Speed. Cost.
-            </>
-          }
-          lede="Quality, speed, and honest pricing — we refused to pick two."
-          learn="/vision"
-          poster="/images/brand-heart-blue.jpg"
-          video="/videos/store-heart.mp4"
-          alt="Chrome red heart"
-        />
-      </div>
-
-      <section className="store-mod store-mod-kits">
+      <section className="store-mod store-mod-founder">
         <div className="store-copy">
-          <h2>FRONT — FRONT+ — MAX</h2>
-          <p className="store-lede">Level up your protection, and your life.</p>
-          <Links learn="/ppf" />
+          <h2>Jesus installs it.</h2>
+          <p className="store-lede">Jesus owns SUPERAF and installs the film. {site.installerYears}. {site.established}.</p>
+          <p className="store-lede">You talk to the person who cuts it, and the person who puts it on.</p>
+          <Links learn="/vision" />
         </div>
-        <KitRoll />
-      </section>
-
-      <section className="store-mod store-mod-boxed">
-        <div className="store-copy">
-          <h2>Boxed in Calgary.</h2>
-          <p className="store-lede">The film. The bay. The city.</p>
-          <Links learn="/ppf" />
-        </div>
-        <div className="store-work">
-          <figure className="store-work-glove">
-            <img src="/images/boxes-glove.jpg" alt="HARD PP boxes, WWW.SUPERAF.CA" />
-          </figure>
-          <figure className="store-work-shop">
-            <img src="/images/boxes-shop.jpg" alt="SUPER A.F. Corporation bay, plotter and boxed film" />
-          </figure>
-          <figure className="store-work-pallet">
-            <img src="/images/boxes-pallet.jpg" alt="HARD PP pallet unloaded in downtown Calgary" />
-          </figure>
-        </div>
+        <PhotoCarousel shots={founderShots} label="The shop" />
       </section>
 
       <section className="store-mod store-visit">

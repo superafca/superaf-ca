@@ -1,6 +1,31 @@
 {
   "hero": null,
-  "gallery": [],
+  "gallery": [
+    {
+      "file": "ppf-01.jpg",
+      "alt": "Paint protection film being installed on a black Porsche front fender and bumper, hood open, gold wheel"
+    },
+    {
+      "file": "ppf-02.jpg",
+      "alt": "Slip solution on fresh clear PPF across a dark hood with two vents"
+    },
+    {
+      "file": "ppf-03.jpg",
+      "alt": "Paint protection film being installed on a red Mazda front bumper and headlight, hood open"
+    },
+    {
+      "file": "ppf-04.jpg",
+      "alt": "Slip solution beading on fresh clear PPF across a red Mazda hood"
+    },
+    {
+      "file": "ppf-05.jpg",
+      "alt": "Installer squeegeeing clear PPF over the rear badge and tail lights of a grey SUV"
+    },
+    {
+      "file": "ppf-06.jpg",
+      "alt": "Black sports car with paint protection film, parked in downtown Calgary"
+    }
+  ],
   "before": null,
   "after": null
 }

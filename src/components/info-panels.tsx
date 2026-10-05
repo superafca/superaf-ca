@@ -3,7 +3,7 @@ import { Block, PageShell } from "@/components/page-shell";
 import { FilmName, HardMark } from "@/components/site-header";
 import { site, glasses as siteGlasses, filmCompare, tintCompare, proofStats } from "@/lib/site";
 import { LiveStats } from "@/components/live-stat";
-import { BeforeAfter, CoverageRow, TraitRow, VltStrip, WorkGallery, WorkHero } from "@/components/work-media";
+import { founderShots, PhotoCarousel, TraitRow, VltStrip, WorkCarousel } from "@/components/work-media";
 
 export const panelIds = ["vision", "ppf", "windshield", "tint"] as const;
 export type PanelId = (typeof panelIds)[number];
@@ -59,6 +59,7 @@ export function isPanelId(v: unknown): v is PanelId {
 function VisionBody() {
   return (
     <>
+      <PhotoCarousel shots={founderShots} label="The shop" />
       <Block title="The process">
         <p>
           {site.established}. {site.installerYears}.
@@ -221,17 +222,18 @@ function PpfBody() {
     <>
       <section className="work-section">
         <h2>Real installs.</h2>
-        <WorkHero page="ppf" />
+        <WorkCarousel page="ppf" />
         <TraitRow />
-        <CoverageRow />
-        <WorkGallery page="ppf" />
-        <BeforeAfter page="ppf" />
       </section>
       <section className="ppf-confidence">
         <h2>We don't buy film. We make it.</h2>
         <p>
           HARD PP® is ours — we manufacture it, we install it, we warranty it. No middleman, no markup telephone game, no finger-pointing if something goes wrong. {site.carsFilmed} vehicles protected in the last 12 months, through our dealer network and our Calgary bay.
         </p>
+        <p>Water and dirt bead up and roll off, so the car stays cleaner and is easier to wash.</p>
+        <p>The film stays clear and won't go yellow over time.</p>
+        <p>It self-repairs minor scratches quickly with heat.</p>
+        <p>Thick, tough film that takes rock chips and road debris so your paint doesn't.</p>
         <p>
           <a href={site.googleReview} target="_blank" rel="noopener noreferrer">
             Read our Google reviews
@@ -421,12 +423,8 @@ function GlassBody() {
 function TintBody() {
   return (
     <>
-      <section className="work-section">
-        <h2>Real installs.</h2>
-        <WorkHero page="tint" />
-        <VltStrip />
-        <WorkGallery page="tint" />
-      </section>
+      <WorkCarousel page="tint" />
+      <VltStrip />
       <FeatureCompare
         left="Carbon"
         right="Ceramic"

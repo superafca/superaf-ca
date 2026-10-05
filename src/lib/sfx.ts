@@ -9,6 +9,8 @@ let dry: GainNode | null = null;
 let master: GainNode | null = null;
 const clips = new Map<string, AudioBuffer | null>();
 const loading = new Set<string>();
+let listed: Set<string> | null = null;
+let listing = false;
 
 type Bed = { duck: (seconds: number) => void };
 let bed: Bed | null = null;
@@ -88,7 +90,26 @@ function audible() {
 }
 
 function loadClip(name: string, ac: AudioContext) {
+  if (!listed && !listing && typeof window !== "undefined") {
+    listing = true;
+    void fetch("/sfx/manifest.json")
+      .then((res) => (res.ok ? res.json() : []))
+      .then((names) => {
+        listed = new Set(Array.isArray(names) ? names.filter((n) => typeof n === "string") : []);
+      })
+      .catch(() => {
+        listed = new Set();
+      })
+      .finally(() => {
+        listing = false;
+      });
+  }
   if (clips.has(name) || loading.has(name)) return;
+  if (!listed) return;
+  if (!listed.has(name)) {
+    clips.set(name, null);
+    return;
+  }
   loading.add(name);
   void fetch(`/sfx/${name}.webm`)
     .then((res) => (res.ok ? res.arrayBuffer() : Promise.reject(new Error("missing"))))

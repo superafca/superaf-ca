@@ -22,6 +22,7 @@ let next = 0;
 let step = 0;
 let want = false;
 let playing = false;
+let fadeTimer = 0;
 
 function context() {
   sfxUnlock();
@@ -176,11 +177,13 @@ function pump() {
 }
 
 function start() {
+  window.clearTimeout(fadeTimer);
   if (playing) return;
   const ac = context();
   if (!ac || !want) return;
   if (document.hidden) return;
   playing = true;
+  if (bed) bed.gain.setValueAtTime(0.15, ac.currentTime);
   window.clearTimeout(timer);
   next = ac.currentTime + 0.08;
   startCrackle(ac);
@@ -195,12 +198,21 @@ export function lofiHold() {
 function stop() {
   playing = false;
   window.clearTimeout(timer);
-  try {
-    crackle?.stop();
-  } catch {
-    /* already stopped */
+  if (ctx && bed) {
+    const t = ctx.currentTime;
+    bed.gain.cancelScheduledValues(t);
+    bed.gain.setValueAtTime(Math.max(0.0001, bed.gain.value), t);
+    bed.gain.linearRampToValueAtTime(0.0001, t + 0.15);
   }
-  crackle = null;
+  window.clearTimeout(fadeTimer);
+  fadeTimer = window.setTimeout(() => {
+    try {
+      crackle?.stop();
+    } catch {
+      /* already stopped */
+    }
+    crackle = null;
+  }, 170);
 }
 
 function onHide() {

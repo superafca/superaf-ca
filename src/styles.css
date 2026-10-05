@@ -3598,3 +3598,128 @@
     font-size: 0.95rem;
   }
 }
+
+.photo-carousel {
+  position: relative;
+  width: min(100%, 560px);
+  aspect-ratio: 4 / 3;
+  max-height: 420px;
+  margin: 1.5rem auto 2rem;
+  overflow: hidden;
+  border-radius: 16px;
+  background: #10141c;
+  outline: none;
+}
+.photo-carousel:focus-visible {
+  box-shadow: 0 0 0 2px #12f7ff;
+}
+.photo-carousel img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  opacity: 0;
+}
+.photo-carousel img.is-on {
+  opacity: 1;
+}
+.photo-arrow {
+  position: absolute;
+  top: 50%;
+  z-index: 2;
+  width: 36px;
+  height: 36px;
+  margin-top: -18px;
+  border: 0;
+  border-radius: 999px;
+  background: #0b0f17;
+  color: #e2e8f0;
+  font-size: 1.4rem;
+  line-height: 1;
+}
+.photo-arrow.is-prev { left: 10px; }
+.photo-arrow.is-next { right: 10px; }
+.photo-dots {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 10px;
+  z-index: 2;
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+}
+.photo-dots button {
+  width: 8px;
+  height: 8px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: #c5ced9;
+}
+.photo-dots button.is-on {
+  background: #12f7ff;
+}
+.tint-viz {
+  margin: 0 auto 0.5rem;
+  max-width: 640px;
+  padding: 0.75rem 0.75rem 0.85rem;
+  background: #0b0f17;
+  border-radius: 16px;
+}
+.tint-viz svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 16px;
+}
+.viz-carbon {
+  fill: #141416;
+  transition: opacity 300ms ease;
+}
+.viz-ceramic {
+  fill: #16343a;
+  transition: opacity 300ms ease;
+}
+.viz-sheen {
+  fill: #b7fff2;
+  transition: opacity 300ms ease;
+}
+.tint-viz figcaption {
+  margin-top: 0.45rem;
+  text-align: center;
+  font-family: "Orbitron", sans-serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  color: #e2e8f0;
+}
+.zone-quotes {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.zone-quotes button {
+  display: grid;
+  gap: 0.2rem;
+  min-height: 72px;
+  padding: 0.75rem;
+  border: 1px solid rgb(18 247 255 / 0.35);
+  border-radius: 14px;
+  background: #10141c;
+  color: #e2e8f0;
+  font-family: "Orbitron", sans-serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+}
+.zone-quotes button.is-on {
+  background: #12f7ff;
+  color: #041016;
+}
+@media (max-width: 640px) {
+  .photo-carousel {
+    width: min(100%, 400px);
+    max-height: 300px;
+  }
+}

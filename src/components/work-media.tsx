@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
-type Shot = { file: string; alt: string; poster?: string };
+type Shot = { file: string; alt: string };
 
 type Manifest = {
   hero: Shot | null;
@@ -10,6 +10,12 @@ type Manifest = {
 };
 
 const EMPTY: Manifest = { hero: null, gallery: [], before: null, after: null };
+
+export const founderShots = [
+  { src: "/images/boxes-glove.jpg", alt: "HARD PP boxes, WWW.SUPERAF.CA" },
+  { src: "/images/boxes-shop.jpg", alt: "SUPER A.F. Corporation bay, plotter and boxed film" },
+  { src: "/images/boxes-pallet.jpg", alt: "HARD PP pallet unloaded in downtown Calgary" },
+] as const;
 
 function clean(file: string) {
   return file.replace(/[^a-zA-Z0-9._-]/g, "");
@@ -23,89 +29,88 @@ function shotOk(shot: Shot | null | undefined): shot is Shot {
   return Boolean(shot && shot.file && shot.alt && shot.alt.trim());
 }
 
-function Empty({ label, hero = false }: { label: string; hero?: boolean }) {
+export function PhotoCarousel({
+  shots,
+  label = "Photos",
+}: {
+  shots: readonly { src: string; alt: string }[];
+  label?: string;
+}) {
+  const [index, setIndex] = useState(0);
+  const startX = useRef<number | null>(null);
+  const count = shots.length;
+  if (!count) return null;
+  const safe = ((index % count) + count) % count;
+  const go = (next: number) => setIndex((next + count) % count);
+
   return (
-    <div className={hero ? "work-empty work-hero" : "work-empty"}>
-      <p>REAL INSTALLS LOADING</p>
-      <span>{label}</span>
+    <div
+      className="photo-carousel"
+      tabIndex={0}
+      role="region"
+      aria-roledescription="carousel"
+      aria-label={label}
+      onKeyDown={(e) => {
+        if (e.key === "ArrowLeft") {
+          e.preventDefault();
+          go(safe - 1);
+        } else if (e.key === "ArrowRight") {
+          e.preventDefault();
+          go(safe + 1);
+        }
+      }}
+      onTouchStart={(e) => {
+        startX.current = e.changedTouches[0]?.clientX ?? null;
+      }}
+      onTouchEnd={(e) => {
+        if (startX.current == null) return;
+        const dx = (e.changedTouches[0]?.clientX ?? startX.current) - startX.current;
+        if (dx > 40) go(safe - 1);
+        else if (dx < -40) go(safe + 1);
+        startX.current = null;
+      }}
+    >
+      {shots.map((shot, i) => (
+        <img
+          key={shot.src}
+          src={shot.src}
+          alt={i === safe ? shot.alt : ""}
+          loading={i === 0 ? "eager" : "lazy"}
+          decoding="async"
+          className={i === safe ? "is-on" : undefined}
+        />
+      ))}
+      {count > 1 ? (
+        <>
+          <button type="button" className="photo-arrow is-prev" aria-label="Previous photo" onClick={() => go(safe - 1)}>
+            ‹
+          </button>
+          <button type="button" className="photo-arrow is-next" aria-label="Next photo" onClick={() => go(safe + 1)}>
+            ›
+          </button>
+          <div className="photo-dots">
+            {shots.map((shot, i) => (
+              <button
+                key={shot.src}
+                type="button"
+                className={i === safe ? "is-on" : undefined}
+                aria-label={`Photo ${i + 1} of ${count}`}
+                aria-current={i === safe ? "true" : undefined}
+                onClick={() => go(i)}
+              />
+            ))}
+          </div>
+        </>
+      ) : null}
     </div>
   );
 }
 
-function Still({ page, shot }: { page: string; shot: Shot }) {
-  const video = /\.(mp4|webm)$/i.test(shot.file);
-  if (video) {
-    return (
-      <video
-        src={url(page, shot.file)}
-        poster={shot.poster ? url(page, shot.poster) : undefined}
-        controls
-        muted
-        playsInline
-        preload="none"
-        aria-label={shot.alt}
-      />
-    );
-  }
-  return <img src={url(page, shot.file)} alt={shot.alt} loading="lazy" decoding="async" />;
-}
-
-export function WorkHero({ page }: { page: "ppf" | "tint" }) {
+export function WorkCarousel({ page }: { page: "ppf" | "tint" }) {
   const data = useManifest(page);
-  const shot = shotOk(data.hero) ? data.hero : null;
-  if (!shot) return <Empty hero label={page === "ppf" ? "PAINT PROTECTION" : "TINT"} />;
-  return (
-    <div className="work-hero">
-      <Still page={page} shot={shot} />
-    </div>
-  );
-}
-
-export function WorkGallery({ page }: { page: "ppf" | "tint" }) {
-  const data = useManifest(page);
-  const shots = data.gallery.filter(shotOk).slice(0, 6);
-  const cells = Array.from({ length: 6 }, (_, i) => shots[i] ?? null);
-  return (
-    <div className="work-grid">
-      {cells.map((shot, i) =>
-        shot ? (
-          <figure key={shot.file} className="work-cell">
-            <Still page={page} shot={shot} />
-          </figure>
-        ) : (
-          <Empty key={`empty-${i}`} label={`FRAME ${i + 1}`} />
-        ),
-      )}
-    </div>
-  );
-}
-
-export function BeforeAfter({ page }: { page: "ppf" }) {
-  const data = useManifest(page);
-  const before = shotOk(data.before) ? data.before : null;
-  const after = shotOk(data.after) ? data.after : null;
-  const [pos, setPos] = useState(56);
-  if (!before || !after) return <Empty label="BEFORE / AFTER" />;
-  return (
-    <div className="ba">
-      <img src={url(page, after.file)} alt={after.alt} loading="lazy" decoding="async" />
-      <img
-        src={url(page, before.file)}
-        alt=""
-        loading="lazy"
-        decoding="async"
-        style={{ clipPath: `inset(0 ${100 - pos}% 0 0)` }}
-      />
-      <input
-        type="range"
-        min={0}
-        max={100}
-        value={pos}
-        aria-label="Drag to compare before and after"
-        onChange={(e) => setPos(Number(e.target.value))}
-      />
-    </div>
-  );
+  const shots = data.gallery.filter(shotOk).map((shot) => ({ src: url(page, shot.file), alt: shot.alt }));
+  if (!shots.length) return null;
+  return <PhotoCarousel shots={shots} label={page === "ppf" ? "Paint protection installs" : "Tint installs"} />;
 }
 
 function useManifest(page: string) {
@@ -146,42 +151,6 @@ export function TraitRow() {
         </li>
       ))}
     </ul>
-  );
-}
-
-function Car({ zones }: { zones: "front" | "plus" | "max" }) {
-  const front = zones === "front" || zones === "plus" || zones === "max";
-  const plus = zones === "plus" || zones === "max";
-  const max = zones === "max";
-  return (
-    <svg viewBox="0 0 320 128" role="img" aria-label={`${zones} coverage`}>
-      <path className="car-shell" d="M28 86h18l14-24 46-16h78l42 16 48 8 18 16h8v16H28z" />
-      <circle className="car-wheel" cx="86" cy="102" r="14" />
-      <circle className="car-wheel" cx="236" cy="102" r="14" />
-      {front ? <path className="car-zone" d="M60 82l14-20 40-12h36v32H70z" /> : null}
-      {front ? <path className="car-zone" d="M46 86h16l8-12-10-4-14 16z" /> : null}
-      {plus ? <path className="car-zone" d="M150 82h70v8h-70z" /> : null}
-      {plus ? <rect className="car-zone" x="168" y="70" width="10" height="10" /> : null}
-      {max ? <path className="car-zone" d="M150 62h78l28 14v14h-106z" /> : null}
-    </svg>
-  );
-}
-
-export function CoverageRow() {
-  const kits = [
-    ["FRONT", "front"],
-    ["FRONT+", "plus"],
-    ["MAX", "max"],
-  ] as const;
-  return (
-    <div className="coverage-row">
-      {kits.map(([name, zone]) => (
-        <figure key={name}>
-          <Car zones={zone} />
-          <figcaption>{name}</figcaption>
-        </figure>
-      ))}
-    </div>
   );
 }
 
