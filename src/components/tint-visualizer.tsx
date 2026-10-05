@@ -1,9 +1,9 @@
 import { shadeChoices, tintShades, type TintFilmId } from "@/lib/site";
 
 const SIDE = {
-  front: "/images/viz/mask-front.png",
+  front: "/images/viz/mask-quarter.png",
   rear: "/images/viz/mask-rear.png",
-  quarter: "/images/viz/mask-quarter.png",
+  quarter: "/images/viz/mask-front.png",
 } as const;
 
 const WIND = "/images/viz/mask-windshield.png";
@@ -44,9 +44,9 @@ export function SideTintPreview({
               key={shade.vlt}
               type="button"
               role="option"
-              aria-selected={front === shade.vlt}
+              aria-selected={front === shade.vlt && rear === shade.vlt}
               data-viz-shade={shade.vlt}
-              className={front === shade.vlt ? "is-on" : undefined}
+              className={front === shade.vlt && rear === shade.vlt ? "is-on" : undefined}
               onClick={() => onPick(shade.vlt)}
             >
               <span style={{ background: swatch(shade.vlt) }} />

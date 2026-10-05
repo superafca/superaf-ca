@@ -727,7 +727,9 @@ export function Quote() {
         rearVlt={rearShade ? Number(rearShade) : null}
         onPick={(vlt) => {
           sfxClick();
-          setFrontShade(String(vlt));
+          const next = String(vlt);
+          setFrontShade(next);
+          setRearShade(next);
         }}
       />
       <div className="tint-columns">
