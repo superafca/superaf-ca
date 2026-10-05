@@ -1,5 +1,14 @@
 import { Link } from "@tanstack/react-router";
+import type { ReactNode } from "react";
 import { site } from "@/lib/site";
+
+export function AddressLink({ children }: { children: ReactNode }) {
+  return (
+    <a className="map-link" href={site.maps} target="_blank" rel="noopener noreferrer">
+      {children}
+    </a>
+  );
+}
 
 export function ContactStrip() {
   return (
@@ -8,7 +17,7 @@ export function ContactStrip() {
         <p className="store-kicker">Contact</p>
         <h2>{site.phone}</h2>
         <p className="store-lede">
-          {site.address}. {site.plusCode}. {site.hours}.
+          <AddressLink>{site.address}</AddressLink>. <AddressLink>{site.plusCode}</AddressLink>. {site.hours}.
         </p>
         <p className="store-links">
           <a className="store-link" href={site.phoneHref}>
@@ -40,7 +49,7 @@ export function SiteFooter() {
       </nav>
       <div className="store-foot-grid">
         <div>
-          <p className="font-semibold text-fg">SUPERAF.CA</p>
+          <p className="store-foot-brand">SUPERAF.CA</p>
           <p className="mt-2">
             <a href={site.igHref}>Instagram @{site.ig}</a>
           </p>
@@ -51,7 +60,9 @@ export function SiteFooter() {
           </p>
         </div>
         <div>
-          <p>{site.address}</p>
+          <p>
+            <AddressLink>{site.address}</AddressLink>
+          </p>
           <p>{site.hours}</p>
           <p>{site.hoursNote}</p>
         </div>

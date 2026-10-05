@@ -14,7 +14,7 @@ export const Route = createRootRoute({
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: `${APP_NAME} — Best PPF in Calgary` },
       { name: "description", content: DESCRIPTION },
-      { name: "theme-color", content: "#ffffff" },
+      { name: "theme-color", content: "#0b0f17" },
       { property: "og:type", content: "website" },
       { property: "og:url", content: "https://www.superaf.ca/" },
       { property: "og:title", content: `${APP_NAME} — Best PPF in Calgary` },
@@ -58,7 +58,7 @@ export const Route = createRootRoute({
       <head>
         <HeadContent />
       </head>
-      <body className="bg-bg text-fg font-sans">
+      <body className="font-sans">
         <PreviewHostBridge />
         <AuthProvider>
           <Outlet />

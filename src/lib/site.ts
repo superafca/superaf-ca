@@ -1,3 +1,6 @@
+const MAPS_URL =
+  "https://www.google.com/maps/search/?api=1&query=SUPERAF.CA+3W2W%2BHV+Calgary%2C+Alberta";
+
 export const site = {
   name: "SUPERAF.CA",
   short: "SUPERAF",
@@ -16,21 +19,42 @@ export const site = {
   address: "426 Memorial Drive NE, Calgary, AB",
   addressNote: "Text or call for an appointment.",
   plusCode: "3W2W+HV Calgary, Alberta",
-  maps: "https://www.google.com/maps/search/?api=1&query=3W2W%2BHV+Calgary%2C+Alberta",
+  maps: MAPS_URL,
   mapsEmbed: "https://maps.google.com/maps?q=3W2W%2BHV%2C+Calgary%2C+Alberta&z=17&output=embed",
   hours: "Mon–Fri 09:00–18:00",
   hoursNote: "Mobile May–October, indoor and temp-controlled only. Extra fee.",
-  carsFilmed: "500+",
-  upgrades2026: "500+",
-  yearsOpen: "10+",
-  yearsCombined: "15+",
+  carsFilmed: "403",
+  upgrades2026: "403",
+  allTime: "5,439",
+  established: "EST. 2016",
+  installerYears: "14 years of installer experience",
   googleSearch: "https://www.google.com/search?q=SUPERAF.CA+Calgary+paint+protection+film",
-  googleMapsSearch:
-    "https://www.google.com/maps/search/?api=1&query=SUPERAF.CA+3W2W%2BHV+Calgary%2C+Alberta",
+  googleMapsSearch: MAPS_URL,
   googleReview: "https://g.page/r/CQNKQDNeuW2REAI/review",
   sitePremiere: "20 September 2026",
   googlePremiere: "20 September 2026",
 } as const;
+
+export const proofStats = [
+  {
+    value: site.allTime,
+    label: "VEHICLES PROTECTED · ALL-TIME",
+    short: "ALL-TIME",
+    text: `${site.allTime} vehicles protected`,
+  },
+  {
+    value: site.carsFilmed,
+    label: "VEHICLES PROTECTED · LAST 12 MONTHS",
+    short: "LAST 12 MONTHS",
+    text: `${site.carsFilmed} vehicles protected in the last 12 months`,
+  },
+  {
+    value: site.installerYears.slice(0, site.installerYears.indexOf(" ")),
+    label: "YEARS OF INSTALLER EXPERIENCE",
+    short: "INSTALLER YEARS",
+    text: site.installerYears,
+  },
+] as const;
 
 export function packageArt(
   _packageId: string,
@@ -235,6 +259,18 @@ const TINT_REAR_PRICE = {
 
 export const TINT_FRONT_HOURS = 2;
 export const TINT_REAR_HOURS = 4;
+export const TINT_ZONE_HOURS = "2–3 hours";
+
+export const TINT_WINDSHIELD_PRICE = { carbon: 279, ceramic: 379 } as const;
+export const TINT_VISOR_PRICE = { carbon: 89, ceramic: 109 } as const;
+
+export function tintWindshieldPrice(kind: TintFilmId) {
+  return TINT_WINDSHIELD_PRICE[kind];
+}
+
+export function tintVisorPrice(kind: TintFilmId) {
+  return TINT_VISOR_PRICE[kind];
+}
 
 export function tintFrontPrice(front: FrontWindows, kind: TintFilmId) {
   return TINT_FRONT_PRICE[front][kind];
@@ -463,6 +499,8 @@ export function quotePrice(opts: {
   parts?: readonly CustomPartId[];
   frontWindows?: number;
   rearWindows?: number;
+  windshieldTint?: boolean;
+  visorTint?: boolean;
   now?: number;
 }) {
   const now = opts.now ?? Date.now();
@@ -477,15 +515,22 @@ export function quotePrice(opts: {
   const kind: TintFilmId = opts.tintFilmId ?? "carbon";
   const frontSel = opts.frontWindows ? snapFrontWindows(opts.frontWindows) : null;
   const rearSel = opts.rearWindows ? snapRearWindows(opts.rearWindows) : null;
-  const tintAmount = opts.tintOn
+  const windowTint = opts.tintOn
     ? (frontSel ? tintFrontPrice(frontSel, kind) : 0) + (rearSel ? tintRearPrice(rearSel, kind) : 0)
     : 0;
+  const zoneTint = opts.windshieldTint
+    ? tintWindshieldPrice(kind)
+    : opts.visorTint
+      ? tintVisorPrice(kind)
+      : 0;
+  const tintAmount = windowTint + zoneTint;
   const tintHours = opts.tintOn ? (frontSel ? TINT_FRONT_HOURS : 0) + (rearSel ? TINT_REAR_HOURS : 0) : 0;
   const glass = glasses.find((g) => g.id === opts.glassId);
   const glassAmount = glass ? glassPrice(glass.id, now) : 0;
   const timeBits = [
     ppfOn ? kitTimeLabel(opts.packageId, opts.parts) : "",
     opts.tintOn && tintHours ? `${tintHours} ${tintHours === 1 ? "hour" : "hours"}` : "",
+    opts.windshieldTint || opts.visorTint ? TINT_ZONE_HOURS : "",
     glass ? "windshield 1 day" : "",
   ].filter(Boolean);
 

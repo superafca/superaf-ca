@@ -24,8 +24,10 @@ import {
   TINT_REAR_HOURS,
   tintFilms,
   tintFrontPrice,
-  tintCompare,
   tintRearPrice,
+  tintVisorPrice,
+  tintWindshieldPrice,
+  TINT_ZONE_HOURS,
   windowShots,
   filmCompare,
   COLOUR_UPCHARGE,
@@ -42,6 +44,7 @@ import {
 import { confirmLead, sendLead } from "@/lib/send-lead";
 import { trackLeadConversion } from "@/lib/track";
 import { HardBadges } from "@/components/cyber";
+import { SideTintPreview, WindshieldTintPreview } from "@/components/tint-visualizer";
 import { VehicleScan } from "@/components/vehicle-scan";
 import { BigCheck } from "@/components/faces";
 import {
@@ -197,6 +200,10 @@ export function Quote() {
   const [rearWindows, setRearWindows] = useState<RearWindows | null>(null);
   const [frontShade, setFrontShade] = useState("");
   const [rearShade, setRearShade] = useState("");
+  const [windshieldTint, setWindshieldTint] = useState(false);
+  const [visorTint, setVisorTint] = useState(false);
+  const [windshieldShade, setWindshieldShade] = useState("");
+  const [visorShade, setVisorShade] = useState("");
   const [parts, setParts] = useState<CustomPartId[]>([]);
   const [glassId, setGlassId] = useState<GlassId>("none");
   const [glassShade, setGlassShade] = useState<"70%" | "35%">("70%");
@@ -260,7 +267,7 @@ export function Quote() {
   const rank = install.rank;
 
   const priceFilm: FilmId = filmId ?? "pp5";
-  const tintReady = Boolean(frontWindows || rearWindows);
+  const tintReady = Boolean(frontWindows || rearWindows || windshieldTint || visorTint);
 
   const result = useMemo(
     () =>
@@ -276,9 +283,11 @@ export function Quote() {
         parts,
         frontWindows: frontWindows ?? undefined,
         rearWindows: rearWindows ?? undefined,
+        windshieldTint,
+        visorTint,
         finishId,
       }),
-    [band, rank, packageId, filmId, tintReady, tintFilmId, glassId, parts, frontWindows, rearWindows, finishId],
+    [band, rank, packageId, filmId, tintReady, tintFilmId, glassId, parts, frontWindows, rearWindows, windshieldTint, visorTint, finishId],
   );
 
   const kitPrices = useMemo(
@@ -367,12 +376,16 @@ export function Quote() {
     if (!tintFilmId) {
       if (frontShade) setFrontShade("");
       if (rearShade) setRearShade("");
+      if (windshieldShade) setWindshieldShade("");
+      if (visorShade) setVisorShade("");
       return;
     }
     const ok = new Set(shadeChoices(tintFilmId).map((s) => String(s.vlt)));
     if (frontShade && !ok.has(frontShade)) setFrontShade("");
     if (rearShade && !ok.has(rearShade)) setRearShade("");
-  }, [tintFilmId, frontShade, rearShade]);
+    if (windshieldShade && !ok.has(windshieldShade)) setWindshieldShade("");
+    if (visorShade && !ok.has(visorShade)) setVisorShade("");
+  }, [tintFilmId, frontShade, rearShade, windshieldShade, visorShade]);
 
   useEffect(() => {
     if (firstPrice.current) {
@@ -467,7 +480,7 @@ export function Quote() {
     const shadeLabel = (vlt: string) =>
       tintFilmId ? shadeChoices(tintFilmId).find((s) => String(s.vlt) === vlt)?.label : "";
     const tintBits: string[] = [];
-    if (tintFilmId || frontWindows || rearWindows) {
+    if (tintFilmId || frontWindows || rearWindows || windshieldTint || visorTint) {
       tintBits.push(tintFilms.find((f) => f.id === tintFilmId)?.name ?? "Film not selected");
       if (frontWindows) {
         const price = ` ${money(tintFrontPrice(frontWindows, rateFilm))}`;
@@ -478,6 +491,13 @@ export function Quote() {
         const price = ` ${money(tintRearPrice(rearWindows, rateFilm))}`;
         const shade = rearShade ? shadeLabel(rearShade) : "shade not selected";
         tintBits.push(`${rearWindows} rear${price}${shade ? ` · ${shade}` : ""}`);
+      }
+      if (windshieldTint) {
+        const shade = windshieldShade ? shadeLabel(windshieldShade) : "shade not selected";
+        tintBits.push(`windshield ${money(tintWindshieldPrice(rateFilm))}${shade ? ` · ${shade}` : ""}`);
+      } else if (visorTint) {
+        const shade = visorShade ? shadeLabel(visorShade) : "shade not selected";
+        tintBits.push(`visor ${money(tintVisorPrice(rateFilm))}${shade ? ` · ${shade}` : ""}`);
       }
       if (tintHours > 0) tintBits.push(`${tintHours} ${tintHours === 1 ? "hour" : "hours"}`);
     }
@@ -634,20 +654,32 @@ export function Quote() {
     </div>
   );
 
-  const shadeMenu = (side: "front" | "rear") => {
-    const value = side === "front" ? frontShade : rearShade;
+  const shadeMenu = (side: "front" | "rear" | "windshield" | "visor") => {
+    const value =
+      side === "front" ? frontShade : side === "rear" ? rearShade : side === "windshield" ? windshieldShade : visorShade;
     const options = tintFilmId ? shadeChoices(tintFilmId) : [];
+    const labels = {
+      front: "Front shade",
+      rear: "Rear shade",
+      windshield: "Windshield shade",
+      visor: "Visor shade",
+    };
+    const set = (next: string) => {
+      if (side === "front") setFrontShade(next);
+      else if (side === "rear") setRearShade(next);
+      else if (side === "windshield") setWindshieldShade(next);
+      else setVisorShade(next);
+    };
     return (
       <>
       <label className="shade-field">
-        <span>{side === "front" ? "Front shade" : "Rear shade"}</span>
+        <span>{labels[side]}</span>
         <select
           value={value}
           disabled={!tintFilmId}
           onChange={(e) => {
             sfxClick();
-            if (side === "front") setFrontShade(e.target.value);
-            else setRearShade(e.target.value);
+            set(e.target.value);
           }}
         >
           <option value="">{tintFilmId ? "Shade" : "Pick carbon or ceramic"}</option>
@@ -669,11 +701,11 @@ export function Quote() {
               type="button"
               role="option"
               aria-selected={on}
+              data-shade={`${side}-${s.vlt}`}
               className={on ? "is-on" : ""}
               onClick={() => {
                 sfxClick();
-                if (side === "front") setFrontShade(String(s.vlt));
-                else setRearShade(String(s.vlt));
+                set(String(s.vlt));
               }}
             >
               <span className="shade-swatch" style={{ background: `rgb(${ink} ${ink + 8} ${ink + 16})` }} />
@@ -689,7 +721,17 @@ export function Quote() {
 
   const tintPick = () => (
     <div className="space-y-4">
-      <p className="tint-vs">Same darkness, different film: at 5%, Ceramic rejects 65% of total solar energy vs Carbon's 46%.</p>
+      <SideTintPreview
+        film={tintFilmId}
+        frontVlt={frontShade ? Number(frontShade) : null}
+        rearVlt={rearShade ? Number(rearShade) : null}
+        onPick={(vlt) => {
+          sfxClick();
+          const next = String(vlt);
+          setFrontShade(next);
+          setRearShade(next);
+        }}
+      />
       <div className="tint-columns">
         {tintFilms.map((f) => {
           const copy = TINT_COPY[f.id];
@@ -697,26 +739,13 @@ export function Quote() {
           const open = flipped === `tint-${f.id}`;
           return (
             <div key={f.id} className="tint-column">
-              <button
-                type="button"
-                className={cn("tint-spec", on && "is-on")}
-                onClick={() => {
-                  sfxCash();
-                  setTintFilmId(on ? null : f.id);
-                }}
-              >
-                <p className="tint-spec-kicker">{copy.kicker}</p>
-                <h3>{copy.title}</h3>
-                {copy.lines.map((line) => (
-                  <p key={line}>{line}</p>
-                ))}
-              </button>
               <article className={cn("kit-card tint-film-card", on && "is-on")}>
                 <div className={cn("kit-flip", open && "is-flipped")}>
                   <div className="kit-face kit-front tint-face" style={{ backgroundImage: `url(${f.bg})` }}>
                     <button
                       type="button"
                       className="kit-select"
+                      data-tint-film={f.id}
                       onClick={() => {
                         if (on) {
                           sfxClick();
@@ -734,35 +763,20 @@ export function Quote() {
                     <button
                       type="button"
                       className="kit-plus"
-                      aria-label={`Compare ${f.name}`}
+                      aria-label={`Details for ${f.name}`}
+                      aria-expanded={open}
                       onClick={() => toggleFlip(`tint-${f.id}`)}
                     >
                       +
                     </button>
                   </div>
-                  <div className="kit-face kit-back compare-back">
-                    <details className="shade-drop" open>
-                      <summary>Shades</summary>
-                      <ul>
-                        {shadeChoices(f.id).map((s) => (
-                          <li key={s.vlt}>{s.label}</li>
-                        ))}
-                      </ul>
-                    </details>
-                    <AlignCompare
-                      leftName="Carbon"
-                      rightName="Ceramic"
-                      rows={tintCompare
-                        .filter((row) => row.feature !== "Shades")
-                        .map((row) => ({
-                          feature: row.feature,
-                          left: row.carbon,
-                          right: row.ceramic,
-                          leftOn: row.carbonOn,
-                          rightOn: row.ceramicOn,
-                        }))}
-                    />
-                    <button type="button" className="kit-plus" onClick={() => toggleFlip(`tint-${f.id}`)}>
+                  <div className="kit-face kit-back tint-back">
+                    <p className="tint-kicker">{copy.kicker}</p>
+                    <h3>{copy.title}</h3>
+                    {copy.lines.map((line) => (
+                      <p key={line}>{line}</p>
+                    ))}
+                    <button type="button" className="kit-plus" aria-label={`Close ${f.name} details`} onClick={() => toggleFlip(`tint-${f.id}`)}>
                       ×
                     </button>
                   </div>
@@ -806,6 +820,7 @@ export function Quote() {
         })}
       </div>
       {shadeMenu("front")}
+      <p className="tint-law">Front window tint is sold for display purposes only. Drivers are responsible for making sure their vehicle complies with local road laws.</p>
       <div className="count-label">
         <span>How many rear windows?</span>
         <span className="hour-label">{TINT_REAR_HOURS} hours</span>
@@ -840,6 +855,61 @@ export function Quote() {
         })}
       </div>
       {shadeMenu("rear")}
+      <div className="count-label">
+        <span>Windshield and visor</span>
+        <span className="hour-label">{TINT_ZONE_HOURS}</span>
+      </div>
+      <WindshieldTintPreview
+        film={tintFilmId}
+        windshield={windshieldTint && windshieldShade ? Number(windshieldShade) : null}
+        visor={!windshieldTint && visorTint && visorShade ? Number(visorShade) : null}
+      />
+      <div className="zone-quotes">
+        <button
+          type="button"
+          data-zone="windshield"
+          className={windshieldTint ? "is-on" : undefined}
+          onClick={() => {
+            sfxClick();
+            setWindshieldTint((on) => {
+              if (on) {
+                setWindshieldShade("");
+                return false;
+              }
+              setVisorTint(false);
+              setVisorShade("");
+              return true;
+            });
+          }}
+        >
+          <span>Windshield</span>
+          <span>{money(tintWindshieldPrice(rateFilm))}</span>
+        </button>
+        <button
+          type="button"
+          data-zone="visor"
+          className={visorTint ? "is-on" : undefined}
+          onClick={() => {
+            sfxClick();
+            setVisorTint((on) => {
+              if (on) {
+                setVisorShade("");
+                return false;
+              }
+              setWindshieldTint(false);
+              setWindshieldShade("");
+              return true;
+            });
+          }}
+        >
+          <span>Visor</span>
+          <span>{money(tintVisorPrice(rateFilm))}</span>
+        </button>
+      </div>
+      <p className="zone-note">Oversized or complex glass quoted at inspection.</p>
+      {windshieldTint ? shadeMenu("windshield") : null}
+      {visorTint ? shadeMenu("visor") : null}
+      <p className="tint-law">Front window and windshield tint is installed at the customer's request. The customer is responsible for compliance with local road laws.</p>
     </div>
   );
 
@@ -1108,9 +1178,17 @@ export function Quote() {
 
             <ServiceBlock
               title="Window Tint"
-              time={tintHours > 0 ? `${tintHours} hours` : undefined}
+              time={
+                tintHours > 0 && (windshieldTint || visorTint)
+                  ? `${tintHours} hours · ${TINT_ZONE_HOURS}`
+                  : tintHours > 0
+                    ? `${tintHours} hours`
+                    : windshieldTint || visorTint
+                      ? TINT_ZONE_HOURS
+                      : undefined
+              }
               open={tintOpen}
-              selected={Boolean(tintFilmId || frontWindows || rearWindows)}
+              selected={Boolean(tintFilmId || frontWindows || rearWindows || windshieldTint || visorTint)}
               onOpen={() => setTintOpen(true)}
               onClose={() => {
                 setTintOpen(false);
@@ -1119,6 +1197,10 @@ export function Quote() {
                 setRearWindows(null);
                 setFrontShade("");
                 setRearShade("");
+                setWindshieldTint(false);
+                setVisorTint(false);
+                setWindshieldShade("");
+                setVisorShade("");
               }}
             >
               {tintPick()}
@@ -1147,6 +1229,7 @@ export function Quote() {
                 .filter(Boolean)
                 .join(" · ")}
             </p>
+            <p className="dock-meta dock-installer text-[11px] text-muted">{site.installerYears}.</p>
           </div>
           <div className="shrink-0 text-right">
             <button type="submit" className="hud-gold level-up px-6 text-[11px] tracking-[0.18em] md:px-8 md:text-sm">

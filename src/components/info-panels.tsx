@@ -1,7 +1,10 @@
 import { type ReactNode } from "react";
 import { Block, PageShell } from "@/components/page-shell";
+import { AddressLink } from "@/components/sections";
 import { FilmName, HardMark } from "@/components/site-header";
-import { site, glasses as siteGlasses, filmCompare, tintCompare } from "@/lib/site";
+import { site, glasses as siteGlasses, filmCompare, tintCompare, proofStats } from "@/lib/site";
+import { LiveStats } from "@/components/live-stat";
+import { founderShots, PhotoCarousel, TraitRow, VltStrip, WorkCarousel } from "@/components/work-media";
 
 export const panelIds = ["vision", "ppf", "windshield", "tint"] as const;
 export type PanelId = (typeof panelIds)[number];
@@ -57,7 +60,12 @@ export function isPanelId(v: unknown): v is PanelId {
 function VisionBody() {
   return (
     <>
+      <PhotoCarousel shots={founderShots} label="The shop" />
       <Block title="The process">
+        <p>
+          {site.established}. {site.installerYears}.
+        </p>
+        <LiveStats items={proofStats} />
         <p>
           Know the car before it rolls in. Funky paint. An old coating. Rock chips
           already in the clear. Tell us. We price the car in front of us, not the
@@ -144,11 +152,7 @@ function VisionBody() {
           </li>
           <li>
             <span className="font-semibold text-fg">Talk like a shop.</span> Text,
-            call, WhatsApp. 426 Memorial Drive NE. {site.plusCode}.
-          </li>
-          <li>
-            <span className="font-semibold text-fg">Haters welcome.</span> Write
-            the review. Funny ones get read out loud in the bay.
+            call, WhatsApp. <AddressLink>426 Memorial Drive NE</AddressLink>. <AddressLink>{site.plusCode}</AddressLink>.
           </li>
           <li>
             <span className="font-semibold text-fg">The box is the product.</span>{" "}
@@ -156,15 +160,8 @@ function VisionBody() {
           </li>
         </ol>
       </Block>
-      <Block title="Leave a review. Haters welcome.">
-        <p>
-          This website premiered {site.sitePremiere}. Google Business went live{" "}
-          {site.googlePremiere}.
-        </p>
-        <p>
-          If you liked how we do business, leave a review. If you hated it, even
-          better — write it like you mean it. Make it something people screenshot.
-        </p>
+      <Block title="Leave a review.">
+        <p>If you liked how we do business, leave a review.</p>
         <p className="pt-2 text-center">
           <a
             className="inline-flex h-12 items-center justify-center rounded-full bg-fg px-6 text-sm font-bold uppercase tracking-kicker text-cloud"
@@ -175,7 +172,9 @@ function VisionBody() {
             Review us on Google
           </a>
         </p>
-        <p className="text-center text-xs text-subtle">{site.plusCode}</p>
+        <p className="text-center text-xs text-subtle">
+          <AddressLink>{site.plusCode}</AddressLink>
+        </p>
       </Block>
     </>
   );
@@ -217,11 +216,20 @@ function FeatureCompare({
 function PpfBody() {
   return (
     <>
+      <section className="work-section">
+        <h2>Real installs.</h2>
+        <WorkCarousel page="ppf" />
+        <TraitRow />
+      </section>
       <section className="ppf-confidence">
         <h2>We don't buy film. We make it.</h2>
         <p>
-          HARD PP® is ours — we manufacture it, we install it, we warranty it. No middleman, no markup telephone game, no finger-pointing if something goes wrong. 500+ vehicles protected in 2026, through our dealer network and our Calgary bay.
+          HARD PP® is ours — we manufacture it, we install it, we warranty it. No middleman, no markup telephone game, no finger-pointing if something goes wrong. {site.carsFilmed} vehicles protected in the last 12 months, through our dealer network and our Calgary bay.
         </p>
+        <p><strong>Hydrophobic.</strong> Water and dirt bead up and roll off, so the car stays cleaner and is easier to wash.</p>
+        <p><strong>Anti-Yellowing.</strong> The film stays clear and won't go yellow over time.</p>
+        <p><strong>Repairing.</strong> It self-repairs minor scratches quickly with heat.</p>
+        <p><strong>Durable.</strong> Thick, tough film that takes rock chips and road debris so your paint doesn't.</p>
         <p>
           <a href={site.googleReview} target="_blank" rel="noopener noreferrer">
             Read our Google reviews
@@ -397,7 +405,7 @@ function GlassBody() {
         </ul>
         <p className="mt-4 font-bold text-fg">What to expect</p>
         <ul className="mt-2 list-disc space-y-2 pl-5">
-          <li>Stops a lot of chips. A new windshield is expensive.</li>
+          <li>Takes the hit from a lot of rocks. A new windshield is expensive.</li>
           <li>Can add a bit of distortion to your line of sight.</li>
           <li>Bubbly and warped right after install. Water dries. It settles.</li>
           <li>Shows wear like wiper scratches. Lasts about 1–3 years.</li>
@@ -411,6 +419,8 @@ function GlassBody() {
 function TintBody() {
   return (
     <>
+      <WorkCarousel page="tint" />
+      <VltStrip />
       <FeatureCompare
         left="Carbon"
         right="Ceramic"
@@ -451,7 +461,7 @@ function TintBody() {
       <Block title="What to expect">
         <p>Tint: manufacturer limited lifetime on both. Colour shift, peeling, bubbling, cracking, adhesive failure, delamination from the film. Not scratches. Not a smashed window.</p>
         <p>Front windows take about 2 hours. Rear windows take about 4. Tiny water bubbles are normal. They leave as it cures — a few days in the heat, longer in a Calgary winter. Don’t roll the windows down for 3–5 days. Don’t pressure-wash the edges. Don’t slam the doors like you’re mad at them.</p>
-        <p>Alberta: no aftermarket film on the windshield or the front side windows. Rear sides and the back glass — any shade, if you’ve got outside mirrors. An eyebrow can sit above the AS-1 line. Medical exemption is a government thing, not a shop thing. Check your local guidelines.</p>
+        <p className="text-xs leading-snug text-muted">Front window tint is sold for display purposes only. Drivers are responsible for making sure their vehicle complies with local road laws.</p>
       </Block>
     </>
   );

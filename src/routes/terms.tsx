@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Block, PageShell } from "@/components/page-shell";
 import { HardMark } from "@/components/site-header";
+import { AddressLink } from "@/components/sections";
 import { site } from "@/lib/site";
 
 export const Route = createFileRoute("/terms")({
@@ -26,7 +27,7 @@ function TermsPage() {
       <Block title="1. Services">
         <p>
           SUPERAF.CA provides paint protection film, windshield protection film,
-          and window tinting from {site.address}. All work is subject to
+          and window tinting from <AddressLink>{site.address}</AddressLink>. All work is subject to
           availability, vehicle inspection, and our approval.
         </p>
         <p>
@@ -97,8 +98,13 @@ function TermsPage() {
         </p>
         <p>
           Windshield film may show distortion, moisture during cure, and
-          wiper wear over time. Window tint must comply with applicable law.
-          Customers are responsible for checking current Alberta guidelines.
+          wiper wear over time. Front window tint is sold for display purposes
+          only. Drivers are responsible for making sure their vehicle complies
+          with local road laws. Window tint is installed at the customer's
+          request. The customer is solely responsible for compliance with
+          local road laws and releases Super Automotive Film Corporation from
+          any liability, fines or claims arising from tint installed on their
+          vehicle.
         </p>
       </Block>
 
@@ -157,7 +163,7 @@ function TermsPage() {
 
       <Block title="8. Contact">
         <p>
-          SUPERAF.CA · {site.address}
+          SUPERAF.CA · <AddressLink>{site.address}</AddressLink>
           <br />
           {site.email} · {site.hours}
         </p>
