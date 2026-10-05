@@ -36,6 +36,9 @@ function PrivacyPage() {
           That’s it. No account. No birthday. No driver’s licence unless you
           later send one for something else, which you shouldn’t need.
         </p>
+        <p>
+          If you fill out a quote form inside one of our Google ads, Google passes us your name, phone and email so we can reply with a price. We use it only for that quote.
+        </p>
       </Block>
       <Block title="Why">
         <p>

@@ -3742,8 +3742,9 @@ a.map-link {
   background: #12f7ff;
 }
 .tint-viz {
-  margin: 0 auto 0.75rem;
-  max-width: 720px;
+  margin: 0 0 0.75rem;
+  width: 100%;
+  max-width: none;
   padding: 0.7rem 0.7rem 0.85rem;
   background: #10141c;
   border: 1px solid rgb(18 247 255 / 0.4);

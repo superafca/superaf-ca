@@ -8,6 +8,7 @@ type BrowserWin = Window & {
 
 const TX_PREFIX = "superaf-lead-tx:";
 const FIRED_KEY = "superaf-lead-fired";
+const firedMemory = new Set<string>();
 
 function browser() {
   const w = (globalThis as { window?: BrowserWin }).window;
@@ -33,24 +34,43 @@ export function leadTransactionId(email: string, phone: string) {
   return id;
 }
 
-function firedIds(w: BrowserWin) {
+function storedFiredIds(w: BrowserWin) {
   try {
     const raw = w.sessionStorage.getItem(FIRED_KEY);
     const list = raw ? (JSON.parse(raw) as unknown[]) : [];
-    return new Set(list.filter((id): id is string => typeof id === "string"));
+    return list.filter((id): id is string => typeof id === "string");
   } catch {
-    return new Set<string>();
+    return [];
   }
 }
 
+function alreadyFired(w: BrowserWin, id: string) {
+  if (firedMemory.has(id)) return true;
+  return storedFiredIds(w).includes(id);
+}
+
 function rememberFired(w: BrowserWin, id: string) {
-  const ids = firedIds(w);
-  ids.add(id);
+  firedMemory.add(id);
   try {
+    const ids = new Set([...storedFiredIds(w), id]);
     w.sessionStorage.setItem(FIRED_KEY, JSON.stringify([...ids]));
   } catch {
-    /* the in-memory set still skips a second call in this tick */
+    /* memory already has the id */
   }
+}
+
+export function toE164(phone: string | undefined) {
+  const digits = (phone ?? "").replace(/\D/g, "");
+  if (digits.length === 10) return `+1${digits}`;
+  if (digits.length === 11 && digits.startsWith("1")) return `+${digits}`;
+  return "";
+}
+
+export function normalizeLeadEmail(email: string | undefined) {
+  const value = (email ?? "").trim().toLowerCase();
+  const at = value.indexOf("@");
+  if (at < 1 || !value.slice(at + 1).includes(".")) return "";
+  return value;
 }
 
 export function trackDiy(event: "kit_configured" | "begin_checkout" | "purchase", payload: TrackPayload = {}) {
@@ -67,16 +87,27 @@ export function trackDiy(event: "kit_configured" | "begin_checkout" | "purchase"
   else w.fbq?.("trackCustom", "KitConfigured", { value: payload.value, currency: "CAD" });
 }
 
-export function trackLeadConversion(input: { transactionId: string; value?: number }) {
+export function trackLeadConversion(input: {
+  transactionId: string;
+  value?: number;
+  email?: string;
+  phone?: string;
+}) {
   const w = browser();
   if (!w || !input.transactionId) return;
-  if (firedIds(w).has(input.transactionId)) return;
+  if (alreadyFired(w, input.transactionId)) return;
   w.dataLayer = w.dataLayer || [];
   if (!w.gtag) {
     w.gtag = function gtag() {
       w.dataLayer?.push(arguments);
     };
   }
+  const userData: { email?: string; phone_number?: string } = {};
+  const email = normalizeLeadEmail(input.email);
+  const phone = toE164(input.phone);
+  if (email) userData.email = email;
+  if (phone) userData.phone_number = phone;
+  if (email || phone) w.gtag("set", "user_data", userData);
   w.gtag("event", "conversion", {
     send_to: "AW-18489064646/E3SCCKLm2Y0dEMb5ovBE",
     value: input.value ?? 1.0,

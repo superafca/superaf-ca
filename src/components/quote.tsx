@@ -43,6 +43,7 @@ import {
 } from "@/lib/site";
 import { confirmLead, sendLead } from "@/lib/send-lead";
 import { deliverLead, claimSend, releaseSend } from "@/lib/deliver-lead";
+import { customerFilmName, customerPackLine } from "@/lib/confirm-email";
 import { leadTransactionId, trackLeadConversion } from "@/lib/track";
 import { HardBadges } from "@/components/cyber";
 import { SideTintPreview, WindshieldTintPreview } from "@/components/tint-visualizer";
@@ -160,9 +161,13 @@ async function postLeadBrowser(payload: {
     headers: { Accept: "application/json" },
     body: fd,
   });
-  const json = (await res.json().catch(() => ({}))) as {
-    success?: string | boolean;
-  };
+  const text = await res.text().catch(() => "");
+  let json: { success?: string | boolean } = {};
+  try {
+    json = text ? (JSON.parse(text) as { success?: string | boolean }) : {};
+  } catch {
+    json = {};
+  }
   if (!res.ok || json.success === "false" || json.success === false) {
     throw new Error("lead email failed");
   }
@@ -493,9 +498,9 @@ export function Quote() {
       setLeadPhase("sending");
       sfxLevel();
       const vehicle = [year, make, model, trim].map((s) => s.trim()).filter(Boolean).join(" ");
-      const packLine = pack
-        ? `${pack.name} · ${films.find((f) => f.id === (filmId ?? "pp5"))?.name ?? ""}${packageId === "max" && finish ? ` · ${finish}` : ""}`
-        : "";
+      const filmName = customerFilmName(filmId, packageId === "max" ? finish : "");
+      const packageName = pack?.name ?? "";
+      const packLine = customerPackLine(packageName, filmName);
       const extraLines = parts
         .map((id) => {
           const row = customParts.find((p) => p.id === id);
@@ -549,6 +554,11 @@ export function Quote() {
         quote: quoteLine,
         notes: notes.trim(),
         install: installLine,
+        firstName: lead.name.trim().split(/\s+/)[0] || "there",
+        packageName,
+        filmName,
+        totalDisplay: display,
+        hoursLabel: schedule === "—" ? "" : schedule,
       };
       const outcome = await deliverLead({
         transactionId: leadTransactionId(payload.email, payload.phone),
@@ -558,7 +568,12 @@ export function Quote() {
             data: payload,
           }),
         confirm: () => confirmLead({ data: payload }),
-        track: (event) => trackLeadConversion(event),
+        track: (event) =>
+          trackLeadConversion({
+            ...event,
+            email: payload.email,
+            phone: payload.phone,
+          }),
       });
       setLeadPhase(outcome === "success" ? "success" : "failed");
     } finally {
@@ -748,17 +763,6 @@ export function Quote() {
 
   const tintPick = () => (
     <div className="space-y-4">
-      <SideTintPreview
-        film={tintFilmId}
-        frontVlt={frontShade ? Number(frontShade) : null}
-        rearVlt={rearShade ? Number(rearShade) : null}
-        onPick={(vlt) => {
-          sfxClick();
-          const next = String(vlt);
-          setFrontShade(next);
-          setRearShade(next);
-        }}
-      />
       <div className="tint-columns">
         {tintFilms.map((f) => {
           const copy = TINT_COPY[f.id];
@@ -813,6 +817,17 @@ export function Quote() {
           );
         })}
       </div>
+      <SideTintPreview
+        film={tintFilmId}
+        frontVlt={frontShade ? Number(frontShade) : null}
+        rearVlt={rearShade ? Number(rearShade) : null}
+        onPick={(vlt) => {
+          sfxClick();
+          const next = String(vlt);
+          setFrontShade(next);
+          setRearShade(next);
+        }}
+      />
       <div className="count-label">
         <span>How many front windows?</span>
         <span className="hour-label">{TINT_FRONT_HOURS} hours</span>

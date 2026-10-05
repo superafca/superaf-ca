@@ -1,4 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
+import { buildConfirmMessage } from "@/lib/confirm-email";
 
 export type LeadMail = {
   name: string;
@@ -11,6 +12,11 @@ export type LeadMail = {
   photoName?: string;
   photoData?: string;
   install?: string;
+  firstName?: string;
+  packageName?: string;
+  filmName?: string;
+  totalDisplay?: string;
+  hoursLabel?: string;
 };
 
 export const sendLead = createServerFn({ method: "POST" })
@@ -63,22 +69,7 @@ export const confirmLead = createServerFn({ method: "POST" })
       console.error("[confirmLead] RESEND_API_KEY missing");
       return { ok: false as const, skipped: true as const };
     }
-    const lines = [
-      `Hey ${data.name},`,
-      "",
-      "We received your estimate. Here’s what we locked in:",
-      "",
-      `Vehicle: ${data.vehicle || "—"}`,
-      `Phone: ${data.phone || "—"}`,
-      `Estimate: ${data.quote || "—"}`,
-      data.notes ? `Notes: ${data.notes}` : "",
-      "",
-      "If those details are right, this is the quote we’ll schedule from. Reply to this email if something needs to change.",
-      "",
-      "SUPERAF.CA",
-      "426 Memorial Drive NE, Calgary",
-      "(587) 900-9494",
-    ].filter((line) => line !== "");
+    const message = buildConfirmMessage(data);
     const res = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
@@ -89,8 +80,9 @@ export const confirmLead = createServerFn({ method: "POST" })
         from: "SUPERAF.CA <book@superaf.ca>",
         to: [data.email],
         reply_to: "book@superaf.ca",
-        subject: "We received your SUPERAF estimate",
-        text: lines.join("\n"),
+        subject: message.subject,
+        html: message.html,
+        text: message.text,
       }),
     });
     if (!res.ok) {
