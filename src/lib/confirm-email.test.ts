@@ -83,7 +83,8 @@ test("the email only uses the shop phone and skips banned brands", () => {
     assert.equal(both.includes("5,439"), false);
     assert.equal(both.includes("403 "), false);
     assert.equal(both.includes("14 years"), false);
-    assert.equal(both.includes("g.page"), false);
+    assert.match(msg.html, /g\.page\/r\/CQNKQDNeuW2REAI\/review/);
+    assert.match(msg.text, /g\.page\/r\/CQNKQDNeuW2REAI\/review/);
     assert.equal(both.includes("We text you a time"), false);
     assert.match(msg.html, />Call</);
     assert.match(msg.html, />Text</);

@@ -13,6 +13,7 @@ const TEL = "tel:+15879009494";
 const WHATSAPP = "https://wa.me/15879009494";
 const MAPS = "https://www.google.com/maps/search/?api=1&query=SUPERAF.CA+3W2W%2BHV+Calgary%2C+Alberta";
 const IG = "https://instagram.com/besuperaf";
+const REVIEW = "https://g.page/r/CQNKQDNeuW2REAI/review";
 const ADDRESS = "426 Memorial Drive NE, Calgary, AB";
 const HOURS = "Mon–Fri 09:00–18:00";
 
@@ -189,6 +190,9 @@ export function buildConfirmMessage(input: ConfirmFields) {
           </table>
         </td></tr>
         <tr><td class="email-pad" style="padding:18px 32px 8px;font-family:Arial,Helvetica,sans-serif;background-color:#0b0f17;">
+          <p style="margin:0;font-size:15px;line-height:1.45;color:#e7fdff;">Liked the work? <a href="${esc(REVIEW)}" style="color:#12f7ff;text-decoration:underline;">Leave a Google review</a></p>
+        </td></tr>
+        <tr><td class="email-pad" style="padding:18px 32px 8px;font-family:Arial,Helvetica,sans-serif;background-color:#0b0f17;">
           <p style="margin:0 0 6px;font-size:15px;line-height:1.45;"><a href="${esc(MAPS)}" style="color:#12f7ff;text-decoration:underline;">${esc(ADDRESS)}</a></p>
           <p style="margin:0 0 6px;font-size:14px;line-height:1.45;color:#9ad7e4;">${esc(HOURS)}</p>
           <p style="margin:0;font-size:14px;line-height:1.45;"><a href="${esc(IG)}" style="color:#9ad7e4;text-decoration:underline;">@besuperaf</a></p>
@@ -224,6 +228,8 @@ export function buildConfirmMessage(input: ConfirmFields) {
     `3. ${STEP_3}`,
     "",
     "The film: Hydrophobic. Anti-Yellowing. Repairing (self-repairs minor scratches quickly with heat). Durable.",
+    "",
+    `Liked the work? Leave a Google review: ${REVIEW}`,
     "",
     ADDRESS,
     HOURS,
