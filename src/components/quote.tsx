@@ -68,30 +68,6 @@ const LEAD_KEY = "superaf-lead";
 const TICKER = "FRONT FRONT+ MAX — YOU PICK THE ADDONS  ·  ";
 const CUP_PRICE = customParts.find((part) => part.id === "cups")?.price ?? 99;
 
-const TINT_COPY = {
-  carbon: {
-    kicker: "Carbon",
-    title: "The classic.",
-    lines: [
-      "Shades: 5 / 18 / 25 / 36",
-      "Heat rejected: up to 46% (total solar energy)",
-      "UV blocked: 99%+",
-      "Deep black, non-reflective, no fade. Great look, solid performance, easier on the wallet.",
-    ],
-  },
-  ceramic: {
-    kicker: "Ceramic",
-    title: "The heat blocker.",
-    lines: [
-      "Shades: 5 / 14 / 21 / 32 / 45 / 65",
-      "Heat rejected: up to 65% (total solar energy)",
-      "Infrared rejected: up to 94%",
-      "UV blocked: 99%+",
-      "Ceramic targets infrared — the heat you feel, not just the light you see. Dark or light, it keeps the cabin cooler.",
-    ],
-  },
-} as const;
-
 function firstName(name: string) {
   const token = name.trim().split(/\s+/)[0] ?? "";
   if (!token) return "";
@@ -732,90 +708,48 @@ export function Quote() {
           ))}
         </select>
       </label>
-      {tintFilmId ? (
-      <div className="shade-bar" role="listbox" aria-label={`${side} shades`}>
-        {options.map((s) => {
-          const on = value === String(s.vlt);
-          const ink = Math.round(255 * (s.vlt / 100));
-          return (
-            <button
-              key={s.vlt}
-              type="button"
-              role="option"
-              aria-selected={on}
-              data-shade={`${side}-${s.vlt}`}
-              className={on ? "is-on" : ""}
-              onClick={() => {
-                sfxClick();
-                set(String(s.vlt));
-              }}
-            >
-              <span className="shade-swatch" style={{ background: `rgb(${ink} ${ink + 8} ${ink + 16})` }} />
-              <span>{s.label}</span>
-            </button>
-          );
-        })}
-      </div>
-      ) : null}
       </>
     );
   };
 
   const tintPick = () => (
-    <div className="space-y-4">
-      <div className="tint-columns">
-        {tintFilms.map((f) => {
-          const copy = TINT_COPY[f.id];
-          const on = tintFilmId === f.id;
-          const open = flipped === `tint-${f.id}`;
-          return (
-            <div key={f.id} className="tint-column">
-              <article className={cn("kit-card tint-film-card", on && "is-on")}>
-                <div className={cn("kit-flip", open && "is-flipped")}>
-                  <div className="kit-face kit-front tint-face" style={{ backgroundImage: `url(${f.bg})` }}>
-                    <button
-                      type="button"
-                      className="kit-select"
-                      data-tint-film={f.id}
-                      onClick={() => {
-                        if (on) {
-                          sfxClick();
-                          setTintFilmId(null);
-                          return;
-                        }
-                        sfxCash();
-                        setTintFilmId(f.id);
-                      }}
-                    >
-                      <BigCheck on={on} className="kit-heart" />
-                      <span className="kit-name kit-name-fill">{f.name}</span>
-                      <span className="kit-time">{f.blurb}</span>
-                    </button>
-                    <button
-                      type="button"
-                      className="kit-plus"
-                      aria-label={`Details for ${f.name}`}
-                      aria-expanded={open}
-                      onClick={() => toggleFlip(`tint-${f.id}`)}
-                    >
-                      +
-                    </button>
-                  </div>
-                  <div className="kit-face kit-back tint-back">
-                    <p className="tint-kicker">{copy.kicker}</p>
-                    <h3>{copy.title}</h3>
-                    {copy.lines.map((line) => (
-                      <p key={line}>{line}</p>
-                    ))}
-                    <button type="button" className="kit-plus" aria-label={`Close ${f.name} details`} onClick={() => toggleFlip(`tint-${f.id}`)}>
-                      ×
-                    </button>
-                  </div>
-                </div>
-              </article>
+    <div className="tint-pick">
+      <div className="tint-shade-panel" role="group" aria-label="Tint film and shade">
+        {tintFilms.map((f) => (
+          <div key={f.id} className={cn("tint-shade-row", tintFilmId === f.id && "is-on")}>
+            <span className="tint-shade-name">{f.name}</span>
+            <div className="tint-shade-options" role="listbox" aria-label={`${f.name} shades`}>
+              {shadeChoices(f.id).map((s) => {
+                const vlt = String(s.vlt);
+                const on = tintFilmId === f.id && frontShade === vlt && rearShade === vlt;
+                return (
+                  <button
+                    key={s.vlt}
+                    type="button"
+                    role="option"
+                    aria-selected={on}
+                    aria-label={`${f.name} ${s.label}`}
+                    data-tint-film={f.id}
+                    data-tint-shade={s.vlt}
+                    className={on ? "is-on" : undefined}
+                    onClick={() => {
+                      sfxClick();
+                      if (on) {
+                        setTintFilmId(null);
+                        return;
+                      }
+                      setTintFilmId(f.id);
+                      setFrontShade(vlt);
+                      setRearShade(vlt);
+                    }}
+                  >
+                    {s.vlt}%
+                  </button>
+                );
+              })}
             </div>
-          );
-        })}
+          </div>
+        ))}
       </div>
       <SideTintPreview
         film={tintFilmId}

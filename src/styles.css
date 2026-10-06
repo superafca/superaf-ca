@@ -3262,6 +3262,77 @@ a.map-link {
   border: 1px solid rgb(255 255 255 / 0.35);
   box-shadow: inset 0 8px 12px rgb(255 255 255 / 0.18);
 }
+.tint-pick {
+  display: grid;
+  gap: 0.55rem;
+}
+.tint-pick .tint-viz {
+  margin-bottom: 0.35rem;
+}
+.tint-shade-panel {
+  width: 100%;
+  max-width: 640px;
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0.45rem 0.5rem;
+  text-align: left;
+  border-radius: 14px;
+  border: 1px solid rgb(0 240 255 / 0.28);
+  background: rgb(8 14 24 / 0.72);
+}
+.tint-shade-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+.tint-shade-row.is-on .tint-shade-name {
+  color: #00f0ff;
+}
+.tint-shade-name {
+  flex: 0 0 4.6rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #e7fdff;
+}
+.tint-shade-options {
+  display: flex;
+  flex: 1;
+  flex-wrap: wrap;
+  gap: 6px;
+  min-width: 0;
+}
+.tint-shade-options button {
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0 0.55rem;
+  border-radius: 10px;
+  border: 1px solid rgb(255 255 255 / 0.16);
+  background: rgb(8 14 24 / 0.55);
+  color: #e2e8f0;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+.tint-shade-options button.is-on {
+  border-color: #00f0ff;
+  color: #041016;
+  background: #00f0ff;
+  box-shadow: 0 0 12px rgb(0 240 255 / 0.35);
+}
+@media (max-width: 640px) {
+  .tint-shade-panel {
+    max-width: none;
+  }
+  .tint-shade-row {
+    align-items: flex-start;
+  }
+  .tint-shade-name {
+    padding-top: 0.7rem;
+  }
+}
 .tint-columns {
   display: grid;
   grid-template-columns: 1fr 1fr;
