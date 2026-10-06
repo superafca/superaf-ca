@@ -3105,8 +3105,8 @@ a.map-link {
 }
 .live-stats {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 0.75rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.85rem 0.65rem;
   margin-top: 1.15rem;
   padding: 1rem 0.65rem 0.85rem;
   text-align: center;
@@ -3151,14 +3151,18 @@ a.map-link {
 .live-label-short {
   display: none;
 }
+.live-stat {
+  min-width: 0;
+}
 .live-stat-num {
   display: block;
   max-width: 100%;
   font-family: "Orbitron", sans-serif;
-  font-size: clamp(2rem, 4vw, 3.25rem);
+  font-size: clamp(1.02rem, 2.4vw, 1.65rem);
   font-variant-numeric: tabular-nums;
-  letter-spacing: 0.04em;
-  line-height: 1;
+  letter-spacing: 0;
+  line-height: 1.1;
+  white-space: nowrap;
   color: #e7fdff;
   background-image: linear-gradient(100deg, #ffffff 0%, #c8f8ff 46%, #7af0ff 100%);
   -webkit-background-clip: text;
@@ -3171,18 +3175,23 @@ a.map-link {
   width: 100%;
   margin-top: 0.4rem;
   font-family: "Orbitron", sans-serif;
-  font-size: 0.62rem;
-  letter-spacing: 0.08em;
+  font-size: 0.58rem;
+  letter-spacing: 0.03em;
   line-height: 1.35;
+  text-wrap: balance;
   color: #d5f6ff;
 }
-@media (max-width: 640px) {
+@media (min-width: 900px) {
   .live-stats {
-    grid-template-columns: 1fr;
-    gap: 1rem;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
   .live-stat-num {
-    font-size: 1.85rem;
+    font-size: clamp(1.15rem, 1.55vw, 1.7rem);
+  }
+}
+@media (max-width: 640px) {
+  .live-stat-num {
+    font-size: 1.02rem;
   }
   .live-label-full {
     display: none;

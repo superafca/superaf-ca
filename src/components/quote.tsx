@@ -1321,6 +1321,11 @@ export function Quote() {
                 <p className="mt-5 text-base font-semibold leading-relaxed tracking-tight text-fg">
                   Your estimate is {display}. If all details are appropriate your quote will be accurate. We're reviewing your submission and will contact you for scheduling and any further questions soon!
                 </p>
+                {lead.email.trim() ? (
+                  <p className="mt-4 text-sm font-semibold leading-relaxed tracking-tight text-fg">
+                    We just emailed your confirmation. If it's not in your inbox in a few minutes, please check your spam or junk folder.
+                  </p>
+                ) : null}
                 <p className="mt-4 font-display text-4xl">Can’t wait?</p>
                 <p className="font-display text-3xl">Here’s the number</p>
                 <PhoneLink contact={lead.contact} />

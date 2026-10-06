@@ -19,12 +19,17 @@ function roll(n: number, digits: number) {
   return String(n).padStart(digits, "0").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
+function isCount(value: string) {
+  return /^[\d,]+$/.test(value);
+}
+
 function LiveStat({ item, delay }: { item: LiveStatItem; delay: number }) {
   const ref = useRef<HTMLDivElement>(null);
   const digits = digitsOf(item.value);
   const target = targetOf(item.value);
+  const count = isCount(item.value);
   const [on, setOn] = useState(false);
-  const [num, setNum] = useState(roll(0, digits));
+  const [num, setNum] = useState(count ? roll(0, digits) : item.value);
   const [typed, setTyped] = useState("");
   const [caret, setCaret] = useState(false);
 
@@ -57,6 +62,11 @@ function LiveStat({ item, delay }: { item: LiveStatItem; delay: number }) {
       setOn(true);
       setCaret(true);
       setTyped("");
+      if (!count) {
+        setNum(item.value);
+        typeLabel();
+        return;
+      }
       const t0 = performance.now();
       const tick = (now: number) => {
         if (dead) return;
@@ -82,7 +92,7 @@ function LiveStat({ item, delay }: { item: LiveStatItem; delay: number }) {
       io.disconnect();
       timers.forEach((id) => window.clearTimeout(id));
     };
-  }, [delay, digits, item.label, item.short, item.value, target]);
+  }, [count, delay, digits, item.label, item.short, item.value, target]);
 
   return (
     <div className={`live-stat${on ? " is-on" : ""}`} ref={ref}>
