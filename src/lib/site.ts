@@ -37,21 +37,27 @@ export const site = {
 export const proofStats = [
   {
     value: site.allTime,
-    label: "VEHICLES PROTECTED · ALL-TIME",
-    short: "ALL-TIME",
-    text: `${site.allTime} vehicles protected`,
+    label: "Vehicles protected since 2016",
+    short: "Vehicles protected since 2016",
+    text: `${site.allTime} vehicles protected since 2016`,
   },
   {
     value: site.carsFilmed,
-    label: "VEHICLES PROTECTED · LAST 12 MONTHS",
-    short: "LAST 12 MONTHS",
-    text: `${site.carsFilmed} vehicles protected in the last 12 months`,
+    label: "Vehicles protected in last 12 months",
+    short: "Vehicles protected in last 12 months",
+    text: `${site.carsFilmed} vehicles protected in last 12 months`,
   },
   {
     value: site.installerYears.slice(0, site.installerYears.indexOf(" ")),
-    label: "YEARS OF INSTALLER EXPERIENCE",
-    short: "INSTALLER YEARS",
-    text: site.installerYears,
+    label: "Years protecting Calgary vehicles",
+    short: "Years protecting Calgary vehicles",
+    text: `${site.installerYears.slice(0, site.installerYears.indexOf(" "))} years protecting Calgary vehicles`,
+  },
+  {
+    value: "Over $300M",
+    label: "in vehicles protected since 2016",
+    short: "in vehicles protected since 2016",
+    text: "Over $300M in vehicles protected since 2016",
   },
 ] as const;
 

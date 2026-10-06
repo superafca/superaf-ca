@@ -83,6 +83,9 @@ export const confirmLead = createServerFn({ method: "POST" })
         subject: message.subject,
         html: message.html,
         text: message.text,
+        headers: {
+          "List-Unsubscribe": "<mailto:book@superaf.ca?subject=unsubscribe>",
+        },
       }),
     });
     if (!res.ok) {
