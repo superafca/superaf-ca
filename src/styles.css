@@ -3266,8 +3266,16 @@ a.map-link {
   display: grid;
   gap: 0.55rem;
 }
-.tint-pick .tint-viz {
-  margin-bottom: 0.35rem;
+.tint-viz .tint-shade-panel {
+  max-width: none;
+  margin: 0.55rem 0 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  border-radius: 0;
+}
+.tint-viz .zone-quotes {
+  margin-top: 0.55rem;
 }
 .tint-shade-panel {
   width: 100%;
