@@ -320,7 +320,6 @@ export function Landing() {
           <p className="store-lede">
             {site.hours}. Text or call {site.phone}. {site.hoursNote}
           </p>
-          <p className="store-kicker">{site.legalName}</p>
           <p className="store-links">
             <a className="store-link" href={site.maps} target="_blank" rel="noopener noreferrer">
               Directions
