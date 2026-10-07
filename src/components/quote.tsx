@@ -68,30 +68,6 @@ const LEAD_KEY = "superaf-lead";
 const TICKER = "FRONT FRONT+ MAX — YOU PICK THE ADDONS  ·  ";
 const CUP_PRICE = customParts.find((part) => part.id === "cups")?.price ?? 99;
 
-const TINT_COPY = {
-  carbon: {
-    kicker: "Carbon",
-    title: "The classic.",
-    lines: [
-      "Shades: 5 / 18 / 25 / 36",
-      "Heat rejected: up to 46% (total solar energy)",
-      "UV blocked: 99%+",
-      "Deep black, non-reflective, no fade. Great look, solid performance, easier on the wallet.",
-    ],
-  },
-  ceramic: {
-    kicker: "Ceramic",
-    title: "The heat blocker.",
-    lines: [
-      "Shades: 5 / 14 / 21 / 32 / 45 / 65",
-      "Heat rejected: up to 65% (total solar energy)",
-      "Infrared rejected: up to 94%",
-      "UV blocked: 99%+",
-      "Ceramic targets infrared — the heat you feel, not just the light you see. Dark or light, it keeps the cabin cooler.",
-    ],
-  },
-} as const;
-
 function firstName(name: string) {
   const token = name.trim().split(/\s+/)[0] ?? "";
   if (!token) return "";
@@ -696,138 +672,75 @@ export function Quote() {
     </div>
   );
 
-  const shadeMenu = (side: "front" | "rear" | "windshield" | "visor") => {
-    const value =
-      side === "front" ? frontShade : side === "rear" ? rearShade : side === "windshield" ? windshieldShade : visorShade;
-    const options = tintFilmId ? shadeChoices(tintFilmId) : [];
-    const labels = {
-      front: "Front shade",
-      rear: "Rear shade",
-      windshield: "Windshield shade",
-      visor: "Visor shade",
-    };
-    const set = (next: string) => {
-      if (side === "front") setFrontShade(next);
-      else if (side === "rear") setRearShade(next);
-      else if (side === "windshield") setWindshieldShade(next);
-      else setVisorShade(next);
-    };
-    return (
-      <>
-      <label className="shade-field">
-        <span>{labels[side]}</span>
-        <select
-          value={value}
-          disabled={!tintFilmId}
-          onChange={(e) => {
-            sfxClick();
-            set(e.target.value);
-          }}
-        >
-          <option value="">{tintFilmId ? "Shade" : "Pick carbon or ceramic"}</option>
-          {options.map((s) => (
-            <option key={s.vlt} value={String(s.vlt)}>
-              {s.label}
-            </option>
-          ))}
-        </select>
-      </label>
-      {tintFilmId ? (
-      <div className="shade-bar" role="listbox" aria-label={`${side} shades`}>
-        {options.map((s) => {
-          const on = value === String(s.vlt);
-          const ink = Math.round(255 * (s.vlt / 100));
-          return (
-            <button
-              key={s.vlt}
-              type="button"
-              role="option"
-              aria-selected={on}
-              data-shade={`${side}-${s.vlt}`}
-              className={on ? "is-on" : ""}
-              onClick={() => {
-                sfxClick();
-                set(String(s.vlt));
-              }}
-            >
-              <span className="shade-swatch" style={{ background: `rgb(${ink} ${ink + 8} ${ink + 16})` }} />
-              <span>{s.label}</span>
-            </button>
-          );
-        })}
-      </div>
-      ) : null}
-      </>
-    );
-  };
+  const tintShadePanel = (zone: "side" | "windshield" | "visor") => (
+    <div
+      className="tint-shade-panel"
+      role="group"
+      aria-label={zone === "side" ? "Tint film and shade" : zone === "windshield" ? "Windshield tint shade" : "Visor tint shade"}
+    >
+      {tintFilms.map((f) => (
+        <div key={f.id} className={cn("tint-shade-row", tintFilmId === f.id && "is-on")}>
+          <span className="tint-shade-name">{f.name}</span>
+          <div className="tint-shade-options" role="listbox" aria-label={`${f.name} shades`}>
+            {shadeChoices(f.id).map((s) => {
+              const vlt = String(s.vlt);
+              const on =
+                zone === "side"
+                  ? tintFilmId === f.id && frontShade === vlt && rearShade === vlt
+                  : zone === "windshield"
+                    ? tintFilmId === f.id && windshieldShade === vlt
+                    : tintFilmId === f.id && visorShade === vlt;
+              return (
+                <button
+                  key={s.vlt}
+                  type="button"
+                  role="option"
+                  aria-selected={on}
+                  aria-label={`${f.name} ${s.label}`}
+                  data-tint-zone={zone}
+                  data-tint-film={f.id}
+                  data-tint-shade={s.vlt}
+                  className={on ? "is-on" : undefined}
+                  onClick={() => {
+                    sfxClick();
+                    if (on) {
+                      if (zone === "side") setTintFilmId(null);
+                      else if (zone === "windshield") {
+                        setWindshieldShade("");
+                        if (!frontShade && !rearShade) setTintFilmId(null);
+                      } else {
+                        setVisorShade("");
+                        if (!frontShade && !rearShade) setTintFilmId(null);
+                      }
+                      return;
+                    }
+                    setTintFilmId(f.id);
+                    if (zone === "side") {
+                      setFrontShade(vlt);
+                      setRearShade(vlt);
+                    } else if (zone === "windshield") setWindshieldShade(vlt);
+                    else setVisorShade(vlt);
+                  }}
+                >
+                  {s.vlt}%
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
 
   const tintPick = () => (
-    <div className="space-y-4">
-      <div className="tint-columns">
-        {tintFilms.map((f) => {
-          const copy = TINT_COPY[f.id];
-          const on = tintFilmId === f.id;
-          const open = flipped === `tint-${f.id}`;
-          return (
-            <div key={f.id} className="tint-column">
-              <article className={cn("kit-card tint-film-card", on && "is-on")}>
-                <div className={cn("kit-flip", open && "is-flipped")}>
-                  <div className="kit-face kit-front tint-face" style={{ backgroundImage: `url(${f.bg})` }}>
-                    <button
-                      type="button"
-                      className="kit-select"
-                      data-tint-film={f.id}
-                      onClick={() => {
-                        if (on) {
-                          sfxClick();
-                          setTintFilmId(null);
-                          return;
-                        }
-                        sfxCash();
-                        setTintFilmId(f.id);
-                      }}
-                    >
-                      <BigCheck on={on} className="kit-heart" />
-                      <span className="kit-name kit-name-fill">{f.name}</span>
-                      <span className="kit-time">{f.blurb}</span>
-                    </button>
-                    <button
-                      type="button"
-                      className="kit-plus"
-                      aria-label={`Details for ${f.name}`}
-                      aria-expanded={open}
-                      onClick={() => toggleFlip(`tint-${f.id}`)}
-                    >
-                      +
-                    </button>
-                  </div>
-                  <div className="kit-face kit-back tint-back">
-                    <p className="tint-kicker">{copy.kicker}</p>
-                    <h3>{copy.title}</h3>
-                    {copy.lines.map((line) => (
-                      <p key={line}>{line}</p>
-                    ))}
-                    <button type="button" className="kit-plus" aria-label={`Close ${f.name} details`} onClick={() => toggleFlip(`tint-${f.id}`)}>
-                      ×
-                    </button>
-                  </div>
-                </div>
-              </article>
-            </div>
-          );
-        })}
-      </div>
+    <div className="tint-pick">
       <SideTintPreview
         film={tintFilmId}
         frontVlt={frontShade ? Number(frontShade) : null}
         rearVlt={rearShade ? Number(rearShade) : null}
-        onPick={(vlt) => {
-          sfxClick();
-          const next = String(vlt);
-          setFrontShade(next);
-          setRearShade(next);
-        }}
-      />
+      >
+        {tintShadePanel("side")}
+      </SideTintPreview>
       <div className="count-label">
         <span>How many front windows?</span>
         <span className="hour-label">{TINT_FRONT_HOURS} hours</span>
@@ -861,7 +774,6 @@ export function Quote() {
           );
         })}
       </div>
-      {shadeMenu("front")}
       <p className="tint-law">Front window tint is sold for display purposes only. Drivers are responsible for making sure their vehicle complies with local road laws.</p>
       <div className="count-label">
         <span>How many rear windows?</span>
@@ -896,7 +808,6 @@ export function Quote() {
           );
         })}
       </div>
-      {shadeMenu("rear")}
       <div className="count-label">
         <span>Windshield and visor</span>
         <span className="hour-label">{TINT_ZONE_HOURS}</span>
@@ -905,52 +816,52 @@ export function Quote() {
         film={tintFilmId}
         windshield={windshieldTint && windshieldShade ? Number(windshieldShade) : null}
         visor={!windshieldTint && visorTint && visorShade ? Number(visorShade) : null}
-      />
-      <div className="zone-quotes">
-        <button
-          type="button"
-          data-zone="windshield"
-          className={windshieldTint ? "is-on" : undefined}
-          onClick={() => {
-            sfxClick();
-            setWindshieldTint((on) => {
-              if (on) {
-                setWindshieldShade("");
-                return false;
-              }
-              setVisorTint(false);
-              setVisorShade("");
-              return true;
-            });
-          }}
-        >
-          <span>Windshield</span>
-          <span>{money(tintWindshieldPrice(rateFilm))}</span>
-        </button>
-        <button
-          type="button"
-          data-zone="visor"
-          className={visorTint ? "is-on" : undefined}
-          onClick={() => {
-            sfxClick();
-            setVisorTint((on) => {
-              if (on) {
+      >
+        <div className="zone-quotes">
+          <button
+            type="button"
+            data-zone="windshield"
+            className={windshieldTint ? "is-on" : undefined}
+            onClick={() => {
+              sfxClick();
+              setWindshieldTint((on) => {
+                if (on) {
+                  setWindshieldShade("");
+                  return false;
+                }
+                setVisorTint(false);
                 setVisorShade("");
-                return false;
-              }
-              setWindshieldTint(false);
-              setWindshieldShade("");
-              return true;
-            });
-          }}
-        >
-          <span>Visor</span>
-          <span>{money(tintVisorPrice(rateFilm))}</span>
-        </button>
-      </div>
+                return true;
+              });
+            }}
+          >
+            <span>Windshield</span>
+            <span>{money(tintWindshieldPrice(rateFilm))}</span>
+          </button>
+          <button
+            type="button"
+            data-zone="visor"
+            className={visorTint ? "is-on" : undefined}
+            onClick={() => {
+              sfxClick();
+              setVisorTint((on) => {
+                if (on) {
+                  setVisorShade("");
+                  return false;
+                }
+                setWindshieldTint(false);
+                setWindshieldShade("");
+                return true;
+              });
+            }}
+          >
+            <span>Visor</span>
+            <span>{money(tintVisorPrice(rateFilm))}</span>
+          </button>
+        </div>
+        {windshieldTint ? tintShadePanel("windshield") : visorTint ? tintShadePanel("visor") : null}
+      </WindshieldTintPreview>
       <p className="zone-note">Oversized or complex glass quoted at inspection.</p>
-      {windshieldTint ? shadeMenu("windshield") : null}
-      {visorTint ? shadeMenu("visor") : null}
       <p className="tint-law">Front window and windshield tint is installed at the customer's request. The customer is responsible for compliance with local road laws.</p>
     </div>
   );

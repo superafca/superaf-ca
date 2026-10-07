@@ -1,4 +1,5 @@
-import { shadeChoices, tintShades, type TintFilmId } from "@/lib/site";
+import type { ReactNode } from "react";
+import type { TintFilmId } from "@/lib/site";
 
 const SIDE = {
   front: "/images/viz/mask-quarter.png",
@@ -16,18 +17,16 @@ export function SideTintPreview({
   film,
   frontVlt,
   rearVlt,
-  onPick,
+  children,
 }: {
   film: TintFilmId | null;
   frontVlt: number | null;
   rearVlt: number | null;
-  onPick: (vlt: number) => void;
+  children?: ReactNode;
 }) {
   const front = film ? frontVlt : null;
   const rear = film ? rearVlt : null;
   const label = chip(film, sideBits(front, rear));
-  const shades = film ? tintShades[film] : [];
-  const name = filmName(film);
   return (
     <figure className="tint-viz" data-viz={label}>
       <PreviewHead label={label} />
@@ -37,24 +36,7 @@ export function SideTintPreview({
         <Shade mask={SIDE.rear} vlt={rear} />
         <Shade mask={SIDE.quarter} vlt={rear} />
       </div>
-      {shades.length ? (
-        <div className="viz-swatches" role="listbox" aria-label={`${name} shades`}>
-          {shadeChoices(film!).map((shade) => (
-            <button
-              key={shade.vlt}
-              type="button"
-              role="option"
-              aria-selected={front === shade.vlt && rear === shade.vlt}
-              data-viz-shade={shade.vlt}
-              className={front === shade.vlt && rear === shade.vlt ? "is-on" : undefined}
-              onClick={() => onPick(shade.vlt)}
-            >
-              <span style={{ background: swatch(shade.vlt) }} />
-              {shade.vlt}%
-            </button>
-          ))}
-        </div>
-      ) : null}
+      {children}
     </figure>
   );
 }
@@ -63,10 +45,12 @@ export function WindshieldTintPreview({
   film,
   windshield,
   visor,
+  children,
 }: {
   film: TintFilmId | null;
   windshield: number | null;
   visor: number | null;
+  children?: ReactNode;
 }) {
   const glass = film ? windshield : null;
   const strip = film && glass == null ? visor : null;
@@ -83,6 +67,7 @@ export function WindshieldTintPreview({
         <Shade mask={VISOR} vlt={strip} />
         {strip != null ? <span className="viz-visor-edge" style={VISOR_LINE} /> : null}
       </div>
+      {children}
     </figure>
   );
 }
@@ -126,9 +111,4 @@ function sideBits(front: number | null, rear: number | null) {
   if (front != null && rear != null && front !== rear) return [`front ${front}%`, `rear ${rear}%`];
   const vlt = front ?? rear;
   return vlt == null ? [] : [`${vlt}%`];
-}
-
-function swatch(vlt: number) {
-  const ink = Math.round(255 * (vlt / 100));
-  return `rgb(${ink} ${ink} ${ink})`;
 }
