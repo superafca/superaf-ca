@@ -32,7 +32,6 @@ function Home() {
         "@id": BUSINESS_ID,
         name: site.name,
         alternateName: site.short,
-        legalName: "Super Automotive Film Corporation",
         url: SITE_URL,
         email: site.email,
         telephone: "+1-587-900-9494",
