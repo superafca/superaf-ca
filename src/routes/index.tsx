@@ -57,7 +57,7 @@ function Home() {
         areaServed: ["Calgary", "Airdrie", "Cochrane", "Okotoks", "Chestermere"],
         sameAs: [site.igHref, "https://g.page/r/CQNKQDNeuW2REAI"],
         description:
-          "Paint protection. Glass protection. Tint. Best PPF in Calgary. 426 Memorial Drive NE.",
+          "Paint protection film, windshield protection, and automotive tint in Calgary. 426 Memorial Drive NE.",
         makesOffer: [
           {
             "@type": "Offer",
@@ -76,6 +76,16 @@ function Home() {
               name: "Automotive Window Tint",
               serviceType: "Automotive window tint installation",
               url: `${SITE_URL}/tint`,
+              areaServed: "Calgary, Alberta",
+            },
+          },
+          {
+            "@type": "Offer",
+            itemOffered: {
+              "@type": "Service",
+              name: "Windshield Protection Film",
+              serviceType: "Automotive windshield protection film installation",
+              url: `${SITE_URL}/windshield`,
               areaServed: "Calgary, Alberta",
             },
           },
