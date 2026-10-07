@@ -4,7 +4,6 @@ const MAPS_URL =
 export const site = {
   name: "SUPERAF.CA",
   short: "SUPERAF",
-  legalName: "Super Automotive Film Corporation",
   product: "HARD PP(F)©",
   viewName: "Glass Protection",
   tagline: "PPF longer.",
