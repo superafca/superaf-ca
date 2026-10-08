@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { OptImg } from "@/components/opt-img";
 
 type Shot = { file: string; alt: string };
 
@@ -71,12 +72,12 @@ export function PhotoCarousel({
       }}
     >
       {shots.map((shot, i) => (
-        <img
+        <OptImg
           key={shot.src}
           src={shot.src}
           alt={i === safe ? shot.alt : ""}
-          loading={i === 0 ? "eager" : "lazy"}
-          decoding="async"
+          width={1200}
+          height={800}
           className={i === safe ? "is-on" : undefined}
         />
       ))}

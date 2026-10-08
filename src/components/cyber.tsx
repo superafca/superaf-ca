@@ -1,5 +1,7 @@
 import type { ReactNode } from "react";
 import { Link } from "@tanstack/react-router";
+import { LaunchBanner } from "@/components/launch-banner";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 const HARD = [
   ["H", "Hydrophobic"],
@@ -32,6 +34,7 @@ export function CyberFrame({
 }) {
   return (
     <div className="cyber-world">
+      <LaunchBanner />
       <header className="cyber-bar">
         <Link to="/" className="cyber-mark">
           SUPERAF.CA
@@ -40,6 +43,7 @@ export function CyberFrame({
           <Link to="/estimate">Estimate</Link>
           <Link to="/diy">DIY</Link>
           <Link to="/dealers">Dealers</Link>
+          <ThemeToggle />
         </nav>
       </header>
       <div className="cyber-wrap">

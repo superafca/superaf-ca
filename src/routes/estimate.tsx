@@ -1,6 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Quote } from "@/components/quote";
 import { SoundHud } from "@/components/sound-hud";
+import { LaunchBanner } from "@/components/launch-banner";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 export const Route = createFileRoute("/estimate")({
   component: Estimate,
@@ -18,12 +20,15 @@ export const Route = createFileRoute("/estimate")({
 
 function Estimate() {
   return (
-    <div className="arcade-page">
-      <div className="arcade-cabinet">
-        <div className="arcade-top">
-          <p className="arcade-marquee">SUPERAF · STAGE SELECT</p>
-          <SoundHud />
-        </div>
+    <>
+      <LaunchBanner />
+      <div className="arcade-page">
+        <div className="arcade-cabinet">
+          <div className="arcade-top">
+            <p className="arcade-marquee">SUPERAF · STAGE SELECT</p>
+            <ThemeToggle />
+            <SoundHud />
+          </div>
         <div className="arcade-bezel">
           <Quote />
         </div>
@@ -33,5 +38,6 @@ function Estimate() {
         </Link>
       </div>
     </div>
+    </>
   );
 }

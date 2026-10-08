@@ -4,7 +4,19 @@ import { site, proofStats } from "@/lib/site";
 import { LiveStats } from "@/components/live-stat";
 import { founderShots, PhotoCarousel } from "@/components/work-media";
 import { AddressLink } from "@/components/sections";
+import { GoogleReviews } from "@/components/google-reviews";
+import { OptImg } from "@/components/opt-img";
+import { activeSeason, seasonCopy, seasonFromSearch } from "@/lib/season";
+import { PRICE_GUARANTEE, fullBodyLabel, fullFrontLabel, windshieldFilmLabel } from "@/lib/price-anchors";
 import { cn } from "@/lib/utils";
+
+function canPlayMotion() {
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return false;
+  const conn = (navigator as Navigator & { connection?: { saveData?: boolean; effectiveType?: string } }).connection;
+  if (conn?.saveData) return false;
+  if (conn?.effectiveType === "2g" || conn?.effectiveType === "3g") return false;
+  return true;
+}
 
 function Media({
   poster,
@@ -12,65 +24,77 @@ function Media({
   alt,
   auto,
   portrait,
+  priority,
+  width,
+  height,
 }: {
   poster: string;
   video?: string;
   alt: string;
   auto?: boolean;
   portrait?: boolean;
+  priority?: boolean;
+  width: number;
+  height: number;
 }) {
   const box = useRef<HTMLDivElement>(null);
   const clip = useRef<HTMLVideoElement>(null);
+  const [src, setSrc] = useState<string | undefined>();
 
   useEffect(() => {
+    if (!video) return;
+    let dead = false;
+    const attach = () => {
+      if (dead || !canPlayMotion()) return;
+      setSrc(video);
+    };
+    if (auto) {
+      const run = () => {
+        const idle = window.requestIdleCallback ?? ((cb: () => void) => window.setTimeout(cb, 250));
+        idle(() => attach());
+      };
+      if (document.readyState === "complete") run();
+      else window.addEventListener("load", run, { once: true });
+      return () => {
+        dead = true;
+        window.removeEventListener("load", run);
+      };
+    }
     const el = box.current;
-    const v = clip.current;
-    if (!el || !v || !video) return;
-    const play = () => {
-      v.play().catch(() => {});
-    };
-    const stop = () => {
-      if (auto) return;
-      v.pause();
-      try {
-        v.currentTime = 0;
-      } catch {
-        /* ignore */
-      }
-    };
-    if (auto) play();
-    el.addEventListener("pointerenter", play);
-    el.addEventListener("pointerleave", stop);
+    if (!el) return;
     const io = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) play();
-        else if (!auto) stop();
+        if (entry.isIntersecting) {
+          attach();
+          io.disconnect();
+        }
       },
-      { threshold: 0.4 },
+      { rootMargin: "300px" },
     );
     io.observe(el);
     return () => {
+      dead = true;
       io.disconnect();
-      el.removeEventListener("pointerenter", play);
-      el.removeEventListener("pointerleave", stop);
     };
   }, [video, auto]);
 
+  useEffect(() => {
+    if (!src) return;
+    clip.current?.play().catch(() => {});
+  }, [src]);
+
   return (
     <div ref={box} className={cn("store-media", portrait && "store-media-portrait")}>
-      <img src={poster} alt={alt} />
-      {video ? (
-        <video
-          ref={clip}
-          src={video}
-          poster={poster}
-          muted
-          loop
-          playsInline
-          autoPlay={auto}
-          preload="metadata"
-        />
-      ) : null}
+      <img
+        src={poster}
+        alt={alt}
+        width={width}
+        height={height}
+        loading={priority ? "eager" : "lazy"}
+        decoding="async"
+        fetchPriority={priority ? "high" : "auto"}
+      />
+      {video ? <video ref={clip} src={src} poster={poster} muted loop playsInline preload="none" /> : null}
     </div>
   );
 }
@@ -96,8 +120,24 @@ const KIT_ROLL = [
 function KitRoll() {
   const [index, setIndex] = useState(0);
   const [lit, setLit] = useState(true);
+  const [seen, setSeen] = useState(false);
+  const root = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    const el = root.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) setSeen(true);
+      },
+      { rootMargin: "300px" },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!seen) return;
     let dead = false;
     let timer = 0;
     const wait = (ms: number) =>
@@ -119,16 +159,25 @@ function KitRoll() {
       dead = true;
       window.clearTimeout(timer);
     };
-  }, []);
+  }, [seen]);
 
   return (
-    <div className="store-kits">
+    <div className="store-kits" ref={root}>
       {KIT_ROLL.map((kit) => (
         <Link key={kit.name} to="/estimate" className="store-kit">
           <span className="store-kit-frame">
-            {kit.frames.map((src, i) => (
-              <img key={src} src={src} alt="" className={lit && i === index ? "is-on" : undefined} />
-            ))}
+            {kit.frames.map((src, i) =>
+              i > 0 && !seen ? null : (
+                <OptImg
+                  key={src}
+                  src={src}
+                  alt=""
+                  width={960}
+                  height={640}
+                  className={lit && i === index ? "is-on" : undefined}
+                />
+              ),
+            )}
           </span>
           <p className="store-kit-name">{kit.name}</p>
           <p>{kit.line}</p>
@@ -201,14 +250,21 @@ function Module({
         <Links learn={learn} />
         {extra}
       </div>
-      {poster ? (
+      {poster && video ? (
         <Media
           poster={poster}
           video={video}
           alt={alt ?? ""}
           auto={hero || auto}
           portrait={portrait}
+          priority={hero}
+          width={hero ? 1280 : 1280}
+          height={hero ? 520 : 720}
         />
+      ) : poster ? (
+        <div className={cn("store-media", portrait && "store-media-portrait")}>
+          <OptImg src={poster} alt={alt ?? ""} width={1280} height={720} sizes="(min-width: 900px) 960px, 100vw" />
+        </div>
       ) : null}
       {caption ? <p className="store-caption">{caption}</p> : null}
       {children}
@@ -217,37 +273,70 @@ function Module({
 }
 
 export function Landing() {
+  const [ribbon, setRibbon] = useState(seasonCopy.summer.ribbon);
+  const [ribbonHref, setRibbonHref] = useState<"/ppf" | null>("/ppf");
+
+  useEffect(() => {
+    const forced = seasonFromSearch(window.location.search);
+    const season = forced ?? activeSeason();
+    setRibbon(seasonCopy[season].ribbon);
+    setRibbonHref(season === "fall" || season === "christmas" ? null : "/ppf");
+  }, []);
+
   return (
     <div className="store-page">
       <p className="store-ribbon">
-        Paint protection. <Link to="/ppf">HARD PP 10 is here.</Link>
+        {ribbonHref ? (
+          <>
+            Paint protection. <Link to={ribbonHref}>HARD PP 10 is here.</Link>
+          </>
+        ) : (
+          ribbon
+        )}
       </p>
 
-      <Module
-        hero
-        title={
-          <>
+      <section className="store-mod store-hero">
+        <div className="store-copy">
+          <h1>
             HARD
             <br />
             Paint Protection.
-          </>
-        }
-        lede="Hydrophobic. Anti-Yellowing. Repairing. Durable."
-        learn="/ppf"
-        poster="/images/hero-box-poster.jpg?v=2"
-        video="/videos/hero-box-loop.mp4?v=2"
-        alt="HARD PP box"
-        extra={<LiveStats items={proofStats} />}
-      />
+          </h1>
+          <p className="price-row">
+            <span>Full front from {fullFrontLabel}</span>
+            <span>Full body from {fullBodyLabel}</span>
+            <span>Windshield film {windshieldFilmLabel}</span>
+          </p>
+          <p className="hero-cta">
+            <Link to="/estimate" className="hero-build">
+              Build your estimate
+            </Link>
+            <a href={site.phoneHref}>Call {site.phone}</a>
+          </p>
+          <p className="hero-fine">{PRICE_GUARANTEE}</p>
+          <p className="store-lede">Hydrophobic. Anti-Yellowing. Repairing. Durable.</p>
+        </div>
+        <Media
+          poster="/images/hero-box-poster.jpg?v=2"
+          video="/videos/hero-box-loop-sm.mp4"
+          alt="HARD PP box"
+          auto
+          priority
+          width={1280}
+          height={520}
+        />
+        <LiveStats items={proofStats} />
+      </section>
+
+      <GoogleReviews />
 
       <Module
-        auto
         tone="store-mod-pp"
         title="Water hates it."
         lede="Water and dirt bead up and roll off, so the car stays cleaner and is easier to wash."
         learn="/ppf"
         poster="/images/hydrophobic-poster.jpg"
-        video="/videos/hydrophobic-loop.mp4"
+        video="/videos/hydrophobic-loop-sm.mp4"
         alt="Water beading on hydrophobic paint protection film"
       />
 
@@ -263,7 +352,7 @@ export function Landing() {
       <Module
         tone="store-mod-view"
         title="Windshield film."
-        lede="Sacrificial layer for Deerfoot gravel. Clear or tinted. $269."
+        lede={<>Sacrificial layer for Deerfoot gravel. Clear or tinted. {windshieldFilmLabel}.</>}
         learn="/windshield"
         poster="/images/windshield-install-03-trim.jpg"
         alt="Trimming windshield film along the glass edge"
@@ -292,7 +381,7 @@ export function Landing() {
             },
           ].map((shot) => (
             <figure key={shot.cap}>
-              <img src={shot.src} alt={shot.alt} />
+              <OptImg src={shot.src} alt={shot.alt} width={960} height={640} sizes="(min-width: 768px) 22vw, 70vw" />
               <figcaption>{shot.cap}</figcaption>
             </figure>
           ))}
