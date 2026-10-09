@@ -14,6 +14,12 @@ export const Route = createFileRoute("/dealers")({
       { title: "Dealers — HARD PP warranty | SUPERAF.CA" },
       { name: "description", content: "Authorized dealer warranty registration for HARD PP." },
     ],
+    links: [
+      {
+        rel: "stylesheet",
+        href: "https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800&family=Press+Start+2P&display=swap",
+      },
+    ],
   }),
 });
 

@@ -15,6 +15,12 @@ export const Route = createFileRoute("/estimate")({
           "Build your estimate. FRONT, FRONT+, MAX. Paint protection. Glass protection. Tint Calgary.",
       },
     ],
+    links: [
+      {
+        rel: "stylesheet",
+        href: "https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800&family=Press+Start+2P&display=swap",
+      },
+    ],
   }),
 });
 

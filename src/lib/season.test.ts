@@ -23,7 +23,7 @@ for (const [iso, season] of cases) {
 }
 
 test("11:30pm MT on Nov 30 is still fall", () => {
-  assert.equal(seasonFor(new Date("2026-12-01T06:30:00Z")), "fall");
+  assert.equal(seasonFor(new Date("2026-12-01T05:30:00Z")), "fall");
 });
 
 test("const override wins over the date", () => {

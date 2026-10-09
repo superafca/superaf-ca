@@ -1,4 +1,6 @@
 import { Link } from "@tanstack/react-router";
+import { Phone } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import { site } from "@/lib/site";
 import { LaunchBanner } from "@/components/launch-banner";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -13,22 +15,52 @@ const items: { href: "/" | "/ppf" | "/windshield" | "/tint" | "/vision" | "/esti
 ];
 
 export function SiteHeader() {
+  const [open, setOpen] = useState(false);
+  const menuBtn = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key !== "Escape") return;
+      setOpen(false);
+      menuBtn.current?.focus();
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [open]);
+
   return (
     <>
       <LaunchBanner />
       <header className="store-nav">
         <nav>
-          <Link to="/" className="store-mark">
+          <Link to="/" className="store-mark" onClick={() => setOpen(false)}>
             <Leaf />
             SUPERAF.CA
           </Link>
-          <div className="store-nav-links">
+          <a className="phone-pill is-compact" href={site.phoneHref}>
+            <Phone size={16} aria-hidden />
+            <span>{site.phone}</span>
+          </a>
+          <button
+            ref={menuBtn}
+            type="button"
+            className="nav-menu"
+            aria-expanded={open}
+            aria-controls="site-menu"
+            onClick={() => setOpen((value) => !value)}
+          >
+            {open ? "Close" : "Menu"}
+          </button>
+          <div id="site-menu" className={open ? "store-nav-links is-open" : "store-nav-links"}>
             {items.map((item) => (
-              <Link key={item.href} to={item.href}>
+              <Link key={item.href} to={item.href} onClick={() => setOpen(false)}>
                 {item.label}
               </Link>
             ))}
-            <a href={site.phoneHref}>Call</a>
+            <Link to="/estimate" className="nav-estimate" onClick={() => setOpen(false)}>
+              Estimate
+            </Link>
           </div>
           <ThemeToggle />
           <Link to="/estimate" className="store-buy">

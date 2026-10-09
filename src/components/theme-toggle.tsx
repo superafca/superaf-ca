@@ -3,12 +3,27 @@ import { useEffect, useState } from "react";
 
 type Theme = "day" | "night";
 
+function paintThemeColor(next: Theme) {
+  const color = next === "night" ? "#07122B" : "#0B1F4B";
+  const metas = document.querySelectorAll('meta[name="theme-color"]');
+  if (!metas.length) {
+    const meta = document.createElement("meta");
+    meta.setAttribute("name", "theme-color");
+    meta.setAttribute("content", color);
+    document.head.appendChild(meta);
+    return;
+  }
+  metas.forEach((meta) => {
+    meta.setAttribute("content", color);
+    meta.removeAttribute("media");
+  });
+}
+
 function applyTheme(next: Theme, persist: boolean) {
   const root = document.documentElement;
   root.setAttribute("data-theme", next);
   root.style.colorScheme = next === "night" ? "dark" : "light";
-  const meta = document.querySelector('meta[name="theme-color-active"]');
-  if (meta) meta.setAttribute("content", next === "night" ? "#0A0A0C" : "#FFFFFF");
+  paintThemeColor(next);
   if (persist) localStorage.setItem("superaf-theme", next);
 }
 

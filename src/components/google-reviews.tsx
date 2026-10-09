@@ -101,7 +101,7 @@ export function GoogleReviews() {
         when: review.date,
         photo: null,
         profile: null,
-        mapsUrl: site.googleReview,
+        mapsUrl: site.maps,
         live: false as const,
       }));
 

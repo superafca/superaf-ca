@@ -14,6 +14,12 @@ export const Route = createFileRoute("/diy")({
           "Pre-cut HARD PP kits you install yourself. FRONT from $399. Plotter-cut, packed in a HARD PP tube. Free shipping over $600.",
       },
     ],
+    links: [
+      {
+        rel: "stylesheet",
+        href: "https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800&family=Press+Start+2P&display=swap",
+      },
+    ],
   }),
 });
 

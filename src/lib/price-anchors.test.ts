@@ -1,15 +1,29 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
-import { frontPlusFrom, fullBodyFrom, fullFrontFrom, tintFrontsFrom, windshieldFilm } from "./price-anchors.ts";
+import {
+  frontPlusFrom,
+  fullBodyFrom,
+  fullFrontFrom,
+  tintFrontsCeramic,
+  tintFrontsFrom,
+  visorFrom,
+  windshieldFilm,
+  windshieldTintCeramic,
+  windshieldTintFrom,
+} from "./price-anchors.ts";
 import { proofStats, site } from "./site.ts";
 
 test("price anchors match the estimator today", () => {
   assert.equal(fullFrontFrom, 849);
+  assert.equal(frontPlusFrom, 948);
   assert.equal(fullBodyFrom, 2799);
   assert.equal(windshieldFilm, 269);
   assert.equal(tintFrontsFrom, 179);
-  assert.equal(frontPlusFrom, 948);
+  assert.equal(tintFrontsCeramic, 239);
+  assert.equal(windshieldTintFrom, 279);
+  assert.equal(windshieldTintCeramic, 379);
+  assert.equal(visorFrom, 89);
 });
 
 test("listed pages do not hard-code the anchor prices", () => {
@@ -19,6 +33,7 @@ test("listed pages do not hard-code the anchor prices", () => {
       assert.equal(source.includes(literal), false, `${file} still has ${literal}`);
     }
   }
+  assert.equal(/\$[0-9]/.test(readFileSync("src/components/landing.tsx", "utf8")), false);
 });
 
 test("stat labels and phone stay exact", () => {

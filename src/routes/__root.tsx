@@ -15,7 +15,7 @@ const bakedSeason =
     ? import.meta.env.VITE_SEASON
     : "");
 
-const themeBoot = `(function(){try{var root=document.documentElement;var stored=localStorage.getItem("superaf-theme");var theme=stored==="day"||stored==="night"?stored:(matchMedia("(prefers-color-scheme: dark)").matches?"night":"day");root.setAttribute("data-theme",theme);root.style.colorScheme=theme==="night"?"dark":"light";var meta=document.createElement("meta");meta.setAttribute("name","theme-color-active");meta.setAttribute("content",theme==="night"?"#0A0A0C":"#FFFFFF");document.head.appendChild(meta);var q=new URLSearchParams(location.search).get("season");var names=["fall","christmas","winter","spring","summer"];var baked=${JSON.stringify(bakedSeason)};var season=names.indexOf(q)>=0?q:(names.indexOf(baked)>=0?baked:"");if(!season){var parts=new Intl.DateTimeFormat("en-CA",{timeZone:"America/Edmonton",month:"2-digit",day:"2-digit"}).formatToParts(new Date());var m=+parts.find(function(p){return p.type==="month";}).value;var d=+parts.find(function(p){return p.type==="day";}).value;var md=m*100+d;season=md>=922&&md<=1130?"fall":(md>=1201||md<=106)?"christmas":md>=107&&md<=319?"winter":md>=320&&md<=620?"spring":"summer";}root.setAttribute("data-season",season);var until=${JSON.stringify(launchBanner.showUntil)};var enabled=${launchBanner.enabled ? "true" : "false"};var day=new Intl.DateTimeFormat("en-CA",{timeZone:"America/Edmonton",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date());if(!enabled||localStorage.getItem("superaf-launch-dismissed")==="1"||day>until)root.setAttribute("data-launch","off");}catch(e){}})();`;
+const themeBoot = `(function(){try{var root=document.documentElement;var stored=localStorage.getItem("superaf-theme");var theme=stored==="day"||stored==="night"?stored:(matchMedia("(prefers-color-scheme: dark)").matches?"night":"day");root.setAttribute("data-theme",theme);root.style.colorScheme=theme==="night"?"dark":"light";var color=theme==="night"?"#07122B":"#0B1F4B";var meta=document.createElement("meta");meta.setAttribute("name","theme-color");meta.setAttribute("content",color);document.head.appendChild(meta);var q=new URLSearchParams(location.search).get("season");var names=["fall","christmas","winter","spring","summer"];var baked=${JSON.stringify(bakedSeason)};var season=names.indexOf(q)>=0?q:(names.indexOf(baked)>=0?baked:"");if(!season){var parts=new Intl.DateTimeFormat("en-CA",{timeZone:"America/Edmonton",month:"2-digit",day:"2-digit"}).formatToParts(new Date());var m=+parts.find(function(p){return p.type==="month";}).value;var d=+parts.find(function(p){return p.type==="day";}).value;var md=m*100+d;season=md>=922&&md<=1130?"fall":(md>=1201||md<=106)?"christmas":md>=107&&md<=319?"winter":md>=320&&md<=620?"spring":"summer";}root.setAttribute("data-season",season);var until=${JSON.stringify(launchBanner.showUntil)};var enabled=${launchBanner.enabled ? "true" : "false"};var day=new Intl.DateTimeFormat("en-CA",{timeZone:"America/Edmonton",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date());if(!enabled||localStorage.getItem("superaf-launch-dismissed")==="1"||day>until)root.setAttribute("data-launch","off");}catch(e){}})();`;
 
 export const Route = createRootRoute({
   head: () => ({
@@ -24,8 +24,6 @@ export const Route = createRootRoute({
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: `${APP_NAME} — Best PPF in Calgary` },
       { name: "description", content: DESCRIPTION },
-      { name: "theme-color", media: "(prefers-color-scheme: light)", content: "#FFFFFF" },
-      { name: "theme-color", media: "(prefers-color-scheme: dark)", content: "#0A0A0C" },
       { property: "og:type", content: "website" },
       { property: "og:url", content: "https://www.superaf.ca/" },
       { property: "og:title", content: `${APP_NAME} — Best PPF in Calgary` },
@@ -53,7 +51,7 @@ export const Route = createRootRoute({
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
         rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Great+Vibes&family=Orbitron:wght@500;700;800&family=Outfit:wght@400;500;600&family=Press+Start+2P&display=swap",
+        href: "https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75,800;75,900;100,800;100,900&display=swap",
       },
       { rel: "manifest", href: "/__grok/manifest.webmanifest" },
     ],

@@ -1,4 +1,4 @@
-const OPTIMIZED = /\/images\/(?:kits\/|windshield-install-|boxes-(?:glove|shop|pallet|foot)\.)/;
+const OPTIMIZED = /\/images\/(?:kits\/|windshield-install-|boxes-(?:glove|shop|pallet|foot)\.|work\/ppf\/ppf-03\.)/;
 
 export function OptImg({
   src,
