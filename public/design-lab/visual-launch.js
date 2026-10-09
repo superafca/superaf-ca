@@ -6,7 +6,7 @@
   document.querySelector('#e-finish option[value="colour"]')?.remove();
   const skins = ['default','spring','summer','autumn','winter'];
   function destination(service) {
-    const url = new URL('visual-estimator.html', location.href);
+    const url = new URL('studio-004.html', location.href);
     const theme = document.documentElement.dataset.skin;
     url.searchParams.set('skin', skins.includes(theme) ? theme : 'default');
     url.searchParams.set('mode', service === 'Window tint' ? 'tint' : 'front');
