@@ -14,7 +14,7 @@ jobs:
       - name: Download and validate official public year make model evidence
         run: |
           python3 - <<'PY'
-          import csv,io,json,hashlib,urllib.request
+          import csv,io,json,hashlib,urllib.request,urllib.parse
           from pathlib import Path
           root=Path('vehicle-data-review');root.mkdir()
           base='https://open.canada.ca/data/dataset/98f1a129-f628-4ce4-b24d-6f16bf24dd64/resource/'
@@ -31,11 +31,14 @@ jobs:
             url=base+rid+'/download/'+filename
             req=urllib.request.Request(url,headers={'User-Agent':'SUPERAF public catalogue review; Python urllib'})
             with urllib.request.urlopen(req,timeout=30) as r:
-              if not r.url.startswith('https://open.canada.ca/'):raise ValueError('Unexpected redirect host')
+              resolved=r.url; parsed=urllib.parse.urlparse(resolved);host=parsed.hostname or ''
+              print('Public source resolved to '+resolved,flush=True)
+              if parsed.scheme!='https' or not (host.endswith('.gc.ca') or host.endswith('.canada.ca') or host=='open.canada.ca'):raise ValueError('Unreviewed redirect host: '+host)
               blob=r.read(5000001)
             if len(blob)>5000000 or b'<html' in blob[:500].lower():raise ValueError('Invalid CSV payload')
             (root/filename).write_bytes(blob)
-            text=blob.decode('utf-8-sig') if blob.startswith(b'\xef\xbb\xbf') else blob.decode('cp1252')
+            try:text=blob.decode('utf-8-sig')
+            except UnicodeDecodeError:text=blob.decode('cp1252')
             rows=list(csv.reader(io.StringIO(text)))
             valid=[]
             for row in rows:
@@ -47,7 +50,7 @@ jobs:
               valid.append((year,make,model))
               if year>=2000:entries.setdefault((year,make,model),set()).add(name)
             if not valid:raise ValueError('No valid records in '+name)
-            sources.append({'id':name,'url':url,'bytes':len(blob),'sha256':hashlib.sha256(blob).hexdigest(),'rawRows':len(valid),'years':sorted({v[0] for v in valid})})
+            sources.append({'id':name,'url':url,'resolvedUrl':resolved,'bytes':len(blob),'sha256':hashlib.sha256(blob).hexdigest(),'rawRows':len(valid),'years':sorted({v[0] for v in valid})})
           years=sorted({k[0] for k in entries})
           if years!=list(range(2000,2027)):raise ValueError('Missing model years')
           data={'schema':1,'market':'CA','kind':'model-year-evidence-not-complete-trims','minYear':2000,'maxYear':2026,'sources':sources,'records':[[*key,sorted(value)] for key,value in sorted(entries.items())],'attribution':'Contains information licensed under the Open Government Licence – Canada. Source: Natural Resources Canada fuel consumption ratings. Model names preserved; not a complete retail trim or heavy-duty inventory.','licence':'https://open.canada.ca/en/open-government-licence-canada'}
