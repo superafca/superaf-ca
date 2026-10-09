@@ -3,6 +3,7 @@ import { Block, PageShell } from "@/components/page-shell";
 import { AddressLink } from "@/components/sections";
 import { FilmName, HardMark } from "@/components/site-header";
 import { site, glasses as siteGlasses, filmCompare, tintCompare, proofStats } from "@/lib/site";
+import { frontPlusLabel, fullFrontLabel, windshieldFilmLabel } from "@/lib/price-anchors";
 import { LiveStats } from "@/components/live-stat";
 import { founderShots, PhotoCarousel, TraitRow, VltStrip, WorkCarousel } from "@/components/work-media";
 
@@ -20,14 +21,14 @@ export const panels: {
   {
     id: "vision",
     label: "Process and Values",
-    bg: "bg-[#06101f]/70",
+    bg: "panel-field",
     title: "Process and Values.",
     lede: "Quality, speed, and honest pricing — we refused to pick two.",
   },
   {
     id: "ppf",
     label: "Paint Protection",
-    bg: "bg-[#06101f]/70",
+    bg: "panel-field",
     title: "Paint Protection.",
     lede: (
       <>
@@ -39,14 +40,14 @@ export const panels: {
   {
     id: "windshield",
     label: "Glass Protection",
-    bg: "bg-[#06101f]/70",
+    bg: "panel-field",
     title: "Glass Protection.",
-    lede: "Windshield film in Calgary. Clear or tinted. $269. 5 mil. Self-healing.",
+    lede: `Windshield film in Calgary. Clear or tinted. ${windshieldFilmLabel}. 5 mil. Self-healing.`,
   },
   {
     id: "tint",
     label: "Tint",
-    bg: "bg-[#06101f]/70",
+    bg: "panel-field",
     title: "Tint.",
     lede: "Carbon tint and ceramic tint. Heat, UV, glare. Watch the glass go dark.",
     wide: true,
@@ -250,7 +251,7 @@ function PpfBody() {
       <p className="text-center text-sm text-muted">Same install. The film is the difference. × is not on that film.</p>
       <div className="grid gap-4 md:grid-cols-2">
         <article className="rounded-xl bg-elevated p-5 text-left shadow-border">
-          <p className="text-center text-xs font-bold uppercase tracking-kicker text-lvl1">For the wallet</p>
+          <p className="tone-label text-center text-xs font-bold uppercase tracking-kicker">For the wallet</p>
           <h2 className="mt-1 text-center font-display text-5xl">
             <FilmName years={5} />
           </h2>
@@ -262,7 +263,7 @@ function PpfBody() {
           </div>
         </article>
         <article className="rounded-xl bg-elevated p-5 text-left shadow-border">
-          <p className="text-center text-xs font-bold uppercase tracking-kicker text-lvlmax">For the beauty</p>
+          <p className="tone-label text-center text-xs font-bold uppercase tracking-kicker">For the beauty</p>
           <h2 className="mt-1 text-center font-display text-5xl">
             <FilmName years={10} />
           </h2>
@@ -339,7 +340,7 @@ function PpfBody() {
           </div>
           <div>
             <h3 className="font-semibold text-fg">How much does it cost?</h3>
-            <p>FRONT starts at $849. FRONT+ from $948. Your exact number takes about 60 seconds in the estimator — pick the car, tick the extras, the number rolls. Final price gets confirmed at drop-off.</p>
+            <p>FRONT starts at {fullFrontLabel}. FRONT+ from {frontPlusLabel}. Your exact number takes about 60 seconds in the estimator — pick the car, tick the extras, the number rolls. Final price gets confirmed at drop-off.</p>
           </div>
           <div>
             <h3 className="font-semibold text-fg">How long does it take?</h3>
@@ -396,7 +397,7 @@ function GlassBody() {
       </div>
       <div className="rounded-xl bg-elevated p-5 text-left text-sm text-muted shadow-border">
         <p>Glass protection. Sacrificial windshield film for winter rocks. Not a perfection product. Fast, affordable. Replace it when it’s ugly.</p>
-        <p className="mt-4 font-bold text-fg">Clear · Tinted $269</p>
+        <p className="mt-4 font-bold text-fg">Clear · Tinted {windshieldFilmLabel}</p>
         <ul className="mt-2 list-disc space-y-2 pl-5">
           <li>5 mil thick. Self-healing. Scratch resistant.</li>
           <li>Clear: maximum visibility.</li>
@@ -435,7 +436,7 @@ function TintBody() {
       <p className="text-center text-sm text-muted">Lined up on purpose. × is what carbon does not do. Front windows are about 2 hours. Rear windows are about 4.</p>
       <div className="grid gap-4 md:grid-cols-2">
         <article className="rounded-xl bg-elevated p-5 text-left shadow-border">
-          <p className="text-center text-xs font-bold uppercase tracking-kicker text-lvl1">Carbon</p>
+          <p className="tone-label text-center text-xs font-bold uppercase tracking-kicker">Carbon</p>
           <h2 className="mt-1 text-center font-display text-5xl">The look</h2>
           <ul className="mt-4 list-disc space-y-2 pl-5 text-sm text-muted">
             <li>Carbon window tint. Cost effective. Shade that doesn’t fade.</li>
@@ -446,7 +447,7 @@ function TintBody() {
           <p className="mt-1 text-center text-sm font-bold text-muted">5 · 18 · 25 · 36</p>
         </article>
         <article className="rounded-xl bg-elevated p-5 text-left shadow-border">
-          <p className="text-center text-xs font-bold uppercase tracking-kicker text-lvlmax">Ceramic</p>
+          <p className="tone-label text-center text-xs font-bold uppercase tracking-kicker">Ceramic</p>
           <h2 className="mt-1 text-center font-display text-5xl">The cool</h2>
           <ul className="mt-4 list-disc space-y-2 pl-5 text-sm text-muted">
             <li>Ceramic window tint. Nano-ceramic. Enhanced solar rejection for skin protection.</li>

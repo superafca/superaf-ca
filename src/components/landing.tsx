@@ -1,335 +1,335 @@
-import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Link } from "@tanstack/react-router";
-import { site, proofStats } from "@/lib/site";
+import { Phone } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { GoogleReviews } from "@/components/google-reviews";
 import { LiveStats } from "@/components/live-stat";
-import { founderShots, PhotoCarousel } from "@/components/work-media";
+import { OptImg } from "@/components/opt-img";
 import { AddressLink } from "@/components/sections";
-import { cn } from "@/lib/utils";
+import {
+  PRICE_GUARANTEE,
+  frontPlusLabel,
+  fullBodyLabel,
+  fullFrontLabel,
+  tintFrontsCeramicLabel,
+  tintFrontsLabel,
+  visorLabel,
+  windshieldFilmLabel,
+  windshieldTintCeramicLabel,
+  windshieldTintLabel,
+} from "@/lib/price-anchors";
+import { activeSeason, seasonCopy, seasonFromSearch } from "@/lib/season";
+import { packages, proofStats, site } from "@/lib/site";
 
-function Media({
+function canPlayMotion() {
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return false;
+  const conn = (navigator as Navigator & { connection?: { saveData?: boolean; effectiveType?: string } }).connection;
+  if (conn?.saveData) return false;
+  if (conn?.effectiveType === "2g" || conn?.effectiveType === "3g") return false;
+  return true;
+}
+
+function FilmMedia({
   poster,
   video,
   alt,
-  auto,
-  portrait,
+  width,
+  height,
 }: {
   poster: string;
-  video?: string;
+  video: string;
   alt: string;
-  auto?: boolean;
-  portrait?: boolean;
+  width: number;
+  height: number;
 }) {
   const box = useRef<HTMLDivElement>(null);
   const clip = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
     const el = box.current;
-    const v = clip.current;
-    if (!el || !v || !video) return;
-    const play = () => {
-      v.play().catch(() => {});
-    };
-    const stop = () => {
-      if (auto) return;
-      v.pause();
-      try {
-        v.currentTime = 0;
-      } catch {
-        /* ignore */
-      }
-    };
-    if (auto) play();
-    el.addEventListener("pointerenter", play);
-    el.addEventListener("pointerleave", stop);
-    const io = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) play();
-        else if (!auto) stop();
-      },
-      { threshold: 0.4 },
-    );
-    io.observe(el);
-    return () => {
-      io.disconnect();
-      el.removeEventListener("pointerenter", play);
-      el.removeEventListener("pointerleave", stop);
-    };
-  }, [video, auto]);
-
-  return (
-    <div ref={box} className={cn("store-media", portrait && "store-media-portrait")}>
-      <img src={poster} alt={alt} />
-      {video ? (
-        <video
-          ref={clip}
-          src={video}
-          poster={poster}
-          muted
-          loop
-          playsInline
-          autoPlay={auto}
-          preload="metadata"
-        />
-      ) : null}
-    </div>
-  );
-}
-
-const KIT_ROLL = [
-  {
-    name: "FRONT",
-    line: "The package you love.",
-    frames: ["/images/kits/model3-front.jpg", "/images/kits/f150-front.jpg", "/images/kits/cx5-front.jpg"],
-  },
-  {
-    name: "FRONT+",
-    line: "The package with sides.",
-    frames: ["/images/kits/model3-frontplus.jpg", "/images/kits/f150-frontplus.jpg", "/images/kits/cx5-frontplus.jpg"],
-  },
-  {
-    name: "MAX",
-    line: "The all you can eat buffet, calorie free.",
-    frames: ["/images/kits/model3-max.jpg", "/images/kits/f150-max.jpg", "/images/kits/cx5-max.jpg"],
-  },
-] as const;
-
-function KitRoll() {
-  const [index, setIndex] = useState(0);
-  const [lit, setLit] = useState(true);
-
-  useEffect(() => {
+    const vid = clip.current;
+    if (!el || !vid) return;
     let dead = false;
-    let timer = 0;
-    const wait = (ms: number) =>
-      new Promise<void>((resolve) => {
-        timer = window.setTimeout(resolve, ms);
-      });
-    void (async () => {
-      while (!dead) {
-        await wait(5000);
-        if (dead) return;
-        setLit(false);
-        await wait(2000);
-        if (dead) return;
-        setIndex((n) => (n + 1) % 3);
-        setLit(true);
+    let shown = false;
+    const motion = canPlayMotion();
+    const play = () => {
+      if (!motion || !shown || document.visibilityState === "hidden") {
+        vid.pause();
+        return;
       }
-    })();
+      if (!vid.getAttribute("src")) vid.src = video;
+      vid.play().catch(() => {});
+    };
+    const arm = () => {
+      if (dead) return;
+      const io = new IntersectionObserver(
+        ([entry]) => {
+          shown = entry.isIntersecting && entry.intersectionRatio >= 0.5;
+          play();
+        },
+        { threshold: 0.5 },
+      );
+      io.observe(el);
+      el.dataset.io = "1";
+      const stop = () => io.disconnect();
+      el.addEventListener("sign-unmount", stop, { once: true });
+    };
+    if (document.readyState === "complete") arm();
+    else window.addEventListener("load", arm, { once: true });
+    const onVis = () => play();
+    document.addEventListener("visibilitychange", onVis);
     return () => {
       dead = true;
-      window.clearTimeout(timer);
+      el.dispatchEvent(new Event("sign-unmount"));
+      window.removeEventListener("load", arm);
+      document.removeEventListener("visibilitychange", onVis);
     };
-  }, []);
+  }, [video]);
 
   return (
-    <div className="store-kits">
-      {KIT_ROLL.map((kit) => (
-        <Link key={kit.name} to="/estimate" className="store-kit">
-          <span className="store-kit-frame">
-            {kit.frames.map((src, i) => (
-              <img key={src} src={src} alt="" className={lit && i === index ? "is-on" : undefined} />
-            ))}
-          </span>
-          <p className="store-kit-name">{kit.name}</p>
-          <p>{kit.line}</p>
-        </Link>
-      ))}
+    <div ref={box} className="sign-media">
+      <img src={poster} alt={alt} width={width} height={height} loading="lazy" decoding="async" />
+      <video ref={clip} poster={poster} muted playsInline loop preload="none" />
     </div>
   );
 }
 
-function Links({
-  learn,
-  buy = "/estimate",
-}: {
-  learn?: "/ppf" | "/windshield" | "/tint" | "/vision";
-  buy?: "/estimate";
-}) {
+const PPF_PRICE: Record<string, string> = {
+  front: fullFrontLabel,
+  custom: frontPlusLabel,
+  max: fullBodyLabel,
+};
+
+const PPF_ART: Record<string, string> = {
+  front: "/images/kits/cx5-front.jpg",
+  custom: "/images/kits/cx5-frontplus.jpg",
+  max: "/images/kits/cx5-max.jpg",
+};
+
+function PhonePill({ compact = false }: { compact?: boolean }) {
   return (
-    <p className="store-links">
-      {learn ? (
-        <Link to={learn} className="store-link">
-          Learn more
-        </Link>
-      ) : null}
-      {learn ? <span className="store-link-dot" aria-hidden /> : null}
-      <Link to={buy} className="store-link">
-        Estimate
-      </Link>
-    </p>
+    <a className={compact ? "phone-pill is-compact" : "phone-pill"} href={site.phoneHref}>
+      <Phone size={16} aria-hidden />
+      <span>{compact ? site.phone : `Call or text ${site.phone}`}</span>
+    </a>
   );
 }
 
-function Module({
-  kicker,
-  title,
-  lede,
-  learn,
-  poster,
-  video,
-  alt,
-  hero,
-  auto,
-  portrait,
-  tone,
-  caption,
-  extra,
-  children,
-}: {
-  kicker?: string;
-  title: ReactNode;
-  lede: ReactNode;
-  learn?: "/ppf" | "/windshield" | "/tint" | "/vision";
-  poster?: string;
-  video?: string;
-  alt?: string;
-  hero?: boolean;
-  auto?: boolean;
-  portrait?: boolean;
-  tone?: string;
-  caption?: string;
-  extra?: ReactNode;
-  children?: ReactNode;
-}) {
-  const Title = hero ? "h1" : "h2";
+function EstimatePill({ onDark = false }: { onDark?: boolean }) {
   return (
-    <section className={cn("store-mod", hero && "store-hero", tone)}>
-      <div className="store-copy">
-        {kicker ? <p className="store-kicker">{kicker}</p> : null}
-        <Title>{title}</Title>
-        <p className="store-lede">{lede}</p>
-        <Links learn={learn} />
-        {extra}
-      </div>
-      {poster ? (
-        <Media
-          poster={poster}
-          video={video}
-          alt={alt ?? ""}
-          auto={hero || auto}
-          portrait={portrait}
-        />
-      ) : null}
-      {caption ? <p className="store-caption">{caption}</p> : null}
-      {children}
-    </section>
+    <Link to="/estimate" className={onDark ? "estimate-pill on-dark" : "estimate-pill"}>
+      Build your estimate
+    </Link>
   );
 }
 
 export function Landing() {
+  const [ribbon, setRibbon] = useState(seasonCopy.summer.ribbon);
+  const [ribbonHref, setRibbonHref] = useState<"/ppf" | null>("/ppf");
+
+  useEffect(() => {
+    const forced = seasonFromSearch(window.location.search);
+    const season = forced ?? activeSeason();
+    setRibbon(seasonCopy[season].ribbon);
+    setRibbonHref(season === "fall" || season === "christmas" ? null : "/ppf");
+  }, []);
+
   return (
-    <div className="store-page">
+    <div className="store-page sign-home">
       <p className="store-ribbon">
-        Paint protection. <Link to="/ppf">HARD PP 10 is here.</Link>
+        {ribbonHref ? (
+          <>
+            Paint protection. <Link to={ribbonHref}>HARD PP 10 is here.</Link>
+          </>
+        ) : (
+          ribbon
+        )}
       </p>
 
-      <Module
-        hero
-        title={
-          <>
-            HARD
-            <br />
-            Paint Protection.
-          </>
-        }
-        lede="Hydrophobic. Anti-Yellowing. Repairing. Durable."
-        learn="/ppf"
-        poster="/images/hero-box-poster.jpg?v=2"
-        video="/videos/hero-box-loop.mp4?v=2"
-        alt="HARD PP box"
-        extra={<LiveStats items={proofStats} />}
-      />
-
-      <Module
-        auto
-        tone="store-mod-pp"
-        title="Water hates it."
-        lede="Water and dirt bead up and roll off, so the car stays cleaner and is easier to wash."
-        learn="/ppf"
-        poster="/images/hydrophobic-poster.jpg"
-        video="/videos/hydrophobic-loop.mp4"
-        alt="Water beading on hydrophobic paint protection film"
-      />
-
-      <section className="store-mod store-mod-kits">
-        <div className="store-copy">
-          <h2>FRONT — FRONT+ — MAX</h2>
-          <p className="store-lede">Level up your protection, and your life.</p>
-          <Links learn="/ppf" />
-        </div>
-        <KitRoll />
+      <section className="sign-hero">
+        <div className="sign-hero-panel" aria-hidden />
+        <p className="sign-brand">SUPERAF.CA · Calgary, AB · EST. 2016</p>
+        <h1>HARD Paint Protection.</h1>
+        <p className="sign-lede">
+          Paint protection film, window tint and windshield film. Made in-house, installed at 426 Memorial Drive NE.
+        </p>
+        <p className="sign-cta">
+          <PhonePill />
+          <EstimatePill onDark />
+        </p>
       </section>
 
-      <Module
-        tone="store-mod-view"
-        title="Windshield film."
-        lede="Sacrificial layer for Deerfoot gravel. Clear or tinted. $269."
-        learn="/windshield"
-        poster="/images/windshield-install-03-trim.jpg"
-        alt="Trimming windshield film along the glass edge"
-      >
+      <section className="sign-packages">
+        <header className="sign-head">
+          <p className="sign-kicker">Packages</p>
+          <h2>Pick your protection.</h2>
+        </header>
+        <div className="sign-grid">
+          {packages.map((pack) => (
+            <article key={pack.id} className={pack.featured ? "sign-card is-featured" : "sign-card"}>
+              <OptImg
+                src={PPF_ART[pack.id]}
+                alt={`${pack.name} coverage diagram. Not a photo of an install.`}
+                width={960}
+                height={640}
+                sizes="(min-width: 900px) 320px, 90vw"
+              />
+              <h3>
+                {pack.name} <span>from {PPF_PRICE[pack.id]}</span>
+              </h3>
+              {pack.featured ? <p className="sign-tag">{pack.why}</p> : null}
+              <ul>
+                {pack.includes.slice(0, 5).map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
+              </ul>
+              <p className="sign-time">{pack.daysLabel}</p>
+              <Link to="/estimate" className="sign-build">
+                Build this
+              </Link>
+            </article>
+          ))}
+        </div>
+        <div className="sign-glass">
+          <article className="sign-card is-small">
+            <h3>
+              Windshield protection film <span>{windshieldFilmLabel}</span>
+            </h3>
+            <p>Clear or tinted. Sacrificial layer for gravel.</p>
+            <Link to="/windshield">Glass protection</Link>
+          </article>
+          <article className="sign-card is-small">
+            <h3>
+              Window tint <span>fronts from {tintFrontsLabel}</span>
+            </h3>
+            <p>Carbon. Ceramic from {tintFrontsCeramicLabel}.</p>
+            <Link to="/tint">Tint</Link>
+          </article>
+          <article className="sign-card is-small">
+            <h3>
+              Windshield tint <span>from {windshieldTintLabel}</span>
+            </h3>
+            <p>Carbon. Ceramic {windshieldTintCeramicLabel}. Not the same as protection film.</p>
+            <Link to="/estimate">Build your estimate</Link>
+          </article>
+          <article className="sign-card is-small">
+            <h3>
+              Sun visor strip <span>from {visorLabel}</span>
+            </h3>
+            <p>Carbon visor strip.</p>
+            <Link to="/estimate">Build your estimate</Link>
+          </article>
+        </div>
+        <p className="sign-fine">{PRICE_GUARANTEE}</p>
+      </section>
+
+      <section className="sign-work">
+        <header className="sign-head">
+          <p className="sign-kicker">The shop</p>
+          <h2>Real work.</h2>
+        </header>
+        <div className="sign-circles">
+          <figure>
+            <OptImg
+              src="/images/work/ppf/ppf-03.jpg"
+              alt="Paint protection film being installed on a red Mazda front bumper and headlight, hood open"
+              width={640}
+              height={640}
+              sizes="180px"
+            />
+            <figcaption>
+              Paint protection
+              <span>Film</span>
+            </figcaption>
+          </figure>
+          <figure>
+            <OptImg
+              src="/images/windshield-install-02-tuck.jpg"
+              alt="Film tucked into the windshield edge"
+              width={640}
+              height={640}
+              sizes="180px"
+            />
+            <figcaption>
+              Windshield
+              <span>Film</span>
+            </figcaption>
+          </figure>
+          <figure>
+            <OptImg
+              src="/images/boxes-shop.jpg"
+              alt="SUPER A.F. Corporation bay, plotter and boxed film"
+              width={640}
+              height={640}
+              sizes="180px"
+            />
+            <figcaption>
+              HARD PP
+              <span>Made in-house</span>
+            </figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section className="sign-film">
+        <header className="sign-head">
+          <p className="sign-kicker">The film</p>
+          <h2>We don't buy film. We make it.</h2>
+        </header>
+        <p className="sign-lede-ink">Hydrophobic. Anti-Yellowing. Repairing. Durable.</p>
+        <p className="sign-years">5YR and 10YR. Clear on both. Matte, satin and colour on 10YR.</p>
+        <FilmMedia
+          poster="/images/hydrophobic-poster.jpg"
+          video="/videos/hydrophobic-loop-sm.mp4"
+          alt="Water beading on hydrophobic paint protection film"
+          width={1280}
+          height={720}
+        />
+        <p className="sign-links">
+          <Link to="/ppf">Learn more</Link>
+        </p>
+      </section>
+
+      <section className="sign-stats">
+        <LiveStats items={proofStats} />
+      </section>
+
+      <section className="sign-reviews">
+        <GoogleReviews />
+      </section>
+
+      <section className="sign-steps">
+        <header className="sign-head">
+          <p className="sign-kicker">Windshield film</p>
+          <h2>Lay. Tuck. Trim. Done.</h2>
+        </header>
         <div className="store-install">
           {[
-            {
-              src: "/images/windshield-install-01-lay.jpg",
-              cap: "Lay",
-              alt: "Windshield film laid wet across the glass",
-            },
-            {
-              src: "/images/windshield-install-02-tuck.jpg",
-              cap: "Tuck",
-              alt: "Film tucked into the windshield edge",
-            },
-            {
-              src: "/images/windshield-install-03-trim.jpg",
-              cap: "Trim",
-              alt: "Knife trimming windshield film to the glass",
-            },
-            {
-              src: "/images/windshield-install-04-done.jpg",
-              cap: "Done",
-              alt: "Finished white Lexus with windshield film, downtown Calgary",
-            },
-          ].map((shot) => (
-            <figure key={shot.cap}>
-              <img src={shot.src} alt={shot.alt} />
-              <figcaption>{shot.cap}</figcaption>
+            ["/images/windshield-install-01-lay.jpg", "Lay", "Windshield film laid wet across the glass"],
+            ["/images/windshield-install-02-tuck.jpg", "Tuck", "Film tucked into the windshield edge"],
+            ["/images/windshield-install-03-trim.jpg", "Trim", "Knife trimming windshield film to the glass"],
+            ["/images/windshield-install-04-done.jpg", "Done", "Finished white Lexus with windshield film, downtown Calgary"],
+          ].map(([src, cap, alt]) => (
+            <figure key={cap}>
+              <OptImg src={src} alt={alt} width={960} height={640} sizes="(min-width: 768px) 22vw, 70vw" />
+              <figcaption>{cap}</figcaption>
             </figure>
           ))}
         </div>
-      </Module>
-
-      <section className="store-mod store-mod-founder">
-        <div className="store-copy">
-          <h2>
-            Quality.
-            <br />
-            Speed. Price.
-          </h2>
-          <p className="store-lede">Refuse to choose two.</p>
-          <Links learn="/vision" />
-        </div>
-        <PhotoCarousel shots={founderShots} label="The shop" />
       </section>
 
-      <section className="store-mod store-visit">
-        <div className="store-copy">
-          <h2>
-            <AddressLink>426 Memorial Drive NE.</AddressLink>
-          </h2>
-          <p className="store-lede">
-            {site.hours}. Text or call {site.phone}. {site.hoursNote}
-          </p>
-          <p className="store-links">
-            <a className="store-link" href={site.maps} target="_blank" rel="noopener noreferrer">
-              Directions
-            </a>
-            <span className="store-link-dot" aria-hidden />
-            <a className="store-link" href={site.phoneHref}>
-              Call
-            </a>
-          </p>
-        </div>
+      <section className="sign-visit">
+        <h2>
+          <AddressLink>426 Memorial Drive NE.</AddressLink>
+        </h2>
+        <p>
+          {site.hours}. Text or call {site.phone}. {site.hoursNote}
+        </p>
+        <p className="sign-cta">
+          <PhonePill />
+          <a className="estimate-pill" href={site.maps} target="_blank" rel="noopener noreferrer">
+            Directions
+          </a>
+        </p>
         <div className="store-map">
           <iframe
             src={site.mapsEmbed}

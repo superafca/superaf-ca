@@ -1,4 +1,5 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute } from '@tanstack/react-router'
+import { windshieldFilmLabel } from "@/lib/price-anchors";
 import { PanelPage } from "@/components/info-panels";
 
 export const Route = createFileRoute("/windshield")({
@@ -9,7 +10,7 @@ export const Route = createFileRoute("/windshield")({
       {
         name: "description",
         content:
-          "Glass protection in Calgary. Clear or tinted windshield film. 5 mil. Self-healing. Scratch resistant. $269.",
+          `Glass protection in Calgary. Clear or tinted windshield film. 5 mil. Self-healing. Scratch resistant. ${windshieldFilmLabel}.`,
       },
     ],
   }),
