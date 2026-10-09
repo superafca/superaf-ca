@@ -1,0 +1,43 @@
+name: One-time sandbox 005 artifact import
+on:
+  push:
+    branches: [sandbox/site-rebuild-2026-10-08]
+    paths: [.github/workflows/sandbox-005-artifact-import.yml]
+permissions:
+  contents: write
+jobs:
+  import:
+    if: github.repository == 'superafca/superaf-ca' && github.ref == 'refs/heads/sandbox/site-rebuild-2026-10-08'
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Import only the tested public sandbox document
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 - <<'PY'
+          import os,json,hashlib,base64,urllib.request
+          # Read-only, short-lived transfer URL for this intended-public prototype ONLY.
+          # It contains no private owner-price workbook, customer records or credentials.
+          source = 'https://sdmntprwestus.oaiusercontent.com/files/00000000-1f20-8230-89c9-bb367cdcb750/raw?se=2026-10-09T17%3A54%3A38Z&sp=r&sv=2026-02-06&sr=b&scid=d02d506f-514d-5edb-bf2e-5b642d5b359b&skoid=89c13f8f-c33a-46d8-9bf3-ad7158c7790a&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-10-09T12%3A18%3A26Z&ske=2026-10-10T12%3A18%3A26Z&sks=b&skv=2026-02-06&sig=Up3yGoUm6zVbwB3onQh2YnYZ30LLLm2dqX6AmZf1og0%3D'
+          expected='26cc92fe9d0fb1add67bf5218de9699a712b6e31b2b33121817c96ce34f1f14c'
+          branch='sandbox/site-rebuild-2026-10-08'
+          assert os.environ['GITHUB_REPOSITORY']=='superafca/superaf-ca'
+          assert os.environ['GITHUB_REF']=='refs/heads/'+branch
+          root='https://api.github.com/repos/superafca/superaf-ca'
+          def api(path,body=None,method=None):
+              req=urllib.request.Request(root+path,data=None if body is None else json.dumps(body).encode(),method=method or ('GET' if body is None else 'POST'),headers={'Authorization':'Bearer '+os.environ['GH_TOKEN'],'Accept':'application/vnd.github+json','Content-Type':'application/json','User-Agent':'SUPERAF-Sandbox-Importer','X-GitHub-Api-Version':'2022-11-28'})
+              with urllib.request.urlopen(req,timeout=30) as r:return json.load(r)
+          with urllib.request.urlopen(source,timeout=30) as r:content=r.read(2000000)
+          assert len(content)==1120478 and hashlib.sha256(content).hexdigest()==expected,'Artifact checksum mismatch'
+          head=api('/git/ref/heads/'+branch)['object']['sha']
+          assert head==os.environ['GITHUB_SHA'],'Branch advanced; refusing to overwrite concurrent work'
+          commit=api('/git/commits/'+head)
+          blob=api('/git/blobs',{'encoding':'base64','content':base64.b64encode(content).decode()})['sha']
+          assert blob=='23f3ec5be28dd51ef6a2efc6e9a298d1689be2c5','Blob differs from tested artifact'
+          tree=api('/git/trees',{'base_tree':commit['tree']['sha'],'tree':[{'path':'public/design-lab/studio-005.html','mode':'100644','type':'blob','sha':blob}]})['sha']
+          sha=api('/git/commits',{'message':'feat(sandbox): publish tested high-resolution PPF tint and windshield prototype','tree':tree,'parents':[head]})['sha']
+          assert api('/git/ref/heads/'+branch)['object']['sha']==head,'Concurrent update; refusing branch advance'
+          api('/git/refs/heads/'+branch,{'sha':sha,'force':False},'PATCH')
+          print('Imported tested sandbox artifact at commit '+sha)
+          PY
