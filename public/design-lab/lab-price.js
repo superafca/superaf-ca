@@ -10,5 +10,12 @@ let toastTimer;function toast(text){const el=document.getElementById('toast');el
 document.getElementById('share').addEventListener('click',async()=>{const theme=root.dataset.skin;if(location.protocol==='file:'){toast('This is the offline copy. Current theme: '+names[theme]);return}try{const url=new URL(location.href);url.searchParams.set('skin',theme);await navigator.clipboard.writeText(url.href);toast('Link copied: '+names[theme])}catch{toast('Current theme is saved in the address bar. Copy the page address to share.')}});
 document.querySelectorAll('[data-quote]').forEach(b=>b.addEventListener('click',()=>globalThis.SuperafEstimator.open(b)));
 document.querySelectorAll('[data-service]').forEach(b=>b.addEventListener('click',()=>globalThis.SuperafEstimator.open(b,b.dataset.service)));
+// A fallback size must not invisibly persist after leaving the unlisted-vehicle path.
+document.getElementById('quote-dialog').addEventListener('change',event=>{
+ if(!['e-year','e-make','e-model'].includes(event.target.id))return;
+ if(['e-year','e-make','e-model'].some(id=>document.getElementById(id).value==='other'))return;
+ const size=document.getElementById('e-size');
+ if(size.value){size.value='';size.dispatchEvent(new Event('change',{bubbles:true}));}
+});
 if(location.hash==='#estimate') globalThis.SuperafEstimator.open(null);
 })();
