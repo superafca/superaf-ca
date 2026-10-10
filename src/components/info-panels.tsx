@@ -231,7 +231,7 @@ function PpfBody() {
         <p><strong>Repairing.</strong> It self-repairs minor scratches quickly with heat.</p>
         <p><strong>Durable.</strong> Thick, tough film that takes rock chips and road debris so your paint doesn't.</p>
         <p>
-          <a href={site.googleReview} target="_blank" rel="noopener noreferrer">
+          <a href={site.maps} target="_blank" rel="noopener noreferrer">
             Read our Google reviews
           </a>
         </p>

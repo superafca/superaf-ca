@@ -1,3 +1,4 @@
+import { pageHead } from "@/lib/seo";
 import { createFileRoute } from "@tanstack/react-router";
 import { Landing } from "@/components/landing";
 import { SiteFooter } from "@/components/sections";
@@ -6,6 +7,10 @@ import { site } from "@/lib/site";
 
 export const Route = createFileRoute("/")({
   component: Home,
+  head: () => pageHead("/",
+    "SUPERAF.CA — Best PPF in Calgary",
+    "Paint protection. Glass protection. Tint. Best PPF in Calgary. 426 Memorial Drive NE.",
+  ),
 });
 
 function Home() {

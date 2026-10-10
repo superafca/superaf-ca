@@ -21,6 +21,29 @@ import { renderInstallPage } from "./grok-pwa-plugin.mjs";
 
 const TEMPLATE_ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
+test("route-owned metadata survives streaming and repeated PWA injection", () => {
+  const html = '<html><head><title>PPF &amp; Tint</title><meta name="superaf:metadata" content="route"><link rel="canonical" href="https://www.superaf.ca/ppf"><meta property="og:title" content="PPF &amp; Tint"><meta property="og:url" content="https://www.superaf.ca/ppf"><meta property="og:description" content="Route description"><meta name="twitter:card" content="summary_large_image"></head><body>PPF</body></html>';
+  const ctx = { host: "preview.vercel.app", site: { title: "Homepage", description: "Wrong description" } };
+  const once = injectGrokPwaHead(html, ctx);
+  assert.equal(injectGrokPwaHead(once, ctx), once);
+  for (const key of ["og:title", "og:url", "og:description", "twitter:card"]) {
+    assert.equal(once.split(`"${key}"`).length - 1, 1);
+  }
+  assert.match(once, /content="PPF &amp; Tint"/);
+  assert.match(once, /content="Route description"/);
+  assert.match(once, /rel="canonical" href="https:\/\/www.superaf.ca\/ppf"/);
+  assert.match(once, /grok-app-builder\/extensions\.js/);
+  assert.match(once, /rel="manifest"/);
+  const injector = createHeadInjector(ctx);
+  const split = html.indexOf("</head>") + 3;
+  const streamed = Buffer.concat([
+    ...injector.push(html.slice(0, split)),
+    ...injector.push(html.slice(split)),
+    ...injector.flush(),
+  ]).toString("utf8");
+  assert.equal(streamed, once);
+});
+
 test("injects before </head>", () => {
   const out = injectGrokPwaHead("<html><head><title>x</title></head><body></body></html>");
   assert.match(out, /rel="manifest"/);

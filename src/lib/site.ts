@@ -1,5 +1,5 @@
 const MAPS_URL =
-  "https://www.google.com/maps/search/?api=1&query=SUPERAF.CA+3W2W%2BHV+Calgary%2C+Alberta";
+  "https://www.google.com/maps/place/SUPERAF.CA/data=!4m7!3m6!1s0x537165bff29bd7ff:0x916db95e33404a03!8m2!3d51.051479!4d-114.0528115!16s%2Fg%2F11nw2bf_xz!19sChIJ_9eb8r9lcVMRA0pAM165bZE";
 
 export const site = {
   name: "SUPERAF.CA",

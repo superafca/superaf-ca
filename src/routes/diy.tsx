@@ -1,3 +1,4 @@
+import { pageHead } from "@/lib/seo";
 import { createFileRoute } from "@tanstack/react-router";
 import { CyberFrame, HardBadges } from "@/components/cyber";
 import { site } from "@/lib/site";
@@ -5,16 +6,10 @@ import { money } from "@/lib/utils";
 
 export const Route = createFileRoute("/diy")({
   component: DiyPage,
-  head: () => ({
-    meta: [
-      { title: "DIY HARD PP kits — pre-cut, you install | SUPERAF.CA" },
-      {
-        name: "description",
-        content:
-          "Pre-cut HARD PP kits you install yourself. FRONT from $399. Plotter-cut, packed in a HARD PP tube. Free shipping over $600.",
-      },
-    ],
-  }),
+  head: () => pageHead("/diy",
+    "DIY HARD PP kits — pre-cut, you install | SUPERAF.CA",
+    "Pre-cut HARD PP kits you install yourself. FRONT from $399. Plotter-cut, packed in a HARD PP tube. Free shipping over $600.",
+  ),
 });
 
 const FAQ = [

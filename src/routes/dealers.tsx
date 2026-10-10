@@ -1,3 +1,4 @@
+import { pageHead } from "@/lib/seo";
 import { useEffect, useState, type FormEvent } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { CyberFrame } from "@/components/cyber";
@@ -9,12 +10,10 @@ const PASSWORD = "ilovehardpp10!";
 
 export const Route = createFileRoute("/dealers")({
   component: Dealers,
-  head: () => ({
-    meta: [
-      { title: "Dealers — HARD PP warranty | SUPERAF.CA" },
-      { name: "description", content: "Authorized dealer warranty registration for HARD PP." },
-    ],
-  }),
+  head: () => pageHead("/dealers",
+    "Dealers — HARD PP warranty | SUPERAF.CA",
+    "Authorized dealer warranty registration for HARD PP.",
+  ),
 });
 
 function Dealers() {
