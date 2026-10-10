@@ -1,0 +1,2 @@
+/* Preserve only public presentation choices. Never forward arbitrary parameters. */
+(()=>{'use strict';const from=new URL(location.href),to=new URL('studio-004.html',from);for(const [key,allowed] of [['skin',['default','spring','summer','autumn','winter']],['mode',['front','custom','max','tint']]]){const value=from.searchParams.get(key);if(allowed.includes(value))to.searchParams.set(key,value);}location.replace(to.href);})();
