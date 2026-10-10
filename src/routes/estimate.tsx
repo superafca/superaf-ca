@@ -1,19 +1,14 @@
+import { pageHead } from "@/lib/seo";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Quote } from "@/components/quote";
 import { SoundHud } from "@/components/sound-hud";
 
 export const Route = createFileRoute("/estimate")({
   component: Estimate,
-  head: () => ({
-    meta: [
-      { title: "Build your estimate — PPF Calgary | SUPERAF.CA" },
-      {
-        name: "description",
-        content:
-          "Build your estimate. FRONT, FRONT+, MAX. Paint protection. Glass protection. Tint Calgary.",
-      },
-    ],
-  }),
+  head: () => pageHead("/estimate",
+    "Build your estimate — PPF Calgary | SUPERAF.CA",
+    "Build your estimate. FRONT, FRONT+, MAX. Paint protection. Glass protection. Tint Calgary.",
+  ),
 });
 
 function Estimate() {

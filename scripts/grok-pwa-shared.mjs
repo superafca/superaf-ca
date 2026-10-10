@@ -445,7 +445,10 @@ export function injectGrokPwaHead(html, ctx = {}) {
     host,
     documentTitle,
   );
-  let next = stripShareMetaTags(html);
+  // TanStack owns these tags on both SSR and client navigation. Replacing them
+  // here would leave an unmanaged duplicate when React hydrates the document.
+  const routeOwnsMetadata = /<meta\b[^>]*name=["']superaf:metadata["'][^>]*content=["']route["'][^>]*>/i.test(html);
+  let next = routeOwnsMetadata ? html : stripShareMetaTags(html);
   if (!readGrokExtensionsEnabled()) next = stripGrokExtensionsScript(next);
 
   const missing = grokPwaHeadTags(appName)
@@ -456,10 +459,12 @@ export function injectGrokPwaHead(html, ctx = {}) {
     })
     .map(([, tag]) => tag);
 
-  next = insertAfterHeadOpen(
-    next,
-    grokOgHeadTags({ host, appName, site, documentTitle, cwd }).join(""),
-  );
+  if (!routeOwnsMetadata) {
+    next = insertAfterHeadOpen(
+      next,
+      grokOgHeadTags({ host, appName, site, documentTitle, cwd }).join(""),
+    );
+  }
 
   if (readGrokExtensionsEnabled() && !next.includes("/grok-app-builder/extensions.js")) {
     missing.push(...grokExtensionsHeadTags(projectId));

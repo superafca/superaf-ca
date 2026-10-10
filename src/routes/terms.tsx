@@ -1,3 +1,4 @@
+import { pageHead } from "@/lib/seo";
 import { createFileRoute } from "@tanstack/react-router";
 import { Block, PageShell } from "@/components/page-shell";
 import { HardMark } from "@/components/site-header";
@@ -6,16 +7,10 @@ import { site } from "@/lib/site";
 
 export const Route = createFileRoute("/terms")({
   component: TermsPage,
-  head: () => ({
-    meta: [
-      { title: "Terms of service — SUPERAF.CA" },
-      {
-        name: "description",
-        content:
-          "SUPERAF.CA terms of service. Quotes, vehicle condition, warranty, and limitation of liability for paint protection film, tint, and windshield film in Calgary.",
-      },
-    ],
-  }),
+  head: () => pageHead("/terms",
+    "Terms of service — SUPERAF.CA",
+    "SUPERAF.CA terms of service. Quotes, vehicle condition, warranty, and limitation of liability for paint protection film, tint, and windshield film in Calgary.",
+  ),
 });
 
 function TermsPage() {

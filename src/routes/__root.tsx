@@ -3,29 +3,12 @@ import { AuthProvider } from "@/lib/auth/provider";
 import { PreviewHostBridge } from "@/components/preview-host-bridge";
 import appCss from "../styles.css?url";
 
-const APP_NAME = "SUPERAF.CA";
-const DESCRIPTION =
-  "Paint protection. Glass protection. Tint. Best PPF in Calgary. 426 Memorial Drive NE.";
-
 export const Route = createRootRoute({
   head: () => ({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: `${APP_NAME} — Best PPF in Calgary` },
-      { name: "description", content: DESCRIPTION },
       { name: "theme-color", content: "#0b0f17" },
-      { property: "og:type", content: "website" },
-      { property: "og:url", content: "https://www.superaf.ca/" },
-      { property: "og:title", content: `${APP_NAME} — Best PPF in Calgary` },
-      { property: "og:description", content: DESCRIPTION },
-      { property: "og:image", content: "https://www.superaf.ca/og.jpg" },
-      { property: "og:image:width", content: "1200" },
-      { property: "og:image:height", content: "630" },
-      { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: `${APP_NAME} — Best PPF in Calgary` },
-      { name: "twitter:description", content: DESCRIPTION },
-      { name: "twitter:image", content: "https://www.superaf.ca/og.jpg" },
       {
         name: "keywords",
         content:

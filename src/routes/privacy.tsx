@@ -1,19 +1,14 @@
+import { pageHead } from "@/lib/seo";
 import { createFileRoute } from "@tanstack/react-router";
 import { Block, PageShell } from "@/components/page-shell";
 import { site } from "@/lib/site";
 
 export const Route = createFileRoute("/privacy")({
   component: PrivacyPage,
-  head: () => ({
-    meta: [
-      { title: "Privacy — SUPERAF.CA" },
-      {
-        name: "description",
-        content:
-          "SUPERAF.CA privacy. Name, number, email, and vehicle for quotes. Sent to book@superaf.ca. Not sold.",
-      },
-    ],
-  }),
+  head: () => pageHead("/privacy",
+    "Privacy — SUPERAF.CA",
+    "SUPERAF.CA privacy. Name, number, email, and vehicle for quotes. Sent to book@superaf.ca. Not sold.",
+  ),
 });
 
 function PrivacyPage() {
